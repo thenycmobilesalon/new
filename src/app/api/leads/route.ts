@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { resend } from "@/lib/resend";
+import { getResend } from "@/lib/resend";
 import { validateLeadForm, type LeadFormData } from "@/lib/validation";
 
 export async function POST(request: Request) {
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     }
 
     // Send notification to business
-    await resend.emails.send({
+    await getResend().emails.send({
       from: "NYC Mobile Salon <notifications@thenycmobilesalon.com>",
       replyTo: "hey@thenycmobilesalon.com",
       to: businessEmail,
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     });
 
     // Send confirmation to lead
-    await resend.emails.send({
+    await getResend().emails.send({
       from: "NYC Mobile Salon <notifications@thenycmobilesalon.com>",
       replyTo: "hey@thenycmobilesalon.com",
       to: data.email,
