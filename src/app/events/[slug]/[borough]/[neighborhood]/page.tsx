@@ -3,8 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getEventBySlug, getNeighborhoodName, getBoroughName, getEventNeighborhoodParams, serviceSchema, breadcrumbSchema } from "@/lib/seo";
 
+export const revalidate = 86400;
 export function generateStaticParams() {
-  return getEventNeighborhoodParams();
+  return [];
 }
 
 type Props = { params: Promise<{ slug: string; borough: string; neighborhood: string }> };

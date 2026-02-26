@@ -3,8 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServiceBySlug, getNeighborhoodName, getBoroughName, getServiceNeighborhoodParams, serviceSchema, breadcrumbSchema } from "@/lib/seo";
 
+// On-demand ISR — generated on first visit, cached 24h
+export const revalidate = 86400;
 export function generateStaticParams() {
-  return getServiceNeighborhoodParams();
+  return [];
 }
 
 type Props = { params: Promise<{ slug: string; borough: string; neighborhood: string }> };
