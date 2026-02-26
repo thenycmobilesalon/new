@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #FAFAF8;
-  --color-foreground: #2D2D2D;
+  --color-background: #ffffff;
+  --color-foreground: #000000;
   --color-sage: #7C8C6E;
   --color-sage-light: #E8EDE4;
   --color-sage-dark: #5A6B4E;
@@ -28,14 +28,14 @@ body {
   font-family: var(--font-serif), Georgia, "Times New Roman", serif;
 }
 
-/* Accent text */
+/* Accent text — backward compat, now maps to sky-500 */
 .text-accent {
-  color: var(--color-sage);
+  color: #0EA5E9;
 }
 
 /* Clean button styles */
 .btn-primary {
-  background-color: var(--color-charcoal);
+  background-color: #000000;
   color: white;
   transition: all 0.2s ease;
 }
@@ -44,14 +44,23 @@ body {
 }
 
 .btn-outline {
-  border: 1.5px solid var(--color-charcoal);
-  color: var(--color-charcoal);
+  border: 1.5px solid #000000;
+  color: #000000;
   background: transparent;
   transition: all 0.2s ease;
 }
 .btn-outline:hover {
-  background-color: var(--color-charcoal);
+  background-color: #000000;
   color: white;
+}
+
+.btn-blue {
+  background-color: #0EA5E9;
+  color: white;
+  transition: all 0.2s ease;
+}
+.btn-blue:hover {
+  background-color: #0284C7;
 }
 
 .btn-sage {
@@ -74,7 +83,7 @@ body {
 
 /* Section divider */
 .section-divider {
-  border-top: 1px solid #E8E8E4;
+  border-top: 1px solid #E5E7EB;
 }
 
 /* Fade in animation */
@@ -96,7 +105,7 @@ body {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid #E8E8E4;
+  border-bottom: 1px solid #E5E7EB;
 }
 
 .glass-dark {
@@ -104,7 +113,7 @@ body {
 }
 
 .btn-gradient {
-  background-color: var(--color-charcoal);
+  background-color: #000000;
   transition: all 0.2s ease;
 }
 .btn-gradient:hover {
@@ -116,6 +125,6 @@ body {
 }
 
 .gradient-border {
-  border: 1px solid #E8E8E4;
+  border: 1px solid #E5E7EB;
   border-radius: 1rem;
 }
