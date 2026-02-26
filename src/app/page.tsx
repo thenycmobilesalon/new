@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { womensCategories, mensCategories, testimonials, boroughNames } from "@/lib/constants";
+import { womensCategories, mensCategories, stats, testimonials, boroughNames } from "@/lib/constants";
 import { localBusinessSchema } from "@/lib/seo";
 import LeadForm from "@/components/LeadForm";
 
@@ -44,15 +44,24 @@ const faqs = [
   },
 ];
 
-function Stars({ className = "" }: { className?: string }) {
+function Stars({ className = "", size = "sm" }: { className?: string; size?: "sm" | "lg" }) {
+  const dim = size === "lg" ? "h-6 w-6" : "h-4 w-4";
   return (
     <span className={`flex gap-0.5 ${className}`}>
       {[...Array(5)].map((_, i) => (
-        <svg key={i} className="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+        <svg key={i} className={`${dim} text-amber-400`} fill="currentColor" viewBox="0 0 20 20">
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.176 0l-3.37 2.448c-.784.57-1.838-.197-1.539-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.063 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z" />
         </svg>
       ))}
     </span>
+  );
+}
+
+function Arrow({ className = "text-current" }: { className?: string }) {
+  return (
+    <svg className={`h-5 w-5 ${className}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+    </svg>
   );
 }
 
@@ -65,19 +74,19 @@ export default function Home() {
       />
 
       {/* ── Hero ── */}
-      <section className="bg-white px-4 pb-20 pt-12 md:pb-28 md:pt-20">
+      <section className="bg-white px-4 pb-16 pt-12 md:pb-24 md:pt-20">
         <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
           <div>
-            <h1 className="font-display mb-6 text-5xl font-medium leading-[1.1] tracking-tight text-black md:text-6xl lg:text-7xl">
-              Beauty that comes
+            <h1 className="font-display mb-6 text-5xl font-medium leading-[1.05] tracking-tight text-black md:text-6xl lg:text-7xl">
+              Beauty that
               <br />
-              <span className="italic text-sky-500">to you.</span>
+              comes <span className="italic text-sky-500">to you.</span>
             </h1>
             <p className="mb-8 max-w-md text-lg leading-relaxed text-gray-600">
               Licensed stylists arrive at your door with everything they need.
               Hair, nails, makeup, grooming — wherever you are in NYC.
             </p>
-            <div className="mb-8 flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 px-4 py-1.5 text-sm font-medium text-gray-700">
                 <svg className="h-4 w-4 text-sky-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
                 All 5 Boroughs
@@ -95,6 +104,152 @@ export default function Home() {
 
           <div>
             <LeadForm id="book-hero" variant="light" />
+          </div>
+        </div>
+      </section>
+
+      {/* ── Stats Bar ── */}
+      <section className="bg-gray-50 px-4 py-14">
+        <div className="mx-auto grid max-w-4xl grid-cols-2 gap-8 md:grid-cols-4">
+          {stats.map((stat) => (
+            <div key={stat.label} className="text-center">
+              <p className="font-display text-4xl font-semibold text-gray-900 md:text-5xl">
+                {stat.value}
+                {stat.label === "Average Rating" && (
+                  <span className="ml-1 text-amber-400">&#9733;</span>
+                )}
+              </p>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-gray-400">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Women's Services — Roman K style ── */}
+      <section className="px-4 py-20 md:py-28">
+        <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-2">
+          {/* Left: Editorial copy */}
+          <div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-sky-500">For Her</p>
+            <h2 className="font-display mb-6 text-4xl font-medium leading-[1.1] tracking-tight text-black md:text-5xl">
+              Women&apos;s Beauty
+              <br />
+              Services
+            </h2>
+            <p className="mb-4 leading-relaxed text-gray-600">
+              From blowouts before brunch to bridal glam sessions, our licensed
+              pros bring the full salon experience to your door — anywhere in NYC.
+            </p>
+            <p className="mb-8 leading-relaxed text-gray-600">
+              Ladies run the show here. Five categories, 30+ services, and every
+              single one delivered with care, skill, and a little extra magic.
+            </p>
+            <Link href="/services" className="btn-blue inline-block rounded-full px-8 py-3.5 text-sm font-semibold">
+              Explore All Services
+            </Link>
+          </div>
+
+          {/* Right: Service list with arrows */}
+          <div>
+            {womensCategories.map((cat, i) => (
+              <Link
+                key={cat.slug}
+                href={`/services#${cat.slug}`}
+                className={`group flex items-center justify-between px-6 py-5 transition-colors ${
+                  i === 0
+                    ? "rounded-lg bg-black text-white"
+                    : "border-b border-gray-200 text-black hover:bg-gray-50"
+                }`}
+              >
+                <div className="flex items-baseline gap-3">
+                  <span className={`font-display text-xl md:text-2xl ${i === 0 ? "text-white" : "text-black"}`}>
+                    {cat.title}
+                  </span>
+                  <span className={`text-sm ${i === 0 ? "text-gray-300" : "text-gray-400"}`}>
+                    {cat.services.length} services
+                  </span>
+                </div>
+                <Arrow className={i === 0 ? "text-white" : "text-gray-400 group-hover:text-black"} />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Men's Services — Dark, reversed layout ── */}
+      <section className="bg-slate-900 px-4 py-20 md:py-28">
+        <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-2">
+          {/* Left: Service list */}
+          <div>
+            {mensCategories.map((cat, i) => (
+              <Link
+                key={cat.slug}
+                href={`/services#${cat.slug}`}
+                className={`group flex items-center justify-between px-6 py-5 transition-colors ${
+                  i === 0
+                    ? "rounded-lg bg-white text-black"
+                    : "border-b border-white/10 text-white hover:bg-white/5"
+                }`}
+              >
+                <div className="flex items-baseline gap-3">
+                  <span className={`font-display text-xl md:text-2xl ${i === 0 ? "text-black" : "text-white"}`}>
+                    {cat.title}
+                  </span>
+                  <span className={`text-sm ${i === 0 ? "text-gray-500" : "text-gray-500"}`}>
+                    {cat.services.length} services
+                  </span>
+                </div>
+                <Arrow className={i === 0 ? "text-black" : "text-gray-500 group-hover:text-white"} />
+              </Link>
+            ))}
+          </div>
+
+          {/* Right: Copy */}
+          <div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-sky-400">For Him</p>
+            <h2 className="font-display mb-6 text-4xl font-medium leading-[1.1] tracking-tight text-white md:text-5xl">
+              Men&apos;s
+              <br />
+              Grooming
+            </h2>
+            <p className="mb-4 leading-relaxed text-gray-400">
+              We didn&apos;t forget about you, guys. Fresh fades, beard sculpting,
+              and full grooming packages — delivered to your couch, your office,
+              wherever you need it.
+            </p>
+            <p className="mb-8 leading-relaxed text-gray-400">
+              Same licensed pros. Same door-to-door convenience.
+              Just without the cucumber eye masks. Unless you want those too.
+            </p>
+            <Link href="/services" className="inline-block rounded-full border border-white/20 px-8 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white hover:text-black">
+              View Men&apos;s Services
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Featured Testimonial ── */}
+      <section className="px-4 py-20 md:py-28">
+        <div className="mx-auto grid max-w-6xl items-center gap-16 md:grid-cols-2">
+          {/* Left: Image placeholder */}
+          <div className="overflow-hidden rounded-2xl bg-gray-100">
+            <div className="flex aspect-[4/5] items-center justify-center text-gray-300">
+              <svg className="h-20 w-20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={0.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Right: Quote */}
+          <div>
+            <Stars className="mb-6" size="lg" />
+            <blockquote className="font-display mb-8 text-3xl font-medium leading-snug text-black md:text-4xl">
+              &ldquo;{testimonials[2].text}&rdquo;
+            </blockquote>
+            <div>
+              <p className="text-lg font-semibold text-black">{testimonials[2].name}</p>
+              <p className="text-gray-500">{testimonials[2].borough}</p>
+            </div>
           </div>
         </div>
       </section>
@@ -123,79 +278,45 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Pricing Teaser ── */}
+      {/* ── More Reviews ── */}
       <section className="bg-white px-4 py-20 md:py-28">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="mb-3 text-sm font-medium uppercase tracking-widest text-sky-500">Transparent Pricing</p>
-          <h2 className="font-display mb-4 text-3xl font-medium tracking-tight text-black md:text-4xl">
-            Premium services, starting at <span className="text-sky-500">$49</span>
-          </h2>
-          <p className="mb-8 text-lg text-gray-600">
-            No hidden fees. No travel surcharges. Just honest pricing for exceptional service at your door.
-          </p>
-          <Link href="/pricing" className="btn-primary inline-block rounded-full px-8 py-3.5 text-sm font-semibold">
-            View Full Pricing
-          </Link>
-        </div>
-      </section>
-
-      {/* ── Services: Women's (3/4) + Men's (1/4) ── */}
-      <section className="px-4 py-20 md:py-28">
         <div className="mx-auto max-w-6xl">
           <div className="mb-16 text-center">
-            <p className="mb-3 text-sm font-medium uppercase tracking-widest text-sky-500">Our Services</p>
+            <p className="mb-3 text-sm font-medium uppercase tracking-widest text-sky-500">Testimonials</p>
             <h2 className="font-display text-3xl font-medium tracking-tight text-black md:text-4xl">
-              Ladies lead the way
+              What our clients say
             </h2>
-            <p className="mx-auto mt-4 max-w-lg text-gray-600">
-              Our queens get top billing around here — but fellas, we&apos;ve absolutely got you covered too.
-            </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-4">
-            {/* Women's — 3/4 */}
-            <div className="rounded-2xl bg-sky-50 p-8 md:col-span-3 md:p-10">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-sky-500">For Her</p>
-              <h3 className="font-display mb-6 text-2xl font-medium text-black">Women&apos;s Services</h3>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {womensCategories.map((cat) => (
-                  <div key={cat.slug} className="card-hover rounded-xl bg-white p-5">
-                    <h4 className="font-semibold text-black">{cat.title}</h4>
-                    <p className="text-sm text-gray-500">{cat.services.length} services</p>
+          <div className="grid gap-6 md:grid-cols-3">
+            {testimonials.map((t) => (
+              <div key={t.name} className="card-hover rounded-xl border border-gray-200 p-6 md:p-8">
+                <Stars className="mb-4" />
+                <p className="mb-6 leading-relaxed text-gray-600">&ldquo;{t.text}&rdquo;</p>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-sm font-semibold text-gray-900">
+                    {t.name[0]}
                   </div>
-                ))}
+                  <div>
+                    <p className="text-sm font-semibold text-black">{t.name}</p>
+                    <p className="text-xs text-gray-500">{t.borough}</p>
+                  </div>
+                </div>
               </div>
-              <Link href="/services" className="btn-blue mt-8 inline-block rounded-full px-8 py-3 text-sm font-semibold">
-                Explore Women&apos;s Services
-              </Link>
-            </div>
+            ))}
+          </div>
 
-            {/* Men's — 1/4 */}
-            <div className="rounded-2xl bg-slate-900 p-8 md:col-span-1 md:p-10">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-sky-400">For Him</p>
-              <h3 className="font-display mb-6 text-2xl font-medium text-white">Men&apos;s</h3>
-              <div className="space-y-4">
-                {mensCategories.map((cat) => (
-                  <div key={cat.slug} className="rounded-xl bg-white/10 p-4">
-                    <h4 className="font-semibold text-white">{cat.title}</h4>
-                    <p className="text-sm text-gray-400">{cat.services.length} services</p>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-6 text-sm italic text-gray-400">
-                Don&apos;t worry guys — we didn&apos;t forget about you.
-              </p>
-              <Link href="/services" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-sky-400 hover:text-sky-300">
-                Explore men&apos;s services
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-              </Link>
-            </div>
+          <div className="mt-10 text-center">
+            <Link href="/reviews" className="inline-flex items-center gap-1.5 text-sm font-semibold text-black hover:text-gray-600">
+              Read all reviews
+              <Arrow className="!h-4 !w-4" />
+            </Link>
           </div>
         </div>
       </section>
 
       {/* ── FAQ ── */}
-      <section className="bg-white px-4 py-20 md:py-28">
+      <section className="bg-gray-50 px-4 py-20 md:py-28">
         <div className="mx-auto max-w-3xl">
           <div className="mb-12 text-center">
             <p className="mb-3 text-sm font-medium uppercase tracking-widest text-sky-500">FAQ</p>
@@ -218,43 +339,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Reviews ── */}
-      <section className="bg-gray-50 px-4 py-20 md:py-28">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-16 text-center">
-            <p className="mb-3 text-sm font-medium uppercase tracking-widest text-sky-500">Testimonials</p>
-            <h2 className="font-display text-3xl font-medium tracking-tight text-black md:text-4xl">
-              What our clients say
-            </h2>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            {testimonials.map((t) => (
-              <div key={t.name} className="card-hover rounded-xl border border-gray-200 bg-white p-6 md:p-8">
-                <Stars className="mb-4" />
-                <p className="mb-6 leading-relaxed text-gray-600">&ldquo;{t.text}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-100 text-sm font-semibold text-sky-600">
-                    {t.name[0]}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-black">{t.name}</p>
-                    <p className="text-xs text-gray-500">{t.borough}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-10 text-center">
-            <Link href="/reviews" className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-500 hover:text-sky-600">
-              Read all reviews
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* ── Locations ── */}
       <section className="bg-white px-4 py-20 md:py-28">
         <div className="mx-auto max-w-4xl">
@@ -263,9 +347,6 @@ export default function Home() {
             <h2 className="font-display text-3xl font-medium tracking-tight text-black md:text-4xl">
               All five boroughs
             </h2>
-            <p className="mx-auto mt-4 max-w-md text-gray-600">
-              No matter where you are in NYC, we come to you.
-            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
@@ -273,17 +354,17 @@ export default function Home() {
               <Link
                 key={slug}
                 href={`/locations/${slug}`}
-                className="card-hover rounded-xl border border-gray-200 bg-white p-6 text-center"
+                className="card-hover rounded-xl border border-gray-200 p-6 text-center"
               >
                 <p className="text-lg font-semibold text-black">{name}</p>
-                <p className="mt-1 text-xs text-sky-500">View neighborhoods &rarr;</p>
+                <p className="mt-1 text-xs text-gray-500">View areas &rarr;</p>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Thank You / CTA ── */}
+      {/* ── Bottom CTA ── */}
       <section className="bg-black px-4 py-20 text-white md:py-28">
         <div className="mx-auto max-w-xl text-center">
           <h2 className="font-display mb-4 text-3xl font-medium tracking-tight md:text-4xl">
