@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { womensCategories, mensCategories, stats, testimonials, boroughNames } from "@/lib/constants";
+import { womensCategories, mensCategories, testimonials, boroughNames } from "@/lib/constants";
 import { localBusinessSchema } from "@/lib/seo";
 import LeadForm from "@/components/LeadForm";
+import StatsCounter from "@/components/StatsCounter";
 
 const howItWorks = [
   {
@@ -77,16 +78,16 @@ export default function Home() {
       <section className="bg-white px-4 pb-16 pt-12 md:pb-24 md:pt-20">
         <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
           <div>
-            <h1 className="font-display mb-6 text-5xl font-medium leading-[1.05] tracking-tight text-black md:text-6xl lg:text-7xl">
+            <h1 className="hero-headline font-display mb-6 text-5xl font-medium leading-[1.05] tracking-tight text-black md:text-6xl lg:text-7xl">
               Beauty that
               <br />
               comes <span className="italic text-sky-500">to you.</span>
             </h1>
-            <p className="mb-8 max-w-md text-lg leading-relaxed text-gray-600">
+            <p className="hero-subtitle mb-8 max-w-md text-lg leading-relaxed text-gray-600">
               Licensed stylists arrive at your door with everything they need.
               Hair, nails, makeup, grooming — wherever you are in NYC.
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="hero-badges flex flex-wrap gap-3">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 px-4 py-1.5 text-sm font-medium text-gray-700">
                 <svg className="h-4 w-4 text-sky-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
                 All 5 Boroughs
@@ -102,34 +103,20 @@ export default function Home() {
             </div>
           </div>
 
-          <div>
+          <div className="hero-form">
             <LeadForm id="book-hero" variant="light" />
           </div>
         </div>
       </section>
 
       {/* ── Stats Bar ── */}
-      <section className="bg-gray-50 px-4 py-14">
-        <div className="mx-auto grid max-w-4xl grid-cols-2 gap-8 md:grid-cols-4">
-          {stats.map((stat) => (
-            <div key={stat.label} className="text-center">
-              <p className="font-display text-4xl font-semibold text-gray-900 md:text-5xl">
-                {stat.value}
-                {stat.label === "Average Rating" && (
-                  <span className="ml-1 text-amber-400">&#9733;</span>
-                )}
-              </p>
-              <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-gray-400">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <StatsCounter />
 
       {/* ── Women's Services — Roman K style ── */}
       <section className="px-4 py-20 md:py-28">
         <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-2">
           {/* Left: Editorial copy */}
-          <div>
+          <div data-reveal="left">
             <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-sky-500">For Her</p>
             <h2 className="font-display mb-6 text-4xl font-medium leading-[1.1] tracking-tight text-black md:text-5xl">
               Women&apos;s Beauty
@@ -149,8 +136,8 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Right: Service list with arrows */}
-          <div>
+          {/* Right: Service list with arrows — staggered */}
+          <div data-reveal data-stagger>
             {womensCategories.map((cat, i) => (
               <Link
                 key={cat.slug}
@@ -179,8 +166,8 @@ export default function Home() {
       {/* ── Men's Services — Dark, reversed layout ── */}
       <section className="bg-slate-900 px-4 py-20 md:py-28">
         <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-2">
-          {/* Left: Service list */}
-          <div>
+          {/* Left: Service list — staggered */}
+          <div data-reveal data-stagger>
             {mensCategories.map((cat, i) => (
               <Link
                 key={cat.slug}
@@ -205,7 +192,7 @@ export default function Home() {
           </div>
 
           {/* Right: Copy */}
-          <div>
+          <div data-reveal="right">
             <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-sky-400">For Him</p>
             <h2 className="font-display mb-6 text-4xl font-medium leading-[1.1] tracking-tight text-white md:text-5xl">
               Men&apos;s
@@ -232,7 +219,7 @@ export default function Home() {
       <section className="px-4 py-20 md:py-28">
         <div className="mx-auto grid max-w-6xl items-center gap-16 md:grid-cols-2">
           {/* Left: Image placeholder */}
-          <div className="overflow-hidden rounded-2xl bg-gray-100">
+          <div data-reveal="left" className="overflow-hidden rounded-2xl bg-gray-100">
             <div className="flex aspect-[4/5] items-center justify-center text-gray-300">
               <svg className="h-20 w-20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={0.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
@@ -241,7 +228,7 @@ export default function Home() {
           </div>
 
           {/* Right: Quote */}
-          <div>
+          <div data-reveal="right">
             <Stars className="mb-6" size="lg" />
             <blockquote className="font-display mb-8 text-3xl font-medium leading-snug text-black md:text-4xl">
               &ldquo;{testimonials[2].text}&rdquo;
@@ -257,14 +244,14 @@ export default function Home() {
       {/* ── How It Works ── */}
       <section className="bg-gray-50 px-4 py-20 md:py-28">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-16 text-center">
+          <div className="mb-16 text-center" data-reveal>
             <p className="mb-3 text-sm font-medium uppercase tracking-widest text-sky-500">How It Works</p>
             <h2 className="font-display text-3xl font-medium tracking-tight text-black md:text-4xl">
               Three simple steps
             </h2>
           </div>
 
-          <div className="grid gap-10 md:grid-cols-3">
+          <div className="grid gap-10 md:grid-cols-3" data-reveal data-stagger>
             {howItWorks.map((step) => (
               <div key={step.step} className="text-center">
                 <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border-2 border-black text-lg font-semibold text-black">
@@ -281,14 +268,14 @@ export default function Home() {
       {/* ── More Reviews ── */}
       <section className="bg-white px-4 py-20 md:py-28">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-16 text-center">
+          <div className="mb-16 text-center" data-reveal>
             <p className="mb-3 text-sm font-medium uppercase tracking-widest text-sky-500">Testimonials</p>
             <h2 className="font-display text-3xl font-medium tracking-tight text-black md:text-4xl">
               What our clients say
             </h2>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-3" data-reveal data-stagger>
             {testimonials.map((t) => (
               <div key={t.name} className="card-hover rounded-xl border border-gray-200 p-6 md:p-8">
                 <Stars className="mb-4" />
@@ -306,7 +293,7 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="mt-10 text-center">
+          <div className="mt-10 text-center" data-reveal>
             <Link href="/reviews" className="inline-flex items-center gap-1.5 text-sm font-semibold text-black hover:text-gray-600">
               Read all reviews
               <Arrow className="!h-4 !w-4" />
@@ -318,14 +305,14 @@ export default function Home() {
       {/* ── FAQ ── */}
       <section className="bg-gray-50 px-4 py-20 md:py-28">
         <div className="mx-auto max-w-3xl">
-          <div className="mb-12 text-center">
+          <div className="mb-12 text-center" data-reveal>
             <p className="mb-3 text-sm font-medium uppercase tracking-widest text-sky-500">FAQ</p>
             <h2 className="font-display text-3xl font-medium tracking-tight text-black md:text-4xl">
               Common questions
             </h2>
           </div>
 
-          <div className="divide-y divide-gray-200">
+          <div className="divide-y divide-gray-200" data-reveal data-stagger>
             {faqs.map((faq) => (
               <details key={faq.q} className="group py-5">
                 <summary className="flex cursor-pointer items-center justify-between text-left font-semibold text-black">
@@ -342,14 +329,14 @@ export default function Home() {
       {/* ── Locations ── */}
       <section className="bg-white px-4 py-20 md:py-28">
         <div className="mx-auto max-w-4xl">
-          <div className="mb-12 text-center">
+          <div className="mb-12 text-center" data-reveal>
             <p className="mb-3 text-sm font-medium uppercase tracking-widest text-sky-500">Coverage</p>
             <h2 className="font-display text-3xl font-medium tracking-tight text-black md:text-4xl">
               All five boroughs
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5" data-reveal data-stagger>
             {Object.entries(boroughNames).map(([slug, name]) => (
               <Link
                 key={slug}
@@ -366,7 +353,7 @@ export default function Home() {
 
       {/* ── Bottom CTA ── */}
       <section className="bg-black px-4 py-20 text-white md:py-28">
-        <div className="mx-auto max-w-xl text-center">
+        <div className="mx-auto max-w-xl text-center" data-reveal>
           <h2 className="font-display mb-4 text-3xl font-medium tracking-tight md:text-4xl">
             Ready to get <span className="italic text-sky-400">pampered?</span>
           </h2>

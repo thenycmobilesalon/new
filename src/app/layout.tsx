@@ -3,6 +3,8 @@ import { Geist } from "next/font/google";
 import { Playfair_Display } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageReveal from "@/components/PageReveal";
+import ScrollReveal from "@/components/ScrollReveal";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -40,6 +42,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${playfair.variable} antialiased`}>
+        <PageReveal />
+        <ScrollReveal />
         <Header />
         <main>{children}</main>
         <Footer />
