@@ -1,26 +1,121 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: #FAFAF8;
+  --color-foreground: #2D2D2D;
+  --color-sage: #7C8C6E;
+  --color-sage-light: #E8EDE4;
+  --color-sage-dark: #5A6B4E;
+  --color-charcoal: #2D2D2D;
+  --color-warm-gray: #F5F4F0;
+  --color-cream: #FAFAF8;
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-playfair);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Serif heading utility */
+.font-display {
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+}
+
+/* Accent text */
+.text-accent {
+  color: var(--color-sage);
+}
+
+/* Clean button styles */
+.btn-primary {
+  background-color: var(--color-charcoal);
+  color: white;
+  transition: all 0.2s ease;
+}
+.btn-primary:hover {
+  background-color: #1a1a1a;
+}
+
+.btn-outline {
+  border: 1.5px solid var(--color-charcoal);
+  color: var(--color-charcoal);
+  background: transparent;
+  transition: all 0.2s ease;
+}
+.btn-outline:hover {
+  background-color: var(--color-charcoal);
+  color: white;
+}
+
+.btn-sage {
+  background-color: var(--color-sage);
+  color: white;
+  transition: all 0.2s ease;
+}
+.btn-sage:hover {
+  background-color: var(--color-sage-dark);
+}
+
+/* Subtle card hover */
+.card-hover {
+  transition: all 0.25s ease;
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+/* Section divider */
+.section-divider {
+  border-top: 1px solid #E8E8E4;
+}
+
+/* Fade in animation */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in-up 0.6s ease-out both;
+}
+
+/* For backward compatibility with inner pages still using old classes */
+.text-gradient {
+  color: var(--color-sage);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid #E8E8E4;
+}
+
+.glass-dark {
+  background: #1a1a1a;
+}
+
+.btn-gradient {
+  background-color: var(--color-charcoal);
+  transition: all 0.2s ease;
+}
+.btn-gradient:hover {
+  background-color: #1a1a1a;
+}
+
+.blob {
+  display: none;
+}
+
+.gradient-border {
+  border: 1px solid #E8E8E4;
+  border-radius: 1rem;
 }
