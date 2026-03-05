@@ -11,6 +11,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
     { path: "", priority: 1.0 },
     { path: "/services", priority: 0.9 },
+    { path: "/services/womens", priority: 0.9 },
+    { path: "/services/mens", priority: 0.9 },
     { path: "/events", priority: 0.9 },
     { path: "/classes", priority: 0.9 },
     { path: "/pricing", priority: 0.8 },
@@ -66,6 +68,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       entries.push({ url: `${SITE_URL}/classes/${cls.slug}/${borough}`, lastModified: now, changeFrequency: "monthly", priority: 0.7 });
       for (const hood of neighborhoods[borough]) {
         entries.push({ url: `${SITE_URL}/classes/${cls.slug}/${borough}/${hood.slug}`, lastModified: now, changeFrequency: "monthly", priority: 0.6 });
+      }
+    }
+  }
+
+  // Job pages: /join/[slug], /join/[slug]/[borough], /join/[slug]/[borough]/[neighborhood]
+  for (const svc of allServices) {
+    entries.push({ url: `${SITE_URL}/join/${svc.slug}`, lastModified: now, changeFrequency: "monthly", priority: 0.5 });
+    for (const borough of boroughs) {
+      entries.push({ url: `${SITE_URL}/join/${svc.slug}/${borough}`, lastModified: now, changeFrequency: "monthly", priority: 0.4 });
+      for (const hood of neighborhoods[borough]) {
+        entries.push({ url: `${SITE_URL}/join/${svc.slug}/${borough}/${hood.slug}`, lastModified: now, changeFrequency: "monthly", priority: 0.3 });
       }
     }
   }

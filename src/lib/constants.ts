@@ -264,24 +264,24 @@ export const testimonials = [
 ];
 
 export const stats = [
-  { value: "5,000+", label: "Happy Clients" },
+  { value: "5k", label: "Happy New Yorkers" },
   { value: "4.9", label: "Average Rating" },
   { value: "5", label: "Boroughs Covered" },
-  { value: "$49", label: "Starting Price" },
+  { value: "$99/hr", label: "Starting Price" },
+  { value: "10k+", label: "Hours Saved" },
 ];
 
 // ─── Navigation ─────────────────────────────────────────────────────
 
 export const mainNav = [
-  { label: "Home", href: "/" },
   { label: "How It Works", href: "/how-it-works" },
   { label: "Services", href: "/services" },
   { label: "Events", href: "/events" },
   { label: "Classes", href: "/classes" },
-  { label: "Pricing", href: "/pricing" },
 ];
 
 export const moreNav = [
+  { label: "Pricing", href: "/pricing" },
   { label: "About", href: "/about" },
   { label: "Locations", href: "/locations" },
   { label: "Reviews", href: "/reviews" },
@@ -348,7 +348,6 @@ export const neighborhoods: Record<string, Neighborhood[]> = {
     { name: "Brooklyn Heights", slug: "brooklyn-heights" },
     { name: "Crown Heights", slug: "crown-heights" },
     { name: "Bed-Stuy", slug: "bed-stuy" },
-    { name: "Bedford-Stuyvesant", slug: "bedford-stuyvesant" },
     { name: "Cobble Hill", slug: "cobble-hill" },
     { name: "Carroll Gardens", slug: "carroll-gardens" },
     { name: "Greenpoint", slug: "greenpoint" },

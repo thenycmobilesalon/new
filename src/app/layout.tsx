@@ -17,6 +17,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://thenycmobilesalon.com"),
   title: {
     default: "The NYC Mobile Salon — Beauty Services Delivered to Your Door",
     template: "%s | The NYC Mobile Salon",
@@ -29,6 +30,12 @@ export const metadata: Metadata = {
       "Licensed beauty professionals come to you anywhere in NYC. Hair, nails, makeup, grooming & more across all 5 boroughs.",
     type: "website",
     url: "https://thenycmobilesalon.com",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "The NYC Mobile Salon — Mobile Beauty Services in NYC" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The NYC Mobile Salon — Beauty Services Delivered to Your Door",
+    description: "Licensed beauty professionals come to you anywhere in NYC. Hair, nails, makeup, grooming & more across all 5 boroughs.",
   },
 };
 

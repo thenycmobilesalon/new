@@ -125,13 +125,37 @@ export function localBusinessSchema(overrides?: { name?: string; url?: string; d
     description: overrides?.description ?? "Licensed mobile beauty professionals serving all 5 NYC boroughs. Hair, nails, makeup, grooming, and more — delivered to your door.",
     email: "hey@thenycmobilesalon.com",
     areaServed: overrides?.areaServed ?? "New York City",
+    telephone: "+12122029075",
     address: {
       "@type": "PostalAddress",
+      streetAddress: "150 W 47th St",
       addressLocality: "New York",
       addressRegion: "NY",
+      postalCode: "10036",
       addressCountry: "US",
     },
-    priceRange: "$49 - $500+",
+    priceRange: "$99 - $500+",
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 40.759,
+      longitude: -73.9845,
+    },
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ],
+      opens: "08:00",
+      closes: "21:00",
+    },
+    sameAs: ["https://instagram.com/thenycmobilesalon"],
+    // aggregateRating values mirror stats[] in constants.ts ("4.9" Average Rating, "5k" Happy New Yorkers)
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: "4.9",
@@ -157,6 +181,18 @@ export function serviceSchema(serviceName: string, description: string, areaServ
       "@type": "ServiceChannel",
       serviceUrl: `${SITE_URL}/book`,
       serviceType: "Mobile Service",
+    },
+    offers: {
+      "@type": "Offer",
+      price: "99",
+      priceCurrency: "USD",
+      priceSpecification: {
+        "@type": "UnitPriceSpecification",
+        price: "99",
+        priceCurrency: "USD",
+        unitText: "HOUR",
+      },
+      availability: "https://schema.org/InStock",
     },
   };
 }
@@ -186,6 +222,66 @@ export function breadcrumbSchema(items: { name: string; url: string }[]) {
       name: item.name,
       item: `${SITE_URL}${item.url}`,
     })),
+  };
+}
+
+export function eventSchema(params: { name: string; description: string; url: string; areaServed?: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: params.name,
+    description: params.description,
+    url: params.url,
+    location: {
+      "@type": "Place",
+      name: BUSINESS_NAME,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "150 W 47th St",
+        addressLocality: "New York",
+        addressRegion: "NY",
+        postalCode: "10036",
+        addressCountry: "US",
+      },
+    },
+    organizer: {
+      "@type": "Organization",
+      name: BUSINESS_NAME,
+      url: SITE_URL,
+    },
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    offers: {
+      "@type": "Offer",
+      price: "99",
+      priceCurrency: "USD",
+      priceSpecification: {
+        "@type": "UnitPriceSpecification",
+        price: "99",
+        priceCurrency: "USD",
+        unitText: "HOUR",
+      },
+      availability: "https://schema.org/InStock",
+    },
+  };
+}
+
+export function courseSchema(params: { name: string; description: string; url: string; duration: string; groupSize: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: params.name,
+    description: params.description,
+    url: params.url,
+    provider: {
+      "@type": "LocalBusiness",
+      name: BUSINESS_NAME,
+      url: SITE_URL,
+    },
+    hasCourseInstance: {
+      "@type": "CourseInstance",
+      courseMode: "Onsite",
+      duration: params.duration,
+    },
   };
 }
 
