@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getResend } from "@/lib/resend";
+import { supabase } from "@/lib/supabase";
 
 export async function POST(request: Request) {
   try {
@@ -31,23 +32,70 @@ export async function POST(request: Request) {
       return NextResponse.json({ errors }, { status: 400 });
     }
 
+    // Upload files to Supabase Storage
+    let resumeUrl: string | null = null;
+    let videoUrl: string | null = null;
+    const timestamp = Date.now();
+
+    if (resume && resume.size > 0) {
+      const ext = resume.name.split(".").pop();
+      const path = `resumes/${timestamp}-${name.replace(/\s+/g, "-").toLowerCase()}.${ext}`;
+      const buffer = Buffer.from(await resume.arrayBuffer());
+      const { data, error } = await supabase.storage.from("uploads").upload(path, buffer, {
+        contentType: resume.type,
+      });
+      if (!error && data) {
+        const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(data.path);
+        resumeUrl = urlData.publicUrl;
+      }
+    }
+
+    if (video && video.size > 0) {
+      const ext = video.name.split(".").pop();
+      const path = `videos/${timestamp}-${name.replace(/\s+/g, "-").toLowerCase()}.${ext}`;
+      const buffer = Buffer.from(await video.arrayBuffer());
+      const { data, error } = await supabase.storage.from("uploads").upload(path, buffer, {
+        contentType: video.type,
+      });
+      if (!error && data) {
+        const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(data.path);
+        videoUrl = urlData.publicUrl;
+      }
+    }
+
+    // Save to Supabase
+    const { error: dbError } = await supabase.from("applications").insert({
+      name,
+      email,
+      phone,
+      specialty,
+      borough,
+      instagram: instagram || null,
+      experience: experience || null,
+      availability: availability || null,
+      message: message || null,
+      resume_url: resumeUrl,
+      video_url: videoUrl,
+    });
+
+    if (dbError) {
+      console.error("Supabase insert error:", dbError);
+    }
+
     const businessEmail = process.env.BUSINESS_EMAIL;
     if (!businessEmail) {
       console.error("BUSINESS_EMAIL not set");
       return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
     }
 
-    // Build attachments from uploaded files
+    // Build attachments from uploaded files (for email)
     const attachments: Array<{ filename: string; content: Buffer }> = [];
-
     if (resume && resume.size > 0) {
-      const buffer = Buffer.from(await resume.arrayBuffer());
-      attachments.push({ filename: resume.name, content: buffer });
+      attachments.push({ filename: resume.name, content: Buffer.from(await resume.arrayBuffer()) });
     }
-
-    if (video && video.size > 0) {
-      const buffer = Buffer.from(await video.arrayBuffer());
-      attachments.push({ filename: video.name, content: buffer });
+    if (video && video.size > 0 && video.size < 10_000_000) {
+      // Only attach video to email if under 10MB
+      attachments.push({ filename: video.name, content: Buffer.from(await video.arrayBuffer()) });
     }
 
     // Send notification to business
@@ -68,11 +116,11 @@ export async function POST(request: Request) {
           <tr><td style="padding:8px;font-weight:bold">Experience</td><td style="padding:8px">${experience || "Not specified"}</td></tr>
           <tr style="background:#f5f3ff"><td style="padding:8px;font-weight:bold">Availability</td><td style="padding:8px">${availability || "Not specified"}</td></tr>
           ${message ? `<tr><td style="padding:8px;font-weight:bold">Message</td><td style="padding:8px">${message}</td></tr>` : ""}
-          <tr style="background:#f5f3ff"><td style="padding:8px;font-weight:bold">Resume</td><td style="padding:8px">${resume && resume.size > 0 ? "Attached" : "Not uploaded"}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold">Video Selfie</td><td style="padding:8px">${video && video.size > 0 ? "Attached" : "Not uploaded"}</td></tr>
+          <tr style="background:#f5f3ff"><td style="padding:8px;font-weight:bold">Resume</td><td style="padding:8px">${resumeUrl ? `<a href="${resumeUrl}">Download</a>` : "Not uploaded"}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold">Video Selfie</td><td style="padding:8px">${videoUrl ? `<a href="${videoUrl}">Watch</a>` : "Not uploaded"}</td></tr>
         </table>
       `,
-      attachments,
+      attachments: attachments.length > 0 ? attachments : undefined,
     });
 
     // Send confirmation to applicant

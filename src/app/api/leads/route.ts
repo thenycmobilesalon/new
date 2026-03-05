@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getResend } from "@/lib/resend";
+import { supabase } from "@/lib/supabase";
 import { validateLeadForm, type LeadFormData } from "@/lib/validation";
 
 export async function POST(request: Request) {
@@ -9,6 +10,21 @@ export async function POST(request: Request) {
 
     if (Object.keys(errors).length > 0) {
       return NextResponse.json({ errors }, { status: 400 });
+    }
+
+    // Save to Supabase
+    const { error: dbError } = await supabase.from("leads").insert({
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      service: data.service,
+      borough: data.borough,
+      preferred_date: data.date,
+      message: data.message || null,
+    });
+
+    if (dbError) {
+      console.error("Supabase insert error:", dbError);
     }
 
     const businessEmail = process.env.BUSINESS_EMAIL;
