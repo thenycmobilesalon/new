@@ -41,7 +41,7 @@ const boroughHighlightNeighborhoods: Record<string, string[]> = {
 /* ── static params ───────────────────────────────────────────────── */
 
 export function generateStaticParams() {
-  return getServiceBoroughParams();
+  return [];
 }
 
 /* ── metadata ────────────────────────────────────────────────────── */

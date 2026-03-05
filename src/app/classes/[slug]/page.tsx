@@ -5,8 +5,10 @@ import { allClasses, classCategories, boroughNames, neighborhoods } from "@/lib/
 import { getClassBySlug, courseSchema, faqSchema, breadcrumbSchema } from "@/lib/seo";
 import { classContent } from "@/lib/class-content";
 
+export const revalidate = 86400;
+
 export function generateStaticParams() {
-  return allClasses.map((c) => ({ slug: c.slug }));
+  return [];
 }
 
 type Props = { params: Promise<{ slug: string }> };

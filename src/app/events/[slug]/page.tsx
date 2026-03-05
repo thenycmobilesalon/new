@@ -5,8 +5,10 @@ import { allEvents, eventCategories, boroughNames, neighborhoods } from "@/lib/c
 import { getEventBySlug, eventSchema, faqSchema, breadcrumbSchema } from "@/lib/seo";
 import { eventContent } from "@/lib/event-content";
 
+export const revalidate = 86400;
+
 export function generateStaticParams() {
-  return allEvents.map((e) => ({ slug: e.slug }));
+  return [];
 }
 
 type Props = { params: Promise<{ slug: string }> };

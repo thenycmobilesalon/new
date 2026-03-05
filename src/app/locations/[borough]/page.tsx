@@ -10,8 +10,10 @@ import {
   faqSchema,
 } from "@/lib/seo";
 
+export const revalidate = 86400;
+
 export function generateStaticParams() {
-  return getAllBoroughParams();
+  return [];
 }
 
 type Props = { params: Promise<{ borough: string }> };

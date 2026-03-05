@@ -13,8 +13,10 @@ function Sparkle({ className = "h-5 w-5" }: { className?: string }) {
   );
 }
 
+export const revalidate = 86400;
+
 export function generateStaticParams() {
-  return getAllNeighborhoodParams();
+  return [];
 }
 
 type Props = { params: Promise<{ borough: string; neighborhood: string }> };

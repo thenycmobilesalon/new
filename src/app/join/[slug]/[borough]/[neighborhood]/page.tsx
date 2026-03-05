@@ -17,7 +17,7 @@ type Props = { params: Promise<{ slug: string; borough: string; neighborhood: st
 /* ── static params ───────────────────────────────────────────────── */
 
 export function generateStaticParams() {
-  return getServiceNeighborhoodParams();
+  return [];
 }
 
 /* ── metadata ────────────────────────────────────────────────────── */

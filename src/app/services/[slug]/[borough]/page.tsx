@@ -5,8 +5,10 @@ import { neighborhoods, womensCategories, mensCategories, allServices } from "@/
 import { getServiceBySlug, getBoroughName, getServiceBoroughParams, serviceSchema, breadcrumbSchema, faqSchema } from "@/lib/seo";
 import { serviceContent } from "@/lib/service-content";
 
+export const revalidate = 86400;
+
 export function generateStaticParams() {
-  return getServiceBoroughParams();
+  return [];
 }
 
 type Props = { params: Promise<{ slug: string; borough: string }> };

@@ -17,8 +17,10 @@ function isWomensService(slug: string) {
 
 /* ── static params ────────────────────────────────────────────────── */
 
+export const revalidate = 86400;
+
 export function generateStaticParams() {
-  return allServices.map((s) => ({ slug: s.slug }));
+  return [];
 }
 
 /* ── metadata ─────────────────────────────────────────────────────── */

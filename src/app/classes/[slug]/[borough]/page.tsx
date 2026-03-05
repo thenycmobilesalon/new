@@ -5,8 +5,10 @@ import { neighborhoods, allClasses } from "@/lib/constants";
 import { getClassBySlug, getBoroughName, getClassBoroughParams, serviceSchema, breadcrumbSchema, faqSchema } from "@/lib/seo";
 import { classContent } from "@/lib/class-content";
 
+export const revalidate = 86400;
+
 export function generateStaticParams() {
-  return getClassBoroughParams();
+  return [];
 }
 
 type Props = { params: Promise<{ slug: string; borough: string }> };

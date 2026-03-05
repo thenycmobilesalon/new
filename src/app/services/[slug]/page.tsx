@@ -6,8 +6,10 @@ import { getServiceBySlug, serviceSchema, breadcrumbSchema, faqSchema } from "@/
 import { serviceContent } from "@/lib/service-content";
 import LeadForm from "@/components/LeadForm";
 
+export const revalidate = 86400;
+
 export function generateStaticParams() {
-  return allServices.map((s) => ({ slug: s.slug }));
+  return [];
 }
 
 type Props = { params: Promise<{ slug: string }> };
