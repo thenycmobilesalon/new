@@ -186,24 +186,24 @@ export default function Header() {
         </div>
 
         {/* Links */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "16px", padding: "0 24px", overflowY: "auto" }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", gap: "16px", padding: "24px", overflowY: "auto" }}>
           {simpleLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="text-lg font-semibold uppercase tracking-wider text-white">{link.label}</Link>
+            <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="block py-1 text-lg font-semibold uppercase tracking-wider text-white">{link.label}</Link>
           ))}
-          <Link href="/services" className="text-lg font-semibold uppercase tracking-wider text-white">Services</Link>
+          <Link href="/services" onClick={() => setMenuOpen(false)} className="block py-1 text-lg font-semibold uppercase tracking-wider text-white">Services</Link>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
             <Link href="/services/womens" className="text-sm text-white/70 hover:text-white">Women&apos;s</Link>
             <Link href="/services/mens" className="text-sm text-white/70 hover:text-white">Men&apos;s</Link>
           </div>
-          <Link href="/events" className="text-lg font-semibold uppercase tracking-wider text-white">Events</Link>
+          <Link href="/events" onClick={() => setMenuOpen(false)} className="block py-1 text-lg font-semibold uppercase tracking-wider text-white">Events</Link>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
             {eventCategories.map((cat) => (
               <Link key={cat.slug} href="/events" className="text-sm text-white/70 hover:text-white">{cat.title}</Link>
             ))}
           </div>
-          <Link href="/classes" className="text-lg font-semibold uppercase tracking-wider text-white">Classes</Link>
+          <Link href="/classes" onClick={() => setMenuOpen(false)} className="block py-1 text-lg font-semibold uppercase tracking-wider text-white">Classes</Link>
           {moreNav.map((link) => (
-            <Link key={link.href} href={link.href} className="text-lg font-semibold uppercase tracking-wider text-white">{link.label}</Link>
+            <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="block py-1 text-lg font-semibold uppercase tracking-wider text-white">{link.label}</Link>
           ))}
 
           <Link href="/book" className="mt-6 rounded-full bg-white px-10 py-3 text-sm font-bold uppercase tracking-wider" style={{ color: "#D4749B" }}>Book Now</Link>
