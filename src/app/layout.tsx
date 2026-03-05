@@ -30,7 +30,7 @@ export const metadata: Metadata = {
       "Licensed beauty professionals come to you anywhere in NYC. Hair, nails, makeup, grooming & more across all 5 boroughs.",
     type: "website",
     url: "https://thenycmobilesalon.com",
-    images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "The NYC Mobile Salon — Mobile Beauty Services in NYC" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "The NYC Mobile Salon — Mobile Beauty Services in NYC" }],
   },
   twitter: {
     card: "summary_large_image",
