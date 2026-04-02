@@ -33,6 +33,26 @@ function getSupabase() {
   return createClient(url, key);
 }
 
+const mimeTypes: Record<string, string> = {
+  pdf: "application/pdf",
+  doc: "application/msword",
+  docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  mp4: "video/mp4",
+  mov: "video/quicktime",
+  avi: "video/x-msvideo",
+  webm: "video/webm",
+  mkv: "video/x-matroska",
+  m4v: "video/x-m4v",
+  "3gp": "video/3gpp",
+};
+
+function safeBlob(file: File): Blob {
+  if (file.type) return file;
+  const ext = file.name.split(".").pop()?.toLowerCase() || "";
+  const type = mimeTypes[ext] || "application/octet-stream";
+  return new Blob([file], { type });
+}
+
 export default function ApplicationForm() {
   const [state, setState] = useState<FormState>(initialState);
   const [isPending, setIsPending] = useState(false);
@@ -82,7 +102,7 @@ export default function ApplicationForm() {
       setUploadStatus("Uploading resume...");
       const ext = resumeFile.name.split(".").pop();
       const path = `resumes/${timestamp}-${safeName}.${ext}`;
-      const { data, error } = await supabase.storage.from("uploads").upload(path, resumeFile, {
+      const { data, error } = await supabase.storage.from("uploads").upload(path, safeBlob(resumeFile), {
         upsert: true,
       });
       if (error) {
@@ -102,7 +122,7 @@ export default function ApplicationForm() {
       setUploadStatus("Uploading video selfie...");
       const ext = videoFile.name.split(".").pop();
       const path = `videos/${timestamp}-${safeName}.${ext}`;
-      const { data, error } = await supabase.storage.from("uploads").upload(path, videoFile, {
+      const { data, error } = await supabase.storage.from("uploads").upload(path, safeBlob(videoFile), {
         upsert: true,
       });
       if (error) {
