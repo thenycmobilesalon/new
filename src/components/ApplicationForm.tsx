@@ -2,7 +2,6 @@
 
 import { useState, useRef } from "react";
 import { boroughs } from "@/lib/constants";
-import { createClient } from "@supabase/supabase-js";
 
 type FormState = {
   success: boolean;
@@ -26,54 +25,20 @@ const specialties = [
   "Multiple Specialties",
 ];
 
-function getSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-  if (!url || !key) return null;
-  return createClient(url, key);
-}
-
-const mimeTypes: Record<string, string> = {
-  pdf: "application/pdf",
-  doc: "application/msword",
-  docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  mp4: "video/mp4",
-  mov: "video/quicktime",
-  avi: "video/x-msvideo",
-  webm: "video/webm",
-  mkv: "video/x-matroska",
-  m4v: "video/x-m4v",
-  "3gp": "video/3gpp",
-};
-
-function safeBlob(file: File): Blob {
-  if (file.type) return file;
-  const ext = file.name.split(".").pop()?.toLowerCase() || "";
-  const type = mimeTypes[ext] || "application/octet-stream";
-  return new Blob([file], { type });
-}
-
 export default function ApplicationForm() {
   const [state, setState] = useState<FormState>(initialState);
   const [isPending, setIsPending] = useState(false);
-  const [uploadStatus, setUploadStatus] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [resumeName, setResumeName] = useState("");
-  const [videoName, setVideoName] = useState("");
-  const resumeRef = useRef<HTMLInputElement>(null);
-  const videoRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsPending(true);
     setState(initialState);
-    setUploadStatus("");
 
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    // Client-side validation
     const errors: Record<string, string> = {};
     if (!formData.get("name")?.toString().trim()) errors.name = "Name is required";
     if (!formData.get("email")?.toString().trim()) errors.email = "Email is required";
@@ -81,6 +46,12 @@ export default function ApplicationForm() {
     if (!formData.get("phone")?.toString().trim()) errors.phone = "Phone is required";
     if (!formData.get("specialty")) errors.specialty = "Please select a specialty";
     if (!formData.get("borough")) errors.borough = "Please select a borough";
+    if (!formData.get("ref1_name")?.toString().trim()) errors.ref1_name = "Reference 1 name is required";
+    if (!formData.get("ref1_phone")?.toString().trim()) errors.ref1_phone = "Reference 1 phone is required";
+    if (!formData.get("ref2_name")?.toString().trim()) errors.ref2_name = "Reference 2 name is required";
+    if (!formData.get("ref2_phone")?.toString().trim()) errors.ref2_phone = "Reference 2 phone is required";
+    if (!formData.get("ref3_name")?.toString().trim()) errors.ref3_name = "Reference 3 name is required";
+    if (!formData.get("ref3_phone")?.toString().trim()) errors.ref3_phone = "Reference 3 phone is required";
 
     if (Object.keys(errors).length > 0) {
       setState({ success: false, errors, serverError: "" });
@@ -88,64 +59,12 @@ export default function ApplicationForm() {
       return;
     }
 
-    const name = formData.get("name")!.toString().trim();
-    const timestamp = Date.now();
-    const safeName = name.replace(/\s+/g, "-").toLowerCase();
-
-    // Upload files directly to Supabase Storage from the client
-    let resumeUrl: string | null = null;
-    let videoUrl: string | null = null;
-    const supabase = getSupabase();
-
-    const resumeFile = formData.get("resume") as File | null;
-    if (supabase && resumeFile && resumeFile.size > 0) {
-      setUploadStatus("Uploading resume...");
-      const ext = resumeFile.name.split(".").pop();
-      const path = `resumes/${timestamp}-${safeName}.${ext}`;
-      const { data, error } = await supabase.storage.from("uploads").upload(path, safeBlob(resumeFile), {
-        upsert: true,
-      });
-      if (error) {
-        console.error("Resume upload error:", error);
-        setState({ success: false, errors: {}, serverError: `Resume upload failed: ${error.message}` });
-        setIsPending(false);
-        return;
-      }
-      if (data) {
-        const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(data.path);
-        resumeUrl = urlData.publicUrl;
-      }
-    }
-
-    const videoFile = formData.get("video") as File | null;
-    if (supabase && videoFile && videoFile.size > 0) {
-      setUploadStatus("Uploading video selfie...");
-      const ext = videoFile.name.split(".").pop();
-      const path = `videos/${timestamp}-${safeName}.${ext}`;
-      const { data, error } = await supabase.storage.from("uploads").upload(path, safeBlob(videoFile), {
-        upsert: true,
-      });
-      if (error) {
-        console.error("Video upload error:", error);
-        setState({ success: false, errors: {}, serverError: `Video upload failed: ${error.message}` });
-        setIsPending(false);
-        return;
-      }
-      if (data) {
-        const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(data.path);
-        videoUrl = urlData.publicUrl;
-      }
-    }
-
-    setUploadStatus("Submitting application...");
-
-    // Send only text fields + file URLs to the API (no large files)
     try {
       const res = await fetch("/api/apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name,
+          name: formData.get("name")!.toString().trim(),
           email: formData.get("email")!.toString().trim(),
           phone: formData.get("phone")!.toString().trim(),
           specialty: formData.get("specialty")!.toString(),
@@ -154,8 +73,11 @@ export default function ApplicationForm() {
           experience: formData.get("experience")?.toString() || "",
           availability: formData.get("availability")?.toString() || "",
           message: formData.get("message")?.toString().trim() || "",
-          resumeUrl,
-          videoUrl,
+          references: [
+            { name: formData.get("ref1_name")!.toString().trim(), phone: formData.get("ref1_phone")!.toString().trim() },
+            { name: formData.get("ref2_name")!.toString().trim(), phone: formData.get("ref2_phone")!.toString().trim() },
+            { name: formData.get("ref3_name")!.toString().trim(), phone: formData.get("ref3_phone")!.toString().trim() },
+          ],
         }),
       });
 
@@ -175,7 +97,6 @@ export default function ApplicationForm() {
     }
 
     setIsPending(false);
-    setUploadStatus("");
   }
 
   if (submitted) {
@@ -198,7 +119,7 @@ export default function ApplicationForm() {
   const labelClass = "mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500";
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="rounded-2xl border border-purple-100 bg-white p-6 sm:p-8">
+    <form ref={formRef} onSubmit={handleSubmit} className="rounded-2xl border border-purple-100 bg-white p-5 sm:p-8">
       <h3 className="mb-1 text-center font-display text-xl font-bold text-slate-800">
         Apply to Join the Team
       </h3>
@@ -212,7 +133,7 @@ export default function ApplicationForm() {
         </p>
       )}
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {/* Name */}
         <div>
           <label htmlFor="app-name" className={labelClass}>Full Name</label>
@@ -221,7 +142,7 @@ export default function ApplicationForm() {
         </div>
 
         {/* Email + Phone */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label htmlFor="app-email" className={labelClass}>Email</label>
             <input id="app-email" name="email" type="email" placeholder="you@email.com" className={inputClass} />
@@ -235,7 +156,7 @@ export default function ApplicationForm() {
         </div>
 
         {/* Specialty + Borough */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label htmlFor="app-specialty" className={labelClass}>Specialty</label>
             <select id="app-specialty" name="specialty" defaultValue="" className={inputClass}>
@@ -247,9 +168,9 @@ export default function ApplicationForm() {
             {state.errors.specialty && <p className="mt-1 text-xs text-red-500">{state.errors.specialty}</p>}
           </div>
           <div>
-            <label htmlFor="app-borough" className={labelClass}>Preferred Borough</label>
+            <label htmlFor="app-borough" className={labelClass}>Preferred Area</label>
             <select id="app-borough" name="borough" defaultValue="" className={inputClass}>
-              <option value="" disabled>Your borough</option>
+              <option value="" disabled>Select area</option>
               {boroughs.map((b) => (
                 <option key={b} value={b}>{b}</option>
               ))}
@@ -265,55 +186,6 @@ export default function ApplicationForm() {
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">@</span>
             <input id="app-instagram" name="instagram" type="text" placeholder="yourusername" className={`${inputClass} pl-7`} />
           </div>
-        </div>
-
-        {/* Resume Upload */}
-        <div>
-          <label className={labelClass}>Resume <span className="text-gray-300">(optional)</span></label>
-          <input
-            ref={resumeRef}
-            type="file"
-            name="resume"
-            accept=".pdf,.doc,.docx"
-            className="hidden"
-            onChange={(e) => setResumeName(e.target.files?.[0]?.name || "")}
-          />
-          <button
-            type="button"
-            onClick={() => resumeRef.current?.click()}
-            className="flex w-full items-center gap-2 rounded-lg border border-dashed border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500 transition hover:border-purple-300 hover:bg-purple-50"
-          >
-            <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            {resumeName || "Upload resume (PDF, DOC)"}
-          </button>
-        </div>
-
-        {/* Video Selfie Upload */}
-        <div>
-          <label className={labelClass}>Video Selfie <span className="text-purple-500">(min 30 seconds)</span></label>
-          <input
-            ref={videoRef}
-            type="file"
-            name="video"
-            accept="video/*"
-            className="hidden"
-            onChange={(e) => {
-              setVideoName(e.target.files?.[0]?.name || "");
-            }}
-          />
-          <button
-            type="button"
-            onClick={() => videoRef.current?.click()}
-            className="flex w-full items-center gap-2 rounded-lg border border-dashed border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500 transition hover:border-purple-300 hover:bg-purple-50"
-          >
-            <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
-            {videoName || "Upload a quick intro video"}
-          </button>
-          <p className="mt-1 text-xs text-gray-400">Tell us about yourself, your experience, and why you want to join. Min 30 seconds.</p>
         </div>
 
         {/* Experience */}
@@ -341,6 +213,35 @@ export default function ApplicationForm() {
           </select>
         </div>
 
+        {/* References */}
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <p className={`${labelClass} mb-3`}>Professional References (3 Required)</p>
+          <div className="space-y-3">
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <div>
+                  <input
+                    name={`ref${n}_name`}
+                    type="text"
+                    placeholder={`Reference ${n} — Full Name`}
+                    className={inputClass}
+                  />
+                  {state.errors[`ref${n}_name`] && <p className="mt-1 text-xs text-red-500">{state.errors[`ref${n}_name`]}</p>}
+                </div>
+                <div>
+                  <input
+                    name={`ref${n}_phone`}
+                    type="tel"
+                    placeholder="Phone number"
+                    className={inputClass}
+                  />
+                  {state.errors[`ref${n}_phone`] && <p className="mt-1 text-xs text-red-500">{state.errors[`ref${n}_phone`]}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Message */}
         <div>
           <label htmlFor="app-message" className={labelClass}>
@@ -349,7 +250,7 @@ export default function ApplicationForm() {
           <textarea
             id="app-message"
             name="message"
-            rows={2}
+            rows={3}
             placeholder="Tell us about your specialties, clients you love working with, etc."
             className={inputClass}
           />
@@ -359,9 +260,9 @@ export default function ApplicationForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="mt-5 w-full rounded-full bg-purple-600 py-3.5 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-purple-700 disabled:opacity-60"
+        className="mt-6 w-full rounded-full bg-purple-600 py-4 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-purple-700 disabled:opacity-60"
       >
-        {isPending ? (uploadStatus || "Submitting...") : "Submit Application"}
+        {isPending ? "Submitting..." : "Submit Application"}
       </button>
 
       <p className="mt-4 text-center text-xs text-gray-400">

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getResend } from "@/lib/resend";
-import { supabase } from "@/lib/supabase";
 
 export async function POST(request: Request) {
   try {
@@ -16,8 +15,7 @@ export async function POST(request: Request) {
       experience = "",
       availability = "",
       message = "",
-      resumeUrl = null,
-      videoUrl = null,
+      references = [],
     } = body;
 
     // Validate required fields
@@ -33,30 +31,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ errors }, { status: 400 });
     }
 
-    // Save to Supabase
-    const { error: dbError } = await supabase.from("applications").insert({
-      name: name.trim(),
-      email: email.trim(),
-      phone: phone.trim(),
-      specialty,
-      borough,
-      instagram: instagram || null,
-      experience: experience || null,
-      availability: availability || null,
-      message: message || null,
-      resume_url: resumeUrl,
-      video_url: videoUrl,
-    });
-
-    if (dbError) {
-      console.error("Supabase insert error:", dbError);
-    }
-
     const businessEmail = process.env.BUSINESS_EMAIL;
     if (!businessEmail) {
       console.error("BUSINESS_EMAIL not set");
       return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
     }
+
+    const refsHtml = references.length > 0
+      ? references.map((r: { name: string; phone: string }, i: number) =>
+          `<tr${i % 2 === 0 ? ' style="background:#f5f3ff"' : ""}><td style="padding:8px;font-weight:bold">Reference ${i + 1}</td><td style="padding:8px">${r.name} — <a href="tel:${r.phone}">${r.phone}</a></td></tr>`
+        ).join("")
+      : "";
 
     // Send notification to business
     await getResend().emails.send({
@@ -68,16 +53,15 @@ export async function POST(request: Request) {
         <h2>New Job Application — NYC Mobile Salon</h2>
         <table style="border-collapse:collapse;width:100%;max-width:500px">
           <tr><td style="padding:8px;font-weight:bold">Name</td><td style="padding:8px">${name.trim()}</td></tr>
-          <tr style="background:#f5f3ff"><td style="padding:8px;font-weight:bold">Email</td><td style="padding:8px">${email.trim()}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold">Phone</td><td style="padding:8px">${phone.trim()}</td></tr>
+          <tr style="background:#f5f3ff"><td style="padding:8px;font-weight:bold">Email</td><td style="padding:8px"><a href="mailto:${email.trim()}">${email.trim()}</a></td></tr>
+          <tr><td style="padding:8px;font-weight:bold">Phone</td><td style="padding:8px"><a href="tel:${phone.trim()}">${phone.trim()}</a></td></tr>
           <tr style="background:#f5f3ff"><td style="padding:8px;font-weight:bold">Specialty</td><td style="padding:8px">${specialty}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold">Borough</td><td style="padding:8px">${borough}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold">Area</td><td style="padding:8px">${borough}</td></tr>
           <tr style="background:#f5f3ff"><td style="padding:8px;font-weight:bold">Instagram</td><td style="padding:8px">${instagram ? `@${instagram}` : "Not provided"}</td></tr>
           <tr><td style="padding:8px;font-weight:bold">Experience</td><td style="padding:8px">${experience || "Not specified"}</td></tr>
           <tr style="background:#f5f3ff"><td style="padding:8px;font-weight:bold">Availability</td><td style="padding:8px">${availability || "Not specified"}</td></tr>
           ${message ? `<tr><td style="padding:8px;font-weight:bold">Message</td><td style="padding:8px">${message}</td></tr>` : ""}
-          <tr style="background:#f5f3ff"><td style="padding:8px;font-weight:bold">Resume</td><td style="padding:8px">${resumeUrl ? `<a href="${resumeUrl}">Download</a>` : "Not uploaded"}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold">Video Selfie</td><td style="padding:8px">${videoUrl ? `<a href="${videoUrl}">Watch</a>` : "Not uploaded"}</td></tr>
+          ${refsHtml}
         </table>
       `,
     });
