@@ -84,8 +84,15 @@ export default function ApplicationForm() {
       const path = `resumes/${timestamp}-${safeName}.${ext}`;
       const { data, error } = await supabase.storage.from("uploads").upload(path, resumeFile, {
         contentType: resumeFile.type,
+        upsert: true,
       });
-      if (!error && data) {
+      if (error) {
+        console.error("Resume upload error:", error);
+        setState({ success: false, errors: {}, serverError: `Resume upload failed: ${error.message}` });
+        setIsPending(false);
+        return;
+      }
+      if (data) {
         const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(data.path);
         resumeUrl = urlData.publicUrl;
       }
@@ -98,8 +105,15 @@ export default function ApplicationForm() {
       const path = `videos/${timestamp}-${safeName}.${ext}`;
       const { data, error } = await supabase.storage.from("uploads").upload(path, videoFile, {
         contentType: videoFile.type,
+        upsert: true,
       });
-      if (!error && data) {
+      if (error) {
+        console.error("Video upload error:", error);
+        setState({ success: false, errors: {}, serverError: `Video upload failed: ${error.message}` });
+        setIsPending(false);
+        return;
+      }
+      if (data) {
         const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(data.path);
         videoUrl = urlData.publicUrl;
       }
