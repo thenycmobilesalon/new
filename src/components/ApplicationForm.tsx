@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { serviceOptions, boroughs } from "@/lib/constants";
+import { boroughs } from "@/lib/constants";
+import { createClient } from "@supabase/supabase-js";
 
 type FormState = {
   success: boolean;
@@ -25,13 +26,20 @@ const specialties = [
   "Multiple Specialties",
 ];
 
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
+
 export default function ApplicationForm() {
   const [state, setState] = useState<FormState>(initialState);
   const [isPending, setIsPending] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [resumeName, setResumeName] = useState("");
   const [videoName, setVideoName] = useState("");
-  const [videoError, setVideoError] = useState("");
   const resumeRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -40,7 +48,7 @@ export default function ApplicationForm() {
     e.preventDefault();
     setIsPending(true);
     setState(initialState);
-    setVideoError("");
+    setUploadStatus("");
 
     const form = e.currentTarget;
     const formData = new FormData(form);
@@ -54,25 +62,69 @@ export default function ApplicationForm() {
     if (!formData.get("specialty")) errors.specialty = "Please select a specialty";
     if (!formData.get("borough")) errors.borough = "Please select a borough";
 
-    // Video validation - check duration if possible (file size check as proxy)
-    const videoFile = formData.get("video") as File;
-    if (videoFile && videoFile.size > 0 && videoFile.size < 500000) {
-      // Files under 500KB are almost certainly under 30 seconds
-      setVideoError("Video must be at least 30 seconds long. Your file seems too short.");
-      setIsPending(false);
-      return;
-    }
-
     if (Object.keys(errors).length > 0) {
       setState({ success: false, errors, serverError: "" });
       setIsPending(false);
       return;
     }
 
+    const name = formData.get("name")!.toString().trim();
+    const timestamp = Date.now();
+    const safeName = name.replace(/\s+/g, "-").toLowerCase();
+
+    // Upload files directly to Supabase Storage from the client
+    let resumeUrl: string | null = null;
+    let videoUrl: string | null = null;
+    const supabase = getSupabase();
+
+    const resumeFile = formData.get("resume") as File | null;
+    if (supabase && resumeFile && resumeFile.size > 0) {
+      setUploadStatus("Uploading resume...");
+      const ext = resumeFile.name.split(".").pop();
+      const path = `resumes/${timestamp}-${safeName}.${ext}`;
+      const { data, error } = await supabase.storage.from("uploads").upload(path, resumeFile, {
+        contentType: resumeFile.type,
+      });
+      if (!error && data) {
+        const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(data.path);
+        resumeUrl = urlData.publicUrl;
+      }
+    }
+
+    const videoFile = formData.get("video") as File | null;
+    if (supabase && videoFile && videoFile.size > 0) {
+      setUploadStatus("Uploading video selfie...");
+      const ext = videoFile.name.split(".").pop();
+      const path = `videos/${timestamp}-${safeName}.${ext}`;
+      const { data, error } = await supabase.storage.from("uploads").upload(path, videoFile, {
+        contentType: videoFile.type,
+      });
+      if (!error && data) {
+        const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(data.path);
+        videoUrl = urlData.publicUrl;
+      }
+    }
+
+    setUploadStatus("Submitting application...");
+
+    // Send only text fields + file URLs to the API (no large files)
     try {
       const res = await fetch("/api/apply", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email: formData.get("email")!.toString().trim(),
+          phone: formData.get("phone")!.toString().trim(),
+          specialty: formData.get("specialty")!.toString(),
+          borough: formData.get("borough")!.toString(),
+          instagram: formData.get("instagram")?.toString().trim() || "",
+          experience: formData.get("experience")?.toString() || "",
+          availability: formData.get("availability")?.toString() || "",
+          message: formData.get("message")?.toString().trim() || "",
+          resumeUrl,
+          videoUrl,
+        }),
       });
 
       const json = await res.json();
@@ -91,6 +143,7 @@ export default function ApplicationForm() {
     }
 
     setIsPending(false);
+    setUploadStatus("");
   }
 
   if (submitted) {
@@ -216,7 +269,6 @@ export default function ApplicationForm() {
             className="hidden"
             onChange={(e) => {
               setVideoName(e.target.files?.[0]?.name || "");
-              setVideoError("");
             }}
           />
           <button
@@ -229,7 +281,6 @@ export default function ApplicationForm() {
             </svg>
             {videoName || "Upload a quick intro video"}
           </button>
-          {videoError && <p className="mt-1 text-xs text-red-500">{videoError}</p>}
           <p className="mt-1 text-xs text-gray-400">Tell us about yourself, your experience, and why you want to join. Min 30 seconds.</p>
         </div>
 
@@ -278,7 +329,7 @@ export default function ApplicationForm() {
         disabled={isPending}
         className="mt-5 w-full rounded-full bg-purple-600 py-3.5 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-purple-700 disabled:opacity-60"
       >
-        {isPending ? "Submitting..." : "Submit Application"}
+        {isPending ? (uploadStatus || "Submitting...") : "Submit Application"}
       </button>
 
       <p className="mt-4 text-center text-xs text-gray-400">

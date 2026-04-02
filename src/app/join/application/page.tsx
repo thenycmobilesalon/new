@@ -48,12 +48,12 @@ export default function ApplicationPage() {
         </div>
       </section>
 
-      <section className="bg-purple-50/50 px-4 py-16">
+      <section className="bg-charcoal px-4 py-16">
         <div className="mx-auto max-w-lg">
           <ApplicationForm />
 
           <div className="mt-8 text-center">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-slate-400">Or reach out directly</p>
+            <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/40">Or reach out directly</p>
             <div className="flex items-center justify-center gap-4">
               <a
                 href="sms:+12122029075"
@@ -74,7 +74,7 @@ export default function ApplicationPage() {
                 Call Us
               </a>
             </div>
-            <p className="mt-3 text-xs text-slate-400">212.202.9075 — call or text anytime</p>
+            <p className="mt-3 text-xs text-white/40">212.202.9075 — call or text anytime</p>
           </div>
         </div>
       </section>

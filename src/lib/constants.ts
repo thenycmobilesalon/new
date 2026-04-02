@@ -238,6 +238,8 @@ export const boroughs = [
   "Queens",
   "Bronx",
   "Staten Island",
+  "Long Island",
+  "Hoboken",
 ];
 
 // ─── Social Proof ───────────────────────────────────────────────────
