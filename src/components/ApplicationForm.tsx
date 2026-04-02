@@ -2,6 +2,14 @@
 
 import { useState, useRef } from "react";
 import { boroughs } from "@/lib/constants";
+import { createClient } from "@supabase/supabase-js";
+
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+  if (!url || !key) return null;
+  return createClient(url, key);
+}
 
 type FormState = {
   success: boolean;
@@ -28,7 +36,12 @@ const specialties = [
 export default function ApplicationForm() {
   const [state, setState] = useState<FormState>(initialState);
   const [isPending, setIsPending] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [resumeName, setResumeName] = useState("");
+  const [videoName, setVideoName] = useState("");
+  const resumeRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -59,12 +72,58 @@ export default function ApplicationForm() {
       return;
     }
 
+    // Upload files to Supabase Storage
+    const name = formData.get("name")!.toString().trim();
+    const timestamp = Date.now();
+    const safeName = name.replace(/\s+/g, "-").toLowerCase();
+    let resumeUrl: string | null = null;
+    let videoUrl: string | null = null;
+    const supabase = getSupabase();
+
+    const resumeFile = formData.get("resume") as File | null;
+    if (supabase && resumeFile && resumeFile.size > 0) {
+      setUploadStatus("Uploading resume...");
+      const ext = resumeFile.name.split(".").pop()?.toLowerCase() || "pdf";
+      const path = `resumes/${timestamp}-${safeName}.${ext}`;
+      const blob = resumeFile.type
+        ? resumeFile
+        : new Blob([resumeFile], { type: "application/pdf" });
+      const { data, error } = await supabase.storage
+        .from("uploads")
+        .upload(path, blob, { upsert: true });
+      if (error) {
+        console.error("Resume upload error:", error);
+      } else if (data) {
+        resumeUrl = supabase.storage.from("uploads").getPublicUrl(data.path).data.publicUrl;
+      }
+    }
+
+    const videoFile = formData.get("video") as File | null;
+    if (supabase && videoFile && videoFile.size > 0) {
+      setUploadStatus("Uploading video...");
+      const ext = videoFile.name.split(".").pop()?.toLowerCase() || "mp4";
+      const path = `videos/${timestamp}-${safeName}.${ext}`;
+      const blob = videoFile.type
+        ? videoFile
+        : new Blob([videoFile], { type: "video/mp4" });
+      const { data, error } = await supabase.storage
+        .from("uploads")
+        .upload(path, blob, { upsert: true });
+      if (error) {
+        console.error("Video upload error:", error);
+      } else if (data) {
+        videoUrl = supabase.storage.from("uploads").getPublicUrl(data.path).data.publicUrl;
+      }
+    }
+
+    setUploadStatus("Submitting...");
+
     try {
       const res = await fetch("/api/apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: formData.get("name")!.toString().trim(),
+          name,
           email: formData.get("email")!.toString().trim(),
           phone: formData.get("phone")!.toString().trim(),
           specialty: formData.get("specialty")!.toString(),
@@ -73,6 +132,8 @@ export default function ApplicationForm() {
           experience: formData.get("experience")?.toString() || "",
           availability: formData.get("availability")?.toString() || "",
           message: formData.get("message")?.toString().trim() || "",
+          resumeUrl,
+          videoUrl,
           references: [
             { name: formData.get("ref1_name")!.toString().trim(), phone: formData.get("ref1_phone")!.toString().trim() },
             { name: formData.get("ref2_name")!.toString().trim(), phone: formData.get("ref2_phone")!.toString().trim() },
@@ -97,6 +158,7 @@ export default function ApplicationForm() {
     }
 
     setIsPending(false);
+    setUploadStatus("");
   }
 
   if (submitted) {
@@ -213,6 +275,53 @@ export default function ApplicationForm() {
           </select>
         </div>
 
+        {/* Resume Upload */}
+        <div>
+          <label className={labelClass}>Resume <span className="text-gray-300">(optional)</span></label>
+          <input
+            ref={resumeRef}
+            type="file"
+            name="resume"
+            accept=".pdf,.doc,.docx"
+            className="hidden"
+            onChange={(e) => setResumeName(e.target.files?.[0]?.name || "")}
+          />
+          <button
+            type="button"
+            onClick={() => resumeRef.current?.click()}
+            className="flex w-full items-center gap-2 rounded-lg border border-dashed border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500 transition hover:border-purple-300 hover:bg-purple-50"
+          >
+            <svg className="h-5 w-5 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span className="truncate">{resumeName || "Upload resume (PDF, DOC)"}</span>
+          </button>
+        </div>
+
+        {/* Video Selfie Upload */}
+        <div>
+          <label className={labelClass}>Video Selfie <span className="text-purple-500">(min 30 seconds)</span></label>
+          <input
+            ref={videoRef}
+            type="file"
+            name="video"
+            accept="video/*"
+            className="hidden"
+            onChange={(e) => setVideoName(e.target.files?.[0]?.name || "")}
+          />
+          <button
+            type="button"
+            onClick={() => videoRef.current?.click()}
+            className="flex w-full items-center gap-2 rounded-lg border border-dashed border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500 transition hover:border-purple-300 hover:bg-purple-50"
+          >
+            <svg className="h-5 w-5 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <span className="truncate">{videoName || "Upload a quick intro video"}</span>
+          </button>
+          <p className="mt-1 text-xs text-gray-400">Tell us about yourself, your experience, and why you want to join. Min 30 seconds.</p>
+        </div>
+
         {/* References */}
         <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
           <p className={`${labelClass} mb-3`}>Professional References (3 Required)</p>
@@ -262,7 +371,7 @@ export default function ApplicationForm() {
         disabled={isPending}
         className="mt-6 w-full rounded-full bg-purple-600 py-4 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-purple-700 disabled:opacity-60"
       >
-        {isPending ? "Submitting..." : "Submit Application"}
+        {isPending ? (uploadStatus || "Submitting...") : "Submit Application"}
       </button>
 
       <p className="mt-4 text-center text-xs text-gray-400">

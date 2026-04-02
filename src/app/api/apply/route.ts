@@ -16,6 +16,8 @@ export async function POST(request: Request) {
       availability = "",
       message = "",
       references = [],
+      resumeUrl = null,
+      videoUrl = null,
     } = body;
 
     // Validate required fields
@@ -61,6 +63,8 @@ export async function POST(request: Request) {
           <tr><td style="padding:8px;font-weight:bold">Experience</td><td style="padding:8px">${experience || "Not specified"}</td></tr>
           <tr style="background:#f5f3ff"><td style="padding:8px;font-weight:bold">Availability</td><td style="padding:8px">${availability || "Not specified"}</td></tr>
           ${message ? `<tr><td style="padding:8px;font-weight:bold">Message</td><td style="padding:8px">${message}</td></tr>` : ""}
+          <tr style="background:#f5f3ff"><td style="padding:8px;font-weight:bold">Resume</td><td style="padding:8px">${resumeUrl ? `<a href="${resumeUrl}">Download Resume</a>` : "Not uploaded"}</td></tr>
+          <tr><td style="padding:8px;font-weight:bold">Video Selfie</td><td style="padding:8px">${videoUrl ? `<a href="${videoUrl}">Watch Video</a>` : "Not uploaded"}</td></tr>
           ${refsHtml}
         </table>
       `,
