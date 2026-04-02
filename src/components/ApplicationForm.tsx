@@ -1,167 +1,165 @@
-"use client";
-
-import { useState, useRef } from "react";
-import { boroughs } from "@/lib/constants";
-import { createClient } from "@supabase/supabase-js";
-
-function getSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-  if (!url || !key) return null;
-  return createClient(url, key);
-}
-
-type FormState = {
-  success: boolean;
-  errors: Record<string, string>;
-  serverError: string;
-};
-
-const initialState: FormState = {
-  success: false,
-  errors: {},
-  serverError: "",
-};
+'use client'
+import { useState, useRef } from 'react'
+import { boroughs } from '@/lib/constants'
 
 const specialties = [
-  "Hairstylist",
-  "Barber",
-  "Nail Technician",
-  "Makeup Artist",
-  "Esthetician",
-  "Waxing Specialist",
-  "Multiple Specialties",
-];
+  'Hairstylist',
+  'Barber',
+  'Nail Technician',
+  'Makeup Artist',
+  'Esthetician',
+  'Waxing Specialist',
+  'Multiple Specialties',
+]
+
+const formatPhone = (value: string) => {
+  const cleaned = value.replace(/\D/g, '')
+  if (cleaned.length <= 3) return cleaned
+  if (cleaned.length <= 6) return '(' + cleaned.slice(0, 3) + ') ' + cleaned.slice(3)
+  return '(' + cleaned.slice(0, 3) + ') ' + cleaned.slice(3, 6) + '-' + cleaned.slice(6, 10)
+}
 
 export default function ApplicationForm() {
-  const [state, setState] = useState<FormState>(initialState);
-  const [isPending, setIsPending] = useState(false);
-  const [uploadStatus, setUploadStatus] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [resumeName, setResumeName] = useState("");
-  const [videoName, setVideoName] = useState("");
-  const resumeRef = useRef<HTMLInputElement>(null);
-  const videoRef = useRef<HTMLInputElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    specialty: '',
+    borough: '',
+    instagram: '',
+    experience: '',
+    availability: '',
+    message: '',
+    references: [
+      { name: '', phone: '' },
+      { name: '', phone: '' },
+      { name: '', phone: '' },
+    ],
+  })
+  const [resumeFile, setResumeFile] = useState<File | null>(null)
+  const [videoFile, setVideoFile] = useState<File | null>(null)
+  const resumeInputRef = useRef<HTMLInputElement>(null)
+  const videoInputRef = useRef<HTMLInputElement>(null)
+  const [loading, setLoading] = useState(false)
+  const [done, setDone] = useState(false)
+  const [error, setError] = useState('')
+  const [uploadProgress, setUploadProgress] = useState('')
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setIsPending(true);
-    setState(initialState);
-
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-
-    const errors: Record<string, string> = {};
-    if (!formData.get("name")?.toString().trim()) errors.name = "Name is required";
-    if (!formData.get("email")?.toString().trim()) errors.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.get("email") as string)) errors.email = "Please enter a valid email";
-    if (!formData.get("phone")?.toString().trim()) errors.phone = "Phone is required";
-    if (!formData.get("specialty")) errors.specialty = "Please select a specialty";
-    if (!formData.get("borough")) errors.borough = "Please select a borough";
-    if (!formData.get("ref1_name")?.toString().trim()) errors.ref1_name = "Reference 1 name is required";
-    if (!formData.get("ref1_phone")?.toString().trim()) errors.ref1_phone = "Reference 1 phone is required";
-    if (!formData.get("ref2_name")?.toString().trim()) errors.ref2_name = "Reference 2 name is required";
-    if (!formData.get("ref2_phone")?.toString().trim()) errors.ref2_phone = "Reference 2 phone is required";
-    if (!formData.get("ref3_name")?.toString().trim()) errors.ref3_name = "Reference 3 name is required";
-    if (!formData.get("ref3_phone")?.toString().trim()) errors.ref3_phone = "Reference 3 phone is required";
-
-    if (Object.keys(errors).length > 0) {
-      setState({ success: false, errors, serverError: "" });
-      setIsPending(false);
-      return;
+  const handleResumeSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type)) {
+      setError('Please select a PDF or DOC file.')
+      return
     }
-
-    // Upload files to Supabase Storage
-    const name = formData.get("name")!.toString().trim();
-    const timestamp = Date.now();
-    const safeName = name.replace(/\s+/g, "-").toLowerCase();
-    let resumeUrl: string | null = null;
-    let videoUrl: string | null = null;
-    const supabase = getSupabase();
-
-    const resumeFile = formData.get("resume") as File | null;
-    if (supabase && resumeFile && resumeFile.size > 0) {
-      setUploadStatus("Uploading resume...");
-      const ext = resumeFile.name.split(".").pop()?.toLowerCase() || "pdf";
-      const path = `resumes/${timestamp}-${safeName}.${ext}`;
-      const blob = resumeFile.type
-        ? resumeFile
-        : new Blob([resumeFile], { type: "application/pdf" });
-      const { data, error } = await supabase.storage
-        .from("uploads")
-        .upload(path, blob, { upsert: true });
-      if (error) {
-        console.error("Resume upload error:", error);
-      } else if (data) {
-        resumeUrl = supabase.storage.from("uploads").getPublicUrl(data.path).data.publicUrl;
-      }
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Resume must be under 10MB.')
+      return
     }
-
-    const videoFile = formData.get("video") as File | null;
-    if (supabase && videoFile && videoFile.size > 0) {
-      setUploadStatus("Uploading video...");
-      const ext = videoFile.name.split(".").pop()?.toLowerCase() || "mp4";
-      const path = `videos/${timestamp}-${safeName}.${ext}`;
-      const blob = videoFile.type
-        ? videoFile
-        : new Blob([videoFile], { type: "video/mp4" });
-      const { data, error } = await supabase.storage
-        .from("uploads")
-        .upload(path, blob, { upsert: true });
-      if (error) {
-        console.error("Video upload error:", error);
-      } else if (data) {
-        videoUrl = supabase.storage.from("uploads").getPublicUrl(data.path).data.publicUrl;
-      }
-    }
-
-    setUploadStatus("Submitting...");
-
-    try {
-      const res = await fetch("/api/apply", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email: formData.get("email")!.toString().trim(),
-          phone: formData.get("phone")!.toString().trim(),
-          specialty: formData.get("specialty")!.toString(),
-          borough: formData.get("borough")!.toString(),
-          instagram: formData.get("instagram")?.toString().trim() || "",
-          experience: formData.get("experience")?.toString() || "",
-          availability: formData.get("availability")?.toString() || "",
-          message: formData.get("message")?.toString().trim() || "",
-          resumeUrl,
-          videoUrl,
-          references: [
-            { name: formData.get("ref1_name")!.toString().trim(), phone: formData.get("ref1_phone")!.toString().trim() },
-            { name: formData.get("ref2_name")!.toString().trim(), phone: formData.get("ref2_phone")!.toString().trim() },
-            { name: formData.get("ref3_name")!.toString().trim(), phone: formData.get("ref3_phone")!.toString().trim() },
-          ],
-        }),
-      });
-
-      const json = await res.json();
-
-      if (!res.ok) {
-        if (json.errors) {
-          setState({ success: false, errors: json.errors, serverError: "" });
-        } else {
-          setState({ success: false, errors: {}, serverError: json.error || "Something went wrong" });
-        }
-      } else {
-        setSubmitted(true);
-      }
-    } catch {
-      setState({ success: false, errors: {}, serverError: "Network error. Please try again." });
-    }
-
-    setIsPending(false);
-    setUploadStatus("");
+    setResumeFile(file)
+    setError('')
   }
 
-  if (submitted) {
+  const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!['video/mp4', 'video/quicktime', 'video/webm', 'video/x-m4v'].includes(file.type)) {
+      setError('Please select a video file (MP4, MOV, or WebM).')
+      return
+    }
+    if (file.size > 100 * 1024 * 1024) {
+      setError('Video must be under 100MB.')
+      return
+    }
+    setVideoFile(file)
+    setError('')
+  }
+
+  const uploadFile = async (file: File, type: string): Promise<string | null> => {
+    const signedRes = await fetch('/api/apply/signed-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, filename: file.name, contentType: file.type }),
+    })
+    if (!signedRes.ok) {
+      const errData = await signedRes.json().catch(() => ({}))
+      setError(errData.error || `Failed to prepare ${type} upload.`)
+      return null
+    }
+    const { signedUrl, publicUrl } = await signedRes.json()
+
+    const uploadRes = await fetch(signedUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': file.type },
+      body: file,
+    })
+
+    if (!uploadRes.ok) {
+      setError(`Failed to upload ${type}. Please try again.`)
+      return null
+    }
+
+    return publicUrl
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+
+    if (!form.name.trim() || !form.email.trim() || !form.phone.trim() || !form.specialty || !form.borough) {
+      setError('Please fill in all required fields.')
+      return
+    }
+    for (let i = 0; i < 3; i++) {
+      if (!form.references[i].name.trim() || !form.references[i].phone.trim()) {
+        setError(`Please fill in all 3 references (name and phone).`)
+        return
+      }
+    }
+
+    setLoading(true)
+
+    try {
+      let resumeUrl: string | null = null
+      if (resumeFile) {
+        setUploadProgress('Uploading resume...')
+        resumeUrl = await uploadFile(resumeFile, 'resume')
+        if (!resumeUrl) { setLoading(false); setUploadProgress(''); return }
+      }
+
+      let videoUrl: string | null = null
+      if (videoFile) {
+        setUploadProgress('Uploading video...')
+        videoUrl = await uploadFile(videoFile, 'video')
+        if (!videoUrl) { setLoading(false); setUploadProgress(''); return }
+      }
+
+      setUploadProgress('Submitting application...')
+
+      const res = await fetch('/api/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...form,
+          resumeUrl,
+          videoUrl,
+        }),
+      })
+
+      if (res.ok) {
+        setDone(true)
+      } else {
+        const data = await res.json()
+        setError(data.error || 'Something went wrong. Please try again.')
+      }
+    } catch {
+      setError('Something went wrong. Please try again.')
+    }
+    setLoading(false)
+    setUploadProgress('')
+  }
+
+  if (done) {
     return (
       <div className="rounded-2xl border border-purple-100 bg-white p-8 text-center">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-purple-100">
@@ -169,92 +167,120 @@ export default function ApplicationForm() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h3 className="mb-2 font-display text-2xl font-bold text-slate-800">Application Received</h3>
+        <h3 className="mb-2 font-display text-2xl font-bold text-slate-800">Application Received!</h3>
         <p className="text-slate-500">
-          We review every application personally. Most candidates hear back within 48 hours.
+          Thanks, {form.name.split(' ')[0]}. We review every application personally and most candidates hear back within 48 hours.
         </p>
       </div>
-    );
+    )
   }
 
-  const inputClass = "w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-charcoal placeholder-gray-400 transition-all focus:border-purple-400 focus:ring-1 focus:ring-purple-400 focus:outline-none";
-  const labelClass = "mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500";
+  const inputClass = 'w-full px-4 py-3 border border-gray-300 rounded-lg text-charcoal text-base focus:border-purple-400 focus:ring-1 focus:ring-purple-400 focus:outline-none'
+  const labelClass = 'block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1'
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="rounded-2xl border border-purple-100 bg-white p-5 sm:p-8">
-      <h3 className="mb-1 text-center font-display text-xl font-bold text-slate-800">
-        Apply to Join the Team
-      </h3>
-      <p className="mb-6 text-center text-sm text-slate-500">
-        $49/hr via Zelle or Apple Cash — paid within 30 minutes of job completion.
-      </p>
+    <form onSubmit={handleSubmit} className="rounded-2xl border border-purple-100 bg-white p-5 sm:p-8 space-y-5">
+      <div>
+        <h3 className="text-center font-display text-xl font-bold text-slate-800">Apply to Join the Team</h3>
+        <p className="text-center text-sm text-slate-500 mt-1">$49/hr via Zelle or Apple Cash — paid within 30 minutes of job completion.</p>
+      </div>
 
-      {state.serverError && (
-        <p className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600">
-          {state.serverError}
-        </p>
-      )}
+      {/* Name */}
+      <div>
+        <label className={labelClass}>Full Name *</label>
+        <input
+          type="text"
+          required
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          className={inputClass}
+          placeholder="Your full name"
+        />
+      </div>
 
-      <div className="space-y-4">
-        {/* Name */}
+      {/* Email + Phone */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="app-name" className={labelClass}>Full Name</label>
-          <input id="app-name" name="name" type="text" placeholder="Your full name" className={inputClass} />
-          {state.errors.name && <p className="mt-1 text-xs text-red-500">{state.errors.name}</p>}
+          <label className={labelClass}>Email *</label>
+          <input
+            type="email"
+            required
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            className={inputClass}
+            placeholder="you@email.com"
+          />
         </div>
-
-        {/* Email + Phone */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label htmlFor="app-email" className={labelClass}>Email</label>
-            <input id="app-email" name="email" type="email" placeholder="you@email.com" className={inputClass} />
-            {state.errors.email && <p className="mt-1 text-xs text-red-500">{state.errors.email}</p>}
-          </div>
-          <div>
-            <label htmlFor="app-phone" className={labelClass}>Phone</label>
-            <input id="app-phone" name="phone" type="tel" placeholder="(555) 123-4567" className={inputClass} />
-            {state.errors.phone && <p className="mt-1 text-xs text-red-500">{state.errors.phone}</p>}
-          </div>
-        </div>
-
-        {/* Specialty + Borough */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label htmlFor="app-specialty" className={labelClass}>Specialty</label>
-            <select id="app-specialty" name="specialty" defaultValue="" className={inputClass}>
-              <option value="" disabled>Choose one</option>
-              {specialties.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-            {state.errors.specialty && <p className="mt-1 text-xs text-red-500">{state.errors.specialty}</p>}
-          </div>
-          <div>
-            <label htmlFor="app-borough" className={labelClass}>Preferred Area</label>
-            <select id="app-borough" name="borough" defaultValue="" className={inputClass}>
-              <option value="" disabled>Select area</option>
-              {boroughs.map((b) => (
-                <option key={b} value={b}>{b}</option>
-              ))}
-            </select>
-            {state.errors.borough && <p className="mt-1 text-xs text-red-500">{state.errors.borough}</p>}
-          </div>
-        </div>
-
-        {/* Instagram */}
         <div>
-          <label htmlFor="app-instagram" className={labelClass}>Instagram Handle</label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">@</span>
-            <input id="app-instagram" name="instagram" type="text" placeholder="yourusername" className={`${inputClass} pl-7`} />
-          </div>
+          <label className={labelClass}>Phone *</label>
+          <input
+            type="tel"
+            required
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: formatPhone(e.target.value) })}
+            className={inputClass}
+            placeholder="(555) 123-4567"
+          />
         </div>
+      </div>
 
-        {/* Experience */}
+      {/* Specialty + Borough */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="app-experience" className={labelClass}>Years of Experience</label>
-          <select id="app-experience" name="experience" defaultValue="" className={inputClass}>
-            <option value="" disabled>Select</option>
+          <label className={labelClass}>Specialty *</label>
+          <select
+            required
+            value={form.specialty}
+            onChange={(e) => setForm({ ...form, specialty: e.target.value })}
+            className={inputClass}
+          >
+            <option value="">Choose one</option>
+            {specialties.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className={labelClass}>Preferred Area *</label>
+          <select
+            required
+            value={form.borough}
+            onChange={(e) => setForm({ ...form, borough: e.target.value })}
+            className={inputClass}
+          >
+            <option value="">Select area</option>
+            {boroughs.map((b) => (
+              <option key={b} value={b}>{b}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Instagram */}
+      <div>
+        <label className={labelClass}>Instagram Handle</label>
+        <div className="relative">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">@</span>
+          <input
+            type="text"
+            value={form.instagram}
+            onChange={(e) => setForm({ ...form, instagram: e.target.value })}
+            className={`${inputClass} pl-8`}
+            placeholder="yourusername"
+          />
+        </div>
+      </div>
+
+      {/* Experience + Availability */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label className={labelClass}>Years of Experience</label>
+          <select
+            value={form.experience}
+            onChange={(e) => setForm({ ...form, experience: e.target.value })}
+            className={inputClass}
+          >
+            <option value="">Select</option>
             <option value="0-1">Less than 1 year</option>
             <option value="1-2">1-2 years</option>
             <option value="2-5">2-5 years</option>
@@ -262,121 +288,138 @@ export default function ApplicationForm() {
             <option value="10+">10+ years</option>
           </select>
         </div>
-
-        {/* Availability */}
         <div>
-          <label htmlFor="app-availability" className={labelClass}>Availability</label>
-          <select id="app-availability" name="availability" defaultValue="" className={inputClass}>
-            <option value="" disabled>Select</option>
+          <label className={labelClass}>Availability</label>
+          <select
+            value={form.availability}
+            onChange={(e) => setForm({ ...form, availability: e.target.value })}
+            className={inputClass}
+          >
+            <option value="">Select</option>
             <option value="full-time">Full-Time (5-6 days/week)</option>
             <option value="part-time">Part-Time (2-4 days/week)</option>
             <option value="weekends">Weekends Only</option>
             <option value="flexible">Flexible</option>
           </select>
         </div>
+      </div>
 
-        {/* Resume Upload */}
-        <div>
-          <label className={labelClass}>Resume <span className="text-gray-300">(optional)</span></label>
+      {/* Resume Upload */}
+      <div>
+        <label className={labelClass}>Resume <span className="text-gray-300">(optional)</span></label>
+        <p className="text-xs text-gray-400 mb-2">PDF or DOC, under 10MB.</p>
+        <div className="flex items-center gap-3">
+          {resumeFile ? (
+            <div className="flex items-center gap-2 bg-purple-50 px-3 py-2 rounded-lg flex-1 min-w-0">
+              <span className="text-sm text-slate-700 truncate">{resumeFile.name}</span>
+              <span className="text-xs text-slate-400 flex-shrink-0">({(resumeFile.size / 1024 / 1024).toFixed(1)}MB)</span>
+            </div>
+          ) : null}
+          <button
+            type="button"
+            onClick={() => resumeInputRef.current?.click()}
+            className="px-4 py-2.5 border border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-purple-300 hover:bg-purple-50 flex-shrink-0"
+          >
+            {resumeFile ? 'Change' : 'Upload Resume'}
+          </button>
           <input
-            ref={resumeRef}
+            ref={resumeInputRef}
             type="file"
-            name="resume"
             accept=".pdf,.doc,.docx"
+            onChange={handleResumeSelect}
             className="hidden"
-            onChange={(e) => setResumeName(e.target.files?.[0]?.name || "")}
-          />
-          <button
-            type="button"
-            onClick={() => resumeRef.current?.click()}
-            className="flex w-full items-center gap-2 rounded-lg border border-dashed border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500 transition hover:border-purple-300 hover:bg-purple-50"
-          >
-            <svg className="h-5 w-5 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span className="truncate">{resumeName || "Upload resume (PDF, DOC)"}</span>
-          </button>
-        </div>
-
-        {/* Video Selfie Upload */}
-        <div>
-          <label className={labelClass}>Video Selfie <span className="text-purple-500">(min 30 seconds)</span></label>
-          <input
-            ref={videoRef}
-            type="file"
-            name="video"
-            accept="video/*"
-            className="hidden"
-            onChange={(e) => setVideoName(e.target.files?.[0]?.name || "")}
-          />
-          <button
-            type="button"
-            onClick={() => videoRef.current?.click()}
-            className="flex w-full items-center gap-2 rounded-lg border border-dashed border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500 transition hover:border-purple-300 hover:bg-purple-50"
-          >
-            <svg className="h-5 w-5 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
-            <span className="truncate">{videoName || "Upload a quick intro video"}</span>
-          </button>
-          <p className="mt-1 text-xs text-gray-400">Tell us about yourself, your experience, and why you want to join. Min 30 seconds.</p>
-        </div>
-
-        {/* References */}
-        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-          <p className={`${labelClass} mb-3`}>Professional References (3 Required)</p>
-          <div className="space-y-3">
-            {[1, 2, 3].map((n) => (
-              <div key={n} className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                <div>
-                  <input
-                    name={`ref${n}_name`}
-                    type="text"
-                    placeholder={`Reference ${n} — Full Name`}
-                    className={inputClass}
-                  />
-                  {state.errors[`ref${n}_name`] && <p className="mt-1 text-xs text-red-500">{state.errors[`ref${n}_name`]}</p>}
-                </div>
-                <div>
-                  <input
-                    name={`ref${n}_phone`}
-                    type="tel"
-                    placeholder="Phone number"
-                    className={inputClass}
-                  />
-                  {state.errors[`ref${n}_phone`] && <p className="mt-1 text-xs text-red-500">{state.errors[`ref${n}_phone`]}</p>}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Message */}
-        <div>
-          <label htmlFor="app-message" className={labelClass}>
-            Anything else? <span className="text-gray-300">(optional)</span>
-          </label>
-          <textarea
-            id="app-message"
-            name="message"
-            rows={3}
-            placeholder="Tell us about your specialties, clients you love working with, etc."
-            className={inputClass}
           />
         </div>
       </div>
 
+      {/* Video Selfie */}
+      <div>
+        <label className={labelClass}>Video Selfie <span className="text-purple-500">(min 30 seconds)</span></label>
+        <p className="text-xs text-gray-400 mb-2">Tell us about yourself, your experience, and why you want to join. MP4, MOV, or WebM, under 100MB.</p>
+        <div className="flex items-center gap-3">
+          {videoFile ? (
+            <div className="flex items-center gap-2 bg-purple-50 px-3 py-2 rounded-lg flex-1 min-w-0">
+              <span className="text-sm text-slate-700 truncate">{videoFile.name}</span>
+              <span className="text-xs text-slate-400 flex-shrink-0">({(videoFile.size / 1024 / 1024).toFixed(1)}MB)</span>
+            </div>
+          ) : null}
+          <button
+            type="button"
+            onClick={() => videoInputRef.current?.click()}
+            className="px-4 py-2.5 border border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-purple-300 hover:bg-purple-50 flex-shrink-0"
+          >
+            {videoFile ? 'Change' : 'Upload Video'}
+          </button>
+          <input
+            ref={videoInputRef}
+            type="file"
+            accept="video/mp4,video/quicktime,video/webm,video/x-m4v"
+            onChange={handleVideoSelect}
+            className="hidden"
+          />
+        </div>
+      </div>
+
+      {/* References */}
+      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+        <p className={`${labelClass} mb-3`}>Professional References (3 Required) *</p>
+        {form.references.map((ref, i) => (
+          <div key={i} className="grid grid-cols-1 gap-2 sm:grid-cols-2 mb-3 last:mb-0">
+            <input
+              type="text"
+              required
+              value={ref.name}
+              onChange={(e) => {
+                const updated = [...form.references]
+                updated[i] = { ...updated[i], name: e.target.value }
+                setForm({ ...form, references: updated })
+              }}
+              className={inputClass}
+              placeholder={`Reference ${i + 1} — Full Name`}
+            />
+            <input
+              type="tel"
+              required
+              value={ref.phone}
+              onChange={(e) => {
+                const updated = [...form.references]
+                updated[i] = { ...updated[i], phone: formatPhone(e.target.value) }
+                setForm({ ...form, references: updated })
+              }}
+              className={inputClass}
+              placeholder="Phone number"
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Message */}
+      <div>
+        <label className={labelClass}>Anything else? <span className="text-gray-300">(optional)</span></label>
+        <textarea
+          value={form.message}
+          onChange={(e) => setForm({ ...form, message: e.target.value })}
+          className={inputClass}
+          rows={3}
+          placeholder="Tell us about your specialties, clients you love working with, etc."
+        />
+      </div>
+
+      {error && (
+        <p className="text-red-600 text-sm bg-red-50 px-4 py-3 rounded-lg">{error}</p>
+      )}
+
       <button
         type="submit"
-        disabled={isPending}
-        className="mt-6 w-full rounded-full bg-purple-600 py-4 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-purple-700 disabled:opacity-60"
+        disabled={loading}
+        className="w-full py-4 rounded-full bg-purple-600 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-purple-700 disabled:opacity-60"
       >
-        {isPending ? (uploadStatus || "Submitting...") : "Submit Application"}
+        {loading ? (uploadProgress || 'Submitting...') : 'Submit Application'}
       </button>
 
-      <p className="mt-4 text-center text-xs text-gray-400">
+      <p className="text-center text-xs text-gray-400">
         By applying, you confirm you hold a valid NYS license for your specialty.
       </p>
     </form>
-  );
+  )
 }
