@@ -597,12 +597,12 @@ export default async function JoinServicePage({ params }: Props) {
           <p className="mx-auto mb-8 max-w-2xl text-lg text-white/90 md:text-xl">
             Earn $49+/hour as a mobile {service.name.toLowerCase()} professional with The NYC Mobile Salon. No booth rental fees. Set your own schedule. Paid via Zelle or Apple Cash within 30 minutes of job completion. Liability insurance included. All five NYC boroughs.
           </p>
-          <a
-            href={`mailto:hey@thenycmobilesalon.com?subject=Apply%3A%20Mobile%20${encodeURIComponent(service.name)}%20Professional`}
+          <Link
+            href="/join/application"
             className={`inline-block rounded-full bg-white px-10 py-4 text-sm font-bold ${accentHeroButton} shadow-lg transition`}
           >
             Apply Now
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -913,12 +913,12 @@ export default async function JoinServicePage({ params }: Props) {
           <p className="mx-auto mb-8 max-w-xl text-lg text-white/90">
             Send us your name, your {service.name.toLowerCase()} experience, your availability, and a link to your portfolio or social media. Most applicants hear back within 48 hours. Start earning $49+/hour with no booth rent, no overhead, and total schedule flexibility.
           </p>
-          <a
-            href={`mailto:hey@thenycmobilesalon.com?subject=Apply%3A%20Mobile%20${encodeURIComponent(service.name)}%20Professional`}
+          <Link
+            href="/join/application"
             className={`inline-block rounded-full bg-white px-10 py-4 text-sm font-bold ${accentHeroButton} shadow-lg transition`}
           >
-            Apply Now — hey@thenycmobilesalon.com
-          </a>
+            Apply Now
+          </Link>
           <p className="mt-6 text-sm text-white/70">
             Questions first?{" "}
             <Link href="/contact" className="text-white underline hover:text-white/90">

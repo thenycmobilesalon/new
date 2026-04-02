@@ -883,7 +883,7 @@ export default function Home() {
           <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-white/70">
             We&apos;re actively hiring across all five boroughs. Whether you specialize in <Link href="/services/silk-press" className="text-blush hover:underline">silk presses</Link>, <Link href="/services/highlights-balayage-ombre" className="text-blush hover:underline">color and balayage</Link>, <Link href="/services/fade-haircut" className="text-blush hover:underline">fades</Link>, <Link href="/services/gel-manicure" className="text-blush hover:underline">gel nails</Link>, <Link href="/services/full-glam-makeup" className="text-blush hover:underline">glam makeup</Link>, or <Link href="/services/express-facial" className="text-blush hover:underline">facials</Link> — there&apos;s a spot for you.
           </p>
-          <Link href="/join" className="btn-rose">
+          <Link href="/join/application" className="btn-rose">
             Apply Now
           </Link>
         </div>

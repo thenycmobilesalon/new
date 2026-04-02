@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { neighborhoods, boroughNames } from "@/lib/constants";
 import { faqSchema, breadcrumbSchema } from "@/lib/seo";
-import ApplicationForm from "@/components/ApplicationForm";
 
 export const metadata: Metadata = {
   title: "Join Our Team — Licensed Beauty Pros Wanted | The NYC Mobile Salon",
@@ -297,12 +296,12 @@ export default function JoinPage() {
           <p className="mx-auto mb-8 max-w-2xl text-lg text-white/90 md:text-xl">
             Licensed hairstylists, barbers, nail technicians, makeup artists, estheticians, and waxing specialists — The NYC Mobile Salon is growing and we need talented professionals like you. Set your own schedule, keep more of what you earn, and work across all five boroughs.
           </p>
-          <a
-            href="#apply"
+          <Link
+            href="/join/application"
             className="inline-block rounded-full bg-white px-10 py-4 text-sm font-bold text-purple-600 shadow-lg transition hover:bg-purple-50"
           >
             Apply Now — $49/hr
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -736,20 +735,27 @@ export default function JoinPage() {
         </div>
       </section>
 
-      {/* ── 10. Application Form ─────────────────────────────────── */}
+      {/* ── 10. Apply CTA ────────────────────────────────────────── */}
       <section id="apply" className="bg-purple-50/50 px-4 py-24">
-        <div className="mx-auto max-w-lg">
+        <div className="mx-auto max-w-lg text-center">
           <h2 className="mb-2 flex items-center justify-center gap-2 text-sm font-semibold uppercase tracking-widest text-purple-600">
             <Sparkle className="h-3.5 w-3.5" />
             Apply Now
           </h2>
-          <h3 className="mb-8 text-center font-display text-3xl font-black tracking-tight md:text-4xl">
+          <h3 className="mb-4 font-display text-3xl font-black tracking-tight md:text-4xl">
             Ready to Join?
           </h3>
-          <ApplicationForm />
+          <p className="mb-8 text-sm text-slate-600">
+            It takes less than five minutes. Upload your info, a quick video selfie, and we&rsquo;ll be in touch within 48 hours.
+          </p>
+          <Link
+            href="/join/application"
+            className="inline-block rounded-full bg-purple-600 px-10 py-4 text-sm font-bold text-white shadow-lg shadow-purple-500/20 transition hover:-translate-y-0.5 hover:bg-purple-700"
+          >
+            Start Your Application
+          </Link>
 
-          {/* Alternative CTAs */}
-          <div className="mt-8 text-center">
+          <div className="mt-8">
             <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-slate-400">Or reach out directly</p>
             <div className="flex items-center justify-center gap-4">
               <a
@@ -791,12 +797,12 @@ export default function JoinPage() {
           <p className="mx-auto mb-6 max-w-xl text-white/90">
             Zelle or Apple Cash within 30 minutes of every job. Tips are 100% yours. Apply above or reach out — we review every application personally.
           </p>
-          <a
-            href="#apply"
+          <Link
+            href="/join/application"
             className="inline-block rounded-full bg-white px-10 py-4 text-sm font-bold text-purple-600 shadow-lg transition hover:bg-purple-50"
           >
             Apply Now
-          </a>
+          </Link>
         </div>
       </section>
     </>

@@ -249,13 +249,13 @@ export default async function JoinServiceBoroughPage({ params }: PageProps) {
             Earn $49+ per hour as a licensed mobile {service.name.toLowerCase()} professional in {boroughName}. Set your own schedule, keep more of what you earn, and build a loyal client base across {hoods.length} neighborhoods. No booth rental fees, ever.
           </p>
 
-          <a
-            href={`mailto:hey@thenycmobilesalon.com?subject=Application%20—%20${encodeURIComponent(service.name)}%20in%20${encodeURIComponent(boroughName)}`}
+          <Link
+            href="/join/application"
             className="inline-block rounded-full bg-white px-10 py-4 text-sm font-bold shadow-lg transition hover:bg-white/90"
             style={{ color: womens ? "#7C3AED" : "#1E293B" }}
           >
             Apply Now
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -539,13 +539,13 @@ export default async function JoinServiceBoroughPage({ params }: PageProps) {
           <p className="mx-auto mb-8 max-w-xl text-lg text-white/90">
             Send us your name, specialty, availability, and a link to your portfolio or social media. We review every application personally and most candidates hear back within 48 hours. Start earning $49+ per hour in {boroughName} with your next email.
           </p>
-          <a
-            href={`mailto:hey@thenycmobilesalon.com?subject=Application%20—%20${encodeURIComponent(service.name)}%20in%20${encodeURIComponent(boroughName)}`}
+          <Link
+            href="/join/application"
             className="inline-block rounded-full bg-white px-10 py-4 text-sm font-bold shadow-lg transition hover:bg-white/90"
             style={{ color: womens ? "#7C3AED" : "#1E293B" }}
           >
             Apply Now
-          </a>
+          </Link>
           <p className="mt-6 text-sm text-white/70">
             Questions?{" "}
             <a

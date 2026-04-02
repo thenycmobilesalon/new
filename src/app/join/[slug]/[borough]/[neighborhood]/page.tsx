@@ -203,12 +203,12 @@ export default async function JoinServiceNeighborhoodPage({ params }: Props) {
             Earn $49+/hour as a mobile {service.name.toLowerCase()} professional in {hoodName}. No booth rental fees, no overhead, and clients are already waiting for you. The NYC Mobile Salon is actively hiring licensed pros in {hoodName}, {boroName}.
           </p>
 
-          <a
-            href={`mailto:hey@thenycmobilesalon.com?subject=${mailSubject}`}
+          <Link
+            href="/join/application"
             className="inline-block rounded-full bg-white px-10 py-4 text-sm font-bold text-purple-600 shadow-lg transition hover:bg-purple-50"
           >
             Apply Now
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -498,12 +498,12 @@ export default async function JoinServiceNeighborhoodPage({ params }: Props) {
           <p className="mx-auto mb-8 max-w-xl text-lg text-white/90">
             Send us your name, {service.name.toLowerCase()} specialty, availability, and a link to your portfolio. Most applicants hear back within 48 hours and start receiving {hoodName} bookings within a week.
           </p>
-          <a
-            href={`mailto:hey@thenycmobilesalon.com?subject=${mailSubject}`}
+          <Link
+            href="/join/application"
             className="inline-block rounded-full bg-white px-10 py-4 text-sm font-bold text-purple-600 shadow-lg transition hover:bg-purple-50"
           >
-            Apply Now — {service.name} in {hoodName}
-          </a>
+            Apply Now
+          </Link>
           <p className="mt-6 text-sm text-white/70">
             Questions?{" "}
             <a
