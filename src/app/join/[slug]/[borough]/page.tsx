@@ -190,7 +190,10 @@ export default async function JoinServiceBoroughPage({ params }: PageProps) {
               },
             },
             directApply: true,
-            experienceRequirements: "2 years preferred",
+            experienceRequirements: {
+              "@type": "OccupationalExperienceRequirements",
+              monthsOfExperience: 24,
+            },
             qualifications:
               "Valid New York State cosmetology, barbering, esthetics, or nail specialty license required",
             jobBenefits:

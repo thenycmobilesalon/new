@@ -145,7 +145,10 @@ export default async function JoinServiceNeighborhoodPage({ params }: Props) {
       },
     },
     directApply: true,
-    experienceRequirements: "2 years preferred",
+    experienceRequirements: {
+      "@type": "OccupationalExperienceRequirements",
+      monthsOfExperience: 24,
+    },
     qualifications: "Valid New York State cosmetology, barbering, esthetics, or nail specialty license required",
     jobBenefits: "Flexible schedule, no booth rental fees, liability insurance included, paid via Zelle or Apple Cash within 30 minutes of job completion, bonus programs",
   };
