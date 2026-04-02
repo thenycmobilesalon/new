@@ -83,7 +83,6 @@ export default function ApplicationForm() {
       const ext = resumeFile.name.split(".").pop();
       const path = `resumes/${timestamp}-${safeName}.${ext}`;
       const { data, error } = await supabase.storage.from("uploads").upload(path, resumeFile, {
-        contentType: resumeFile.type,
         upsert: true,
       });
       if (error) {
@@ -104,7 +103,6 @@ export default function ApplicationForm() {
       const ext = videoFile.name.split(".").pop();
       const path = `videos/${timestamp}-${safeName}.${ext}`;
       const { data, error } = await supabase.storage.from("uploads").upload(path, videoFile, {
-        contentType: videoFile.type,
         upsert: true,
       });
       if (error) {
