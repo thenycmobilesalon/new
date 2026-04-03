@@ -133,7 +133,7 @@ export default function DashboardMap({ jobs }: Props) {
                   <p className="font-bold text-base">{job.clients?.name}</p>
                   <p className="text-gray-600">{date} @ {time}</p>
                   <p className="text-gray-600">{job.service_type}</p>
-                  <p className="text-gray-600">{job.cleaners?.name || 'Unassigned'}</p>
+                  <p className="text-gray-600">{job.cleaners?.name || 'Unassigned stylist'}</p>
                   <p className="text-xs text-gray-400 mt-1">{job.clients?.address}</p>
                   <span className={'inline-block mt-2 text-xs px-2 py-1 rounded-full ' + 
                     (job.status === 'completed' ? 'bg-green-100 text-green-700' : 

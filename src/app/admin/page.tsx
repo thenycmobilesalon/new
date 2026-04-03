@@ -41,7 +41,7 @@ interface MapJob {
   cleaners: { name: string } | null
 }
 
-interface Cleaner {
+interface Stylist {
   id: string
   name: string
 }
@@ -63,7 +63,7 @@ export default function DashboardPage() {
   const [mapView, setMapView] = useState<'today' | 'week' | 'month'>('month')
   const [statusFilter, setStatusFilter] = useState<'all' | 'scheduled' | 'completed' | 'cancelled'>('all')
   const [cleanerFilter, setCleanerFilter] = useState<string>('all')
-  const [cleanersList, setCleanersList] = useState<Cleaner[]>([])
+  const [cleanersList, setCleanersList] = useState<Stylist[]>([])
   const [loading, setLoading] = useState(true)
   const [scheduleIssues, setScheduleIssues] = useState<ScheduleIssue[]>([])
 
@@ -512,7 +512,7 @@ export default function DashboardPage() {
                 onChange={(e) => setCleanerFilter(e.target.value)}
                 className="px-3 py-1.5 bg-gray-100 border-0 rounded-lg text-xs font-medium text-gray-700 focus:ring-2 focus:ring-[#1E2A4A]"
               >
-                <option value="all">All Cleaners</option>
+                <option value="all">All Stylists</option>
                 {cleanersList.map(c => (
                   <option key={c.id} value={c.id}>{c.name}</option>
                 ))}

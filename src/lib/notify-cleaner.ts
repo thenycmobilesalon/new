@@ -65,7 +65,7 @@ export async function notifyCleaner(opts: NotifyCleanerOptions): Promise<Deliver
     // Don't fail the whole flow if table doesn't exist yet
   }
 
-  // 2. Fetch cleaner info + preferences
+  // 2. Fetch stylist info + preferences
   const { data: cleaner } = await supabaseAdmin
     .from('cleaners')
     .select('name, email, phone, sms_consent, notification_preferences')
@@ -127,5 +127,5 @@ export function formatDeliveryReport(report: DeliveryReport): string {
   parts.push(`push ${report.push ? '\u2713' : '\u2717'}${report.quietHours && !report.push ? ' (quiet hrs)' : ''}`)
   parts.push(`email ${report.email ? '\u2713' : '\u2717'}`)
   parts.push(`sms ${report.sms ? '\u2713' : '\u2717'}`)
-  return `Cleaner notified: ${parts.join(' ')}`
+  return `Stylist notified: ${parts.join(' ')}`
 }

@@ -113,7 +113,7 @@ export default function CoverageMap() {
                 <span className="font-medium text-[#1E2A4A] truncate">{zone.label.replace('Manhattan — ', 'Mtn ')}</span>
               </div>
               <span className={`text-[10px] font-medium ${zone.count === 0 ? 'text-red-600' : zone.count === 1 ? 'text-yellow-600' : 'text-green-600'}`}>
-                {zone.count === 0 ? 'NO COVERAGE' : zone.count === 1 ? '1 cleaner' : `${zone.count} cleaners`}
+                {zone.count === 0 ? 'NO COVERAGE' : zone.count === 1 ? '1 stylist' : `${zone.count} stylists`}
               </span>
               {zone.count > 0 && (
                 <div className="mt-0.5">
@@ -129,12 +129,12 @@ export default function CoverageMap() {
         {/* Gap alerts */}
         {gapZones.length > 0 && (
           <div className="mt-3 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-            <p className="text-xs font-medium text-red-700">Need cleaners: {gapZones.map(z => z.label.replace('Manhattan — ', '')).join(', ')}</p>
+            <p className="text-xs font-medium text-red-700">Need stylists: {gapZones.map(z => z.label.replace('Manhattan — ', '')).join(', ')}</p>
           </div>
         )}
         {thinZones.length > 0 && (
           <div className="mt-2 bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-2">
-            <p className="text-xs font-medium text-yellow-700">Thin coverage (1 cleaner): {thinZones.map(z => z.label.replace('Manhattan — ', '')).join(', ')}</p>
+            <p className="text-xs font-medium text-yellow-700">Thin coverage (1 stylist): {thinZones.map(z => z.label.replace('Manhattan — ', '')).join(', ')}</p>
           </div>
         )}
       </div>
@@ -241,7 +241,7 @@ function MapInner({ cleaners, clients, selectedZone }: { cleaners: CleanerPin[];
       polygon._isZone = true
       const zone = SERVICE_ZONES.find(z => z.id === zoneId)
       const count = cleaners.filter(c => c.service_zones.includes(zoneId)).length
-      polygon.bindPopup(`<b>${zone?.label || zoneId}</b><br/>${count} cleaner${count !== 1 ? 's' : ''}${count === 0 ? ' — <span style="color:red">NEED COVERAGE</span>' : ''}`)
+      polygon.bindPopup(`<b>${zone?.label || zoneId}</b><br/>${count} stylist${count !== 1 ? 's' : ''}${count === 0 ? ' — <span style="color:red">NEED COVERAGE</span>' : ''}`)
     })
 
     // Filter by selected zone
@@ -262,7 +262,7 @@ function MapInner({ cleaners, clients, selectedZone }: { cleaners: CleanerPin[];
       marker.bindPopup(`<b>${client.name}</b><br/><span style="font-size:11px;color:#666">${client.address}</span>`)
     })
 
-    // Cleaner pins (large colored markers)
+    // Stylist pins (large colored markers)
     filteredCleaners.forEach(cleaner => {
       const color = cleaner.service_zones[0] ? (ZONE_COLORS[cleaner.service_zones[0]] || '#1E2A4A') : '#1E2A4A'
       const marker = L.circleMarker([cleaner.lat, cleaner.lng], {

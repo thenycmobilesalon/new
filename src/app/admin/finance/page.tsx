@@ -38,7 +38,7 @@ interface FinanceSummary {
   // Referral commissions
   monthReferralCommissions: number
   yearReferralCommissions: number
-  // Per-cleaner breakdown
+  // Per-stylist breakdown
   cleanerTotals: { cleaner_id: string; name: string; total: number; count: number }[]
   // Payment history
   recentPayments: PaymentHistoryItem[]
@@ -76,7 +76,7 @@ interface PendingPayment {
   cleaner_paid: boolean | null
 }
 
-interface CleanerSummary {
+interface StylistSummary {
   cleaner_id: string
   name: string
   totalPay: number
@@ -86,7 +86,7 @@ interface CleanerSummary {
   unpaidTotal: number
 }
 
-interface CleanerIncomeBooking {
+interface StylistIncomeBooking {
   id: string
   date: string
   client_name: string
@@ -97,7 +97,7 @@ interface CleanerIncomeBooking {
   paid: boolean
 }
 
-interface CleanerOption {
+interface StylistOption {
   id: string
   name: string
 }
@@ -142,9 +142,9 @@ export default function FinancePage() {
   const [saving, setSaving] = useState(false)
   const [activeTab, setActiveTab] = useState<'overview' | 'expenses' | 'payroll' | 'statements' | '1099' | 'cleaner-income'>('overview')
   const [backfilling, setBackfilling] = useState(false)
-  // Cleaner Income state
-  const [cleanerIncomeData, setCleanerIncomeData] = useState<{ cleanerSummaries: CleanerSummary[]; bookings: CleanerIncomeBooking[] } | null>(null)
-  const [cleanersList, setCleanersList] = useState<CleanerOption[]>([])
+  // Stylist Income state
+  const [cleanerIncomeData, setCleanerIncomeData] = useState<{ cleanerSummaries: StylistSummary[]; bookings: StylistIncomeBooking[] } | null>(null)
+  const [cleanersList, setCleanersList] = useState<StylistOption[]>([])
   const [incomeCleanerFilter, setIncomeCleanerFilter] = useState('')
   const [incomeDateRange, setIncomeDateRange] = useState<'this_week' | 'this_month' | 'this_year' | 'custom'>('this_month')
   const [incomeCustomFrom, setIncomeCustomFrom] = useState('')
@@ -157,7 +157,7 @@ export default function FinancePage() {
     loadCleanersList()
   }, [])
 
-  // Load cleaner income when tab is active or filters change
+  // Load stylist income when tab is active or filters change
   useEffect(() => {
     if (activeTab === 'cleaner-income') {
       if (incomeDateRange === 'custom') {
@@ -178,7 +178,7 @@ export default function FinancePage() {
         setCleanersList(data.map((c: { id: string; name: string }) => ({ id: c.id, name: c.name })))
       }
     } catch (err) {
-      console.error('Failed to load cleaners:', err)
+      console.error('Failed to load stylists:', err)
     }
   }
 
@@ -214,7 +214,7 @@ export default function FinancePage() {
         setCleanerIncomeData(await res.json())
       }
     } catch (err) {
-      console.error('Failed to load cleaner income:', err)
+      console.error('Failed to load stylist income:', err)
     }
     setIncomeLoading(false)
   }
@@ -369,19 +369,19 @@ export default function FinancePage() {
       })
       filename = `expenses_${new Date().toISOString().split('T')[0]}.csv`
     } else if (type === 'payroll') {
-      csv = 'Date,Client,Cleaner,Hours,Client Amount,Cleaner Pay\n'
+      csv = 'Date,Client,Stylist,Hours,Client Amount,Stylist Pay\n'
       pendingPayments.forEach(p => {
         csv += `${p.date},"${p.client_name}","${p.cleaner_name}",${p.actual_hours},$${(p.amount / 100).toFixed(2)},$${(p.cleaner_pay / 100).toFixed(2)}\n`
       })
       filename = `payroll_pending_${new Date().toISOString().split('T')[0]}.csv`
     } else if (type === '1099') {
-      csv = 'Cleaner,Total Paid YTD\n'
+      csv = 'Stylist,Total Paid YTD\n'
       summary?.cleanerTotals?.forEach(c => {
         csv += `"${c.name}",$${(c.total / 100).toFixed(2)}\n`
       })
       filename = `1099_summary_${new Date().getFullYear()}.csv`
     } else if (type === 'cleaner-income') {
-      csv = 'Date,Client,Cleaner,Hours,Pay,Status\n'
+      csv = 'Date,Client,Stylist,Hours,Pay,Status\n'
       cleanerIncomeData?.bookings?.forEach(b => {
         csv += `${new Date(b.date).toLocaleDateString()},"${b.client_name}","${b.cleaner_name}",${b.hours},$${(b.cleaner_pay / 100).toFixed(2)},${b.paid ? 'Paid' : 'Unpaid'}\n`
       })
@@ -453,7 +453,7 @@ export default function FinancePage() {
             { key: 'expenses' as const, label: 'Expenses' },
             { key: 'statements' as const, label: 'Statements' },
             { key: '1099' as const, label: '1099 Report' },
-            { key: 'cleaner-income' as const, label: 'Cleaners Income' },
+            { key: 'cleaner-income' as const, label: 'Stylist Income' },
           ]).map(tab => (
             <button
               key={tab.key}
@@ -725,7 +725,7 @@ export default function FinancePage() {
           </div>
         ) : activeTab === 'payroll' ? (
           <div className="space-y-4">
-            {/* Per-Cleaner Summary */}
+            {/* Per-Stylist Summary */}
             {summary?.cleanerTotals && summary.cleanerTotals.length > 0 && (
               <div className="bg-orange-50 border border-orange-200 rounded-xl p-5 mb-4">
                 <div className="flex justify-between items-center mb-3">
@@ -760,7 +760,7 @@ export default function FinancePage() {
                     <tr>
                       <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Date</th>
                       <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Client</th>
-                      <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Cleaner</th>
+                      <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Stylist</th>
                       <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Hours</th>
                       <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Collect</th>
                       <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Pay Team</th>
@@ -820,7 +820,7 @@ export default function FinancePage() {
                         <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Date Paid</th>
                         <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Job Date</th>
                         <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Client</th>
-                        <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Cleaner</th>
+                        <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Stylist</th>
                         <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Hours</th>
                         <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Amount Paid</th>
                       </tr>
@@ -1032,7 +1032,7 @@ export default function FinancePage() {
                 onChange={(e) => setIncomeCleanerFilter(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg text-[#1E2A4A] text-sm"
               >
-                <option value="">All Cleaners</option>
+                <option value="">All Stylists</option>
                 {cleanersList.map(c => (
                   <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
@@ -1100,7 +1100,7 @@ export default function FinancePage() {
               <p className="text-gray-500 text-center py-8">Loading...</p>
             ) : cleanerIncomeData ? (
               <>
-                {/* Per-cleaner summary cards */}
+                {/* Per-stylist summary cards */}
                 {cleanerIncomeData.cleanerSummaries.length > 0 && (
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                     {cleanerIncomeData.cleanerSummaries.map(cs => (
@@ -1176,7 +1176,7 @@ export default function FinancePage() {
                           <tr>
                             <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Date</th>
                             <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Client</th>
-                            <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Cleaner</th>
+                            <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Stylist</th>
                             <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Hours</th>
                             <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Pay</th>
                             <th className="text-left p-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>

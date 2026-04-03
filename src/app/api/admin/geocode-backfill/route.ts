@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     await new Promise(r => setTimeout(r, 200))
   }
 
-  // Geocode cleaners missing coords
+  // Geocode stylists missing coords
   const { data: cleaners } = await supabaseAdmin
     .from('cleaners')
     .select('id, address')

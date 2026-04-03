@@ -38,7 +38,7 @@ interface Schedule {
   [day: string]: { start: string; end: string } | null
 }
 
-interface Cleaner {
+interface Stylist {
   id: string
   name: string
   email: string
@@ -102,10 +102,10 @@ const HOURS = [
   '9:00 PM'
 ]
 
-export default function CleanersPage() {
+export default function StylistsPage() {
   useEffect(() => { document.title = 'Team | The NYC Mobile Salon' }, []);
   const [activeTab, setActiveTab] = useState<'team' | 'applications' | 'ops-manager'>('team')
-  const [cleaners, setCleaners] = useState<Cleaner[]>([])
+  const [stylists, setStylists] = useState<Stylist[]>([])
   const [applications, setApplications] = useState<Application[]>([])
   const [mgmtApplications, setMgmtApplications] = useState<MgmtApplication[]>([])
   const [showModal, setShowModal] = useState(false)
@@ -135,17 +135,17 @@ export default function CleanersPage() {
   const [dragOverId, setDragOverId] = useState<string | null>(null)
 
   useEffect(() => {
-    loadCleaners()
+    loadStylists()
     loadApplications()
     loadMgmtApplications()
   }, [])
 
-  const loadCleaners = async () => {
+  const loadStylists = async () => {
     const res = await fetch('/api/cleaners')
     if (res.ok) {
       const data = await res.json()
-      // Show all cleaners (active first, then inactive)
-      setCleaners(data.sort((a: Cleaner, b: Cleaner) => Number(b.active) - Number(a.active)))
+      // Show all stylists (active first, then inactive)
+      setStylists(data.sort((a: Stylist, b: Stylist) => Number(b.active) - Number(a.active)))
     }
   }
 
@@ -177,18 +177,18 @@ export default function CleanersPage() {
     loadMgmtApplications()
   }
 
-  const handlePhotoUpload = async (rawFile: File, cleanerId?: string) => {
+  const handlePhotoUpload = async (rawFile: File, stylistId?: string) => {
     setUploadingPhoto(true)
     try {
       const file = await compressImage(rawFile)
       const formData = new FormData()
       formData.append('file', file)
-      if (cleanerId) formData.append('cleaner_id', cleanerId)
+      if (stylistId) formData.append('cleaner_id', stylistId)
       const res = await fetch('/api/cleaners/upload', { method: 'POST', body: formData })
       const data = await res.json()
       if (res.ok) {
         setForm(f => ({ ...f, photo_url: data.url }))
-        if (cleanerId) loadCleaners()
+        if (stylistId) loadStylists()
       } else {
         alert(data.error || 'Failed to upload photo')
       }
@@ -269,28 +269,28 @@ export default function CleanersPage() {
     setEditingId(null)
     setForm({ name: '', email: '', phone: '', address: '', unit: '', working_days: [], schedule: {}, unavailable_dates: [], pin: '', hourly_rate: 25, active: true, photo_url: '', max_jobs_per_day: null, service_zones: [], has_car: false, home_by_time: '18:00' })
     setNewDateOff('')
-    loadCleaners()
+    loadStylists()
   }
 
-  const handleEdit = (cleaner: Cleaner) => {
-    setEditingId(cleaner.id)
+  const handleEdit = (stylist: Stylist) => {
+    setEditingId(stylist.id)
     setForm({
-      name: cleaner.name,
-      email: cleaner.email || '',
-      phone: cleaner.phone,
-      address: cleaner.address || '',
+      name: stylist.name,
+      email: stylist.email || '',
+      phone: stylist.phone,
+      address: stylist.address || '',
       unit: '',
-      working_days: cleaner.working_days || [],
-      schedule: cleaner.schedule || {},
-      unavailable_dates: cleaner.unavailable_dates || [],
-      pin: cleaner.pin || '',
-      hourly_rate: cleaner.hourly_rate || 25,
-      active: cleaner.active,
-      photo_url: cleaner.photo_url || '',
-      max_jobs_per_day: cleaner.max_jobs_per_day || null,
-      service_zones: cleaner.service_zones || [],
-      has_car: cleaner.has_car || false,
-      home_by_time: cleaner.home_by_time || '18:00',
+      working_days: stylist.working_days || [],
+      schedule: stylist.schedule || {},
+      unavailable_dates: stylist.unavailable_dates || [],
+      pin: stylist.pin || '',
+      hourly_rate: stylist.hourly_rate || 25,
+      active: stylist.active,
+      photo_url: stylist.photo_url || '',
+      max_jobs_per_day: stylist.max_jobs_per_day || null,
+      service_zones: stylist.service_zones || [],
+      has_car: stylist.has_car || false,
+      home_by_time: stylist.home_by_time || '18:00',
     })
     setNewDateOff('')
     setShowModal(true)
@@ -300,7 +300,7 @@ export default function CleanersPage() {
     if (confirm('Permanently delete this team member? This cannot be undone.')) {
       const res = await fetch(`/api/cleaners/${id}`, { method: 'DELETE' })
       if (res.ok) {
-        loadCleaners()
+        loadStylists()
       } else {
         const err = await res.json()
         alert('Error: ' + (err.error || 'Failed to delete'))
@@ -309,7 +309,7 @@ export default function CleanersPage() {
   }
 
   const handleApproveApplication = async (app: Application) => {
-    // Create cleaner from application
+    // Create stylist from application
     const pin = generatePin()
     const res = await fetch('/api/cleaners', {
       method: 'POST',
@@ -332,7 +332,7 @@ export default function CleanersPage() {
 
     if (!res.ok) {
       const err = await res.json()
-      alert('Error creating team member: ' + (err.error || 'Failed'))
+      alert('Error creating stylist: ' + (err.error || 'Failed'))
       return
     }
 
@@ -352,7 +352,7 @@ export default function CleanersPage() {
       })
     }
 
-    loadCleaners()
+    loadStylists()
     loadApplications()
   }
 
@@ -406,18 +406,18 @@ export default function CleanersPage() {
     setForm({ ...form, phone })
   }
 
-  const formatScheduleDisplay = (cleaner: Cleaner) => {
-    if (!cleaner.schedule || Object.keys(cleaner.schedule).length === 0) {
-      return cleaner.working_days?.join(', ') || '-'
+  const formatScheduleDisplay = (stylist: Stylist) => {
+    if (!stylist.schedule || Object.keys(stylist.schedule).length === 0) {
+      return stylist.working_days?.join(', ') || '-'
     }
 
-    const activeDays = DAYS.filter(d => cleaner.schedule?.[d])
+    const activeDays = DAYS.filter(d => stylist.schedule?.[d])
     if (activeDays.length === 0) return '-'
 
-    const firstDay = cleaner.schedule[activeDays[0]]
+    const firstDay = stylist.schedule[activeDays[0]]
     const allSame = activeDays.every(d =>
-      cleaner.schedule?.[d]?.start === firstDay?.start &&
-      cleaner.schedule?.[d]?.end === firstDay?.end
+      stylist.schedule?.[d]?.start === firstDay?.start &&
+      stylist.schedule?.[d]?.end === firstDay?.end
     )
 
     if (allSame && firstDay) {
@@ -425,7 +425,7 @@ export default function CleanersPage() {
     }
 
     return activeDays.map(d => {
-      const s = cleaner.schedule?.[d]
+      const s = stylist.schedule?.[d]
       return s ? `${d} ${s.start}-${s.end}` : d
     }).join(', ')
   }
@@ -439,11 +439,11 @@ export default function CleanersPage() {
       .slice(0, 2)
   }
 
-  const getScheduleDays = (cleaner: Cleaner) => {
-    if (!cleaner.schedule || Object.keys(cleaner.schedule).length === 0) {
-      return cleaner.working_days || []
+  const getScheduleDays = (stylist: Stylist) => {
+    if (!stylist.schedule || Object.keys(stylist.schedule).length === 0) {
+      return stylist.working_days || []
     }
-    return DAYS.filter(d => cleaner.schedule?.[d])
+    return DAYS.filter(d => stylist.schedule?.[d])
   }
 
   const formatDate = (dateStr: string) => {
@@ -476,17 +476,17 @@ export default function CleanersPage() {
       return
     }
 
-    const draggedIndex = cleaners.findIndex(c => c.id === draggedId)
-    const targetIndex = cleaners.findIndex(c => c.id === targetId)
+    const draggedIndex = stylists.findIndex(c => c.id === draggedId)
+    const targetIndex = stylists.findIndex(c => c.id === targetId)
 
     // Reorder locally
-    const newCleaners = [...cleaners]
-    const [draggedItem] = newCleaners.splice(draggedIndex, 1)
-    newCleaners.splice(targetIndex, 0, draggedItem)
-    setCleaners(newCleaners)
+    const newStylists = [...stylists]
+    const [draggedItem] = newStylists.splice(draggedIndex, 1)
+    newStylists.splice(targetIndex, 0, draggedItem)
+    setStylists(newStylists)
 
     // Save new priorities to API
-    const priorities = newCleaners.map((c, i) => ({ id: c.id, priority: i + 1 }))
+    const priorities = newStylists.map((c, i) => ({ id: c.id, priority: i + 1 }))
     await fetch('/api/cleaners/priority', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -529,7 +529,7 @@ export default function CleanersPage() {
             onClick={() => setActiveTab('team')}
             className={`pb-3 px-1 ${activeTab === 'team' ? 'border-b-2 border-[#1E2A4A] font-semibold' : 'text-gray-500'}`}
           >
-            Team ({cleaners.filter(c => c.active).length})
+            Team ({stylists.filter(c => c.active).length})
           </button>
           <button
             onClick={() => setActiveTab('applications')}
@@ -655,11 +655,11 @@ export default function CleanersPage() {
             )}
           </div>
         ) : activeTab === 'team' ? (
-          cleaners.length === 0 ? (
+          stylists.length === 0 ? (
             <div className="text-center py-16 text-gray-500">No team members yet</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-              {cleaners.map((c) => (
+              {stylists.map((c) => (
                 <div
                   key={c.id}
                   draggable

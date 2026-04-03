@@ -43,7 +43,7 @@ export interface Settings {
   daily_summary_enabled: boolean
   client_reminder_email: boolean
   client_reminder_sms: boolean
-  // Team Guidelines
+  // Team Guidelines (DB column: cleaner_guidelines)
   cleaner_guidelines: { en: string; es: string } | null
   guidelines_updated_at: string | null
   // Timestamps
@@ -59,10 +59,10 @@ export const DEFAULT_SETTINGS: Omit<Settings, 'id' | 'updated_at'> = {
   email_from_name: 'The NYC Mobile Salon',
   email_from_address: 'hi@thenycmobilesalon.com',
   service_types: [
-    { name: 'Standard Cleaning', default_hours: 2, active: true },
-    { name: 'Deep Cleaning', default_hours: 4, active: true },
-    { name: 'Move In/Out', default_hours: 5, active: true },
-    { name: 'Post Construction', default_hours: 2, active: true },
+    { name: 'Haircut & Style', default_hours: 2, active: true },
+    { name: 'Color & Highlights', default_hours: 4, active: true },
+    { name: 'Blowout', default_hours: 1, active: true },
+    { name: 'Bridal & Event', default_hours: 5, active: true },
   ],
   standard_rate: 75,
   budget_rate: 49,

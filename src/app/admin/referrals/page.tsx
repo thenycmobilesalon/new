@@ -359,7 +359,7 @@ export default function ReferralsPage() {
                           <span className="font-semibold text-[#1E2A4A]">{comm.referrers?.name}</span>
                           <span className="text-xs font-mono text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{comm.referrers?.ref_code}</span>
                         </div>
-                        <p className="text-sm text-gray-500 mt-0.5">{comm.client_name}&apos;s cleaning &middot; {formatDate(comm.created_at)}</p>
+                        <p className="text-sm text-gray-500 mt-0.5">{comm.client_name}&apos;s appointment &middot; {formatDate(comm.created_at)}</p>
                         <p className="text-xs text-gray-400 mt-0.5">Service: {formatMoney(comm.gross_amount)} &rarr; Commission: {formatMoney(comm.commission_amount)}</p>
                       </div>
                       <div className="flex items-center gap-4 flex-shrink-0">

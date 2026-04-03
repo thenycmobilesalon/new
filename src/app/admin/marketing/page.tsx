@@ -568,7 +568,7 @@ export default function MarketingPage() {
             value={prompt}
             onChange={e => setPrompt(e.target.value)}
             rows={3}
-            placeholder="e.g. 20% off spring cleaning special, mention our referral program, book before March 15"
+            placeholder="e.g. 20% off spring beauty special, mention our referral program, book before March 15"
             className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1E2A4A]/20 focus:border-[#1E2A4A]"
             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); generateContent() } }}
           />

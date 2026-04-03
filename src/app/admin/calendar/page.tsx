@@ -8,8 +8,8 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 
 interface Client { id: string; name: string; phone: string; address: string }
-interface Cleaner { id: string; name: string }
-interface CleanerAvail { id: string; name: string; available: boolean; conflict?: string }
+interface Stylist { id: string; name: string }
+interface StylistAvail { id: string; name: string; available: boolean; conflict?: string }
 interface Booking {
   id: string
   start_time: string
@@ -23,7 +23,7 @@ interface Booking {
   client_id: string
   cleaner_id: string
   clients: Client | null
-  cleaners: Cleaner | null
+  cleaners: Stylist | null
   hourly_rate?: number
   recurring_type?: string | null
   schedule_id?: string | null
@@ -39,7 +39,7 @@ interface BookingEvent {
   extendedProps: { booking: Booking | null; cleanerId?: string }
 }
 
-const CLEANER_COLORS = [
+const STYLIST_COLORS = [
   '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
   '#ec4899', '#14b8a6', '#f97316'
 ]
@@ -49,7 +49,7 @@ export default function CalendarPage() {
   useEffect(() => { document.title = 'Calendar | The NYC Mobile Salon' }, [])
   const [bookings, setBookings] = useState<BookingEvent[]>([])
   const [allBookings, setAllBookings] = useState<Booking[]>([])
-  const [cleaners, setCleaners] = useState<Cleaner[]>([])
+  const [cleaners, setCleaners] = useState<Stylist[]>([])
   const [selectedCleaner, setSelectedCleaner] = useState<string>('')
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>(['pending', 'scheduled', 'in_progress', 'completed'])
   const [cleanerColors, setCleanerColors] = useState<Record<string, string>>({})
@@ -84,7 +84,7 @@ export default function CalendarPage() {
       const data = await res.json()
       setCleaners(data)
       const colors: Record<string, string> = {}
-      data.forEach((c: Cleaner, i: number) => { colors[c.id] = CLEANER_COLORS[i % CLEANER_COLORS.length] })
+      data.forEach((c: Stylist, i: number) => { colors[c.id] = STYLIST_COLORS[i % STYLIST_COLORS.length] })
       setCleanerColors(colors)
     }
   }
@@ -256,7 +256,7 @@ export default function CalendarPage() {
       {/* Filters */}
       <div className="mb-2 flex flex-col md:flex-row flex-wrap gap-4 items-start md:items-center bg-gray-50 px-3 py-2 rounded-lg overflow-x-hidden">
         <div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">Team Member</label>
+          <label className="block text-xs font-medium text-gray-600 mb-1">Stylist</label>
           <select value={selectedCleaner} onChange={(e) => setSelectedCleaner(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-[#1E2A4A] text-sm">
             <option value="">All Team</option>
             {cleaners.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}

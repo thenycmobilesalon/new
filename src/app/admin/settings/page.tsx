@@ -141,7 +141,7 @@ export default function SettingsPage() {
       const res = await fetch('/api/admin/broadcast-guidelines', { method: 'POST' })
       const data = await res.json()
       if (res.ok) {
-        showMessage('success', `Guidelines broadcast sent: ${data.summary.push} push, ${data.summary.email} email, ${data.summary.sms} SMS to ${data.summary.total} cleaners`)
+        showMessage('success', `Guidelines broadcast sent: ${data.summary.push} push, ${data.summary.email} email, ${data.summary.sms} SMS to ${data.summary.total} stylists`)
       } else {
         showMessage('error', data.error || 'Failed to broadcast')
       }
@@ -590,7 +590,7 @@ export default function SettingsPage() {
                   <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">DAILY SUMMARY</h2>
                   <label className="flex items-center gap-3 cursor-pointer p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
                     <input type="checkbox" checked={settings.daily_summary_enabled} onChange={e => update('daily_summary_enabled', e.target.checked)} className="accent-[#1E2A4A] w-4 h-4" />
-                    <span className="text-[#1E2A4A] text-sm font-medium">Send daily summary to cleaners at 7 PM EST</span>
+                    <span className="text-[#1E2A4A] text-sm font-medium">Send daily summary to stylists at 7 PM EST</span>
                   </label>
                 </div>
 
@@ -635,7 +635,7 @@ export default function SettingsPage() {
                   </ul>
                 </div>
                 <div className="border border-gray-100 rounded-xl p-4 hover:bg-gray-50/50 transition-colors">
-                  <h3 className="font-medium text-[#1E2A4A] text-sm">Cleaner Emails</h3>
+                  <h3 className="font-medium text-[#1E2A4A] text-sm">Stylist Emails</h3>
                   <ul className="mt-2 space-y-1.5 text-sm text-gray-500">
                     <li>Job Assignment</li>
                     <li>Daily Summary</li>
@@ -684,7 +684,7 @@ export default function SettingsPage() {
           <div className="space-y-6">
             <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
               <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">TEAM MEMBER GUIDELINES</h2>
-              <p className="text-gray-400 text-sm mb-5">Bilingual guidelines shown to cleaners on their dashboard. Displayed as a popup they must review.</p>
+              <p className="text-gray-400 text-sm mb-5">Bilingual guidelines shown to stylists on their dashboard. Displayed as a popup they must review.</p>
 
               <div className="space-y-5">
                 <div>
@@ -745,7 +745,7 @@ export default function SettingsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <ToolCard
                   title="Daily Summary"
-                  description="Send tomorrow schedule to all cleaners"
+                  description="Send tomorrow schedule to all stylists"
                   loading={loading === 'daily-summary'}
                   onClick={() => runTool('/api/cron/daily-summary', 'daily-summary', 'Daily summary emails sent')}
                 />
@@ -809,7 +809,7 @@ export default function SettingsPage() {
                   value={serviceModal.name}
                   onChange={e => setServiceModal(s => ({ ...s, name: e.target.value }))}
                   className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-[#1E2A4A] focus:ring-2 focus:ring-[#A8F0DC] focus:border-[#A8F0DC] outline-none transition"
-                  placeholder="e.g. Deep Cleaning"
+                  placeholder="e.g. Blowout & Style"
                   autoFocus
                 />
               </div>

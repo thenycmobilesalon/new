@@ -19,7 +19,7 @@ interface CleanerScore {
   reason: string
 }
 
-// Score a cleaner for a specific booking slot, factoring in:
+// Score a stylist for a specific booking slot, factoring in:
 // 1. Geographic proximity to the job (closer = better)
 // 2. Clustering with their other jobs that day (less total travel = better)
 // 3. Can they get home on time after this job?
@@ -52,7 +52,7 @@ export async function scoreCleanersForBooking(opts: {
   // Get day info
   const dayOfWeek = new Date(date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short' })
 
-  // Get all active cleaners
+  // Get all active stylists
   const { data: allCleaners } = await supabaseAdmin
     .from('cleaners')
     .select('id, name, address, home_latitude, home_longitude, home_by_time, working_days, schedule, unavailable_dates, max_jobs_per_day, service_zones, has_car')
@@ -77,7 +77,7 @@ export async function scoreCleanersForBooking(opts: {
   const scores: CleanerScore[] = []
 
   for (const cleaner of allCleaners || []) {
-    // Check if cleaner works this day
+    // Check if stylist works this day
     const worksToday = (() => {
       if (cleaner.unavailable_dates?.includes(date)) return false
       if (cleaner.working_days?.length > 0) return cleaner.working_days.includes(dayOfWeek)
@@ -134,12 +134,12 @@ export async function scoreCleanersForBooking(opts: {
     const hasCar = cleaner.has_car || false
 
     if (zoneMatch) score += 50  // big bonus for zone match
-    if (!zoneMatch && cleanerZones.length > 0) score -= 30  // penalty if cleaner has zones but this isn't one
+    if (!zoneMatch && cleanerZones.length > 0) score -= 30  // penalty if stylist has zones but this isn't one
 
-    // Car check: if zone requires car and cleaner doesn't have one, heavy penalty
+    // Car check: if zone requires car and stylist doesn't have one, heavy penalty
     if (jobZone && zoneRequiresCar(jobZone) && !hasCar) score -= 80
 
-    // 1. Distance from job to cleaner's home (proximity baseline)
+    // 1. Distance from job to stylist's home (proximity baseline)
     let distMiles: number | undefined
     if (jobCoords) {
       let homeCoords = cleaner.home_latitude && cleaner.home_longitude
@@ -253,7 +253,7 @@ export async function scoreCleanersForBooking(opts: {
     else if (distMiles && distMiles < 2) reason = 'Close to home'
     else if (canMakeHome) reason = 'Available'
     if (!canMakeHome) reason = `Won't make home by ${homeBy}`
-    if (jobZone && zoneRequiresCar(jobZone) && !hasCar) reason = 'No car — area requires driving'
+    if (jobZone && zoneRequiresCar(jobZone) && !hasCar) reason = 'No car \u2014 area requires driving'
 
     scores.push({
       id: cleaner.id,

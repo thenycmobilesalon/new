@@ -63,7 +63,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  // If cleaner changed, update all future scheduled bookings in this series
+  // If stylist changed, update all future scheduled bookings in this series
   if (body.cleaner_id !== undefined) {
     await supabaseAdmin
       .from('bookings')
@@ -72,10 +72,10 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       .in('status', ['scheduled', 'pending'])
       .gte('start_time', new Date().toISOString())
 
-    // Notify the new cleaner about the assignment
+    // Notify the new stylist about the assignment
     if (body.cleaner_id) {
       try {
-        // Fetch the first upcoming booking with client + cleaner data for templates
+        // Fetch the first upcoming booking with client + stylist data for templates
         const { data: booking } = await supabaseAdmin
           .from('bookings')
           .select('*, clients(*), cleaners(*)')
@@ -143,7 +143,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
   // Notify the client about the series cancellation
   if (cancelled && cancelled.length > 0) {
     try {
-      // Fetch first affected booking with client + cleaner data for notification templates
+      // Fetch first affected booking with client + stylist data for notification templates
       const { data: booking } = await supabaseAdmin
         .from('bookings')
         .select('*, clients(*), cleaners(*)')
@@ -171,7 +171,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         }
         // Client push notification
         if (booking.client_id) {
-          sendPushToClient(booking.client_id, 'Schedule Cancelled', 'Your recurring cleaning schedule has been cancelled', '/book/dashboard').catch(() => {})
+          sendPushToClient(booking.client_id, 'Schedule Cancelled', 'Your recurring appointment schedule has been cancelled', '/book/dashboard').catch(() => {})
         }
       }
     } catch {

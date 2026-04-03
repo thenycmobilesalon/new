@@ -53,10 +53,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     message: `${schedule.clients?.name} - ${schedule.recurring_type} paused until ${paused_until} (${cancelled?.length || 0} bookings cancelled)`
   })
 
-  // Notify the client about the series cancellation
+  // Notify the client about the series pause
   if (cancelled && cancelled.length > 0) {
     try {
-      // Fetch first affected booking with client + cleaner data for notification templates
+      // Fetch first affected booking with client + stylist data for notification templates
       const { data: booking } = await supabaseAdmin
         .from('bookings')
         .select('*, clients(*), cleaners(*)')
@@ -84,7 +84,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         }
         // Client push notification
         if (booking.client_id) {
-          sendPushToClient(booking.client_id, 'Schedule Paused', `Your recurring cleaning has been paused until ${paused_until}`, '/book/dashboard').catch(() => {})
+          sendPushToClient(booking.client_id, 'Schedule Paused', `Your recurring appointment has been paused until ${paused_until}`, '/book/dashboard').catch(() => {})
         }
       }
     } catch {

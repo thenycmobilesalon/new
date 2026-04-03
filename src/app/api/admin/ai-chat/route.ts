@@ -31,23 +31,23 @@ const tools: Anthropic.Tool[] = [
   },
   {
     name: 'search_cleaners',
-    description: 'Search cleaners by name, or list all active cleaners if no query given.',
+    description: 'Search stylists by name, or list all active stylists.',
     input_schema: {
       type: 'object' as const,
       properties: {
-        query: { type: 'string', description: 'Optional cleaner name to search for' },
+        query: { type: 'string', description: 'Optional stylist name to search for' },
       },
       required: [],
     },
   },
   {
     name: 'query_bookings',
-    description: 'Query bookings with filters. Returns bookings with client and cleaner names.',
+    description: 'Query bookings with filters. Returns bookings with client and stylist names.',
     input_schema: {
       type: 'object' as const,
       properties: {
         client_id: { type: 'string', description: 'Filter by client ID' },
-        cleaner_id: { type: 'string', description: 'Filter by cleaner ID' },
+        cleaner_id: { type: 'string', description: 'Filter by stylist ID' },
         status: { type: 'string', description: 'Filter by status: scheduled, completed, cancelled, pending, in_progress' },
         date_from: { type: 'string', description: 'Start date (YYYY-MM-DD)' },
         date_to: { type: 'string', description: 'End date (YYYY-MM-DD)' },
@@ -58,7 +58,7 @@ const tools: Anthropic.Tool[] = [
   },
   {
     name: 'update_bookings',
-    description: 'Update one or more bookings. Use for reassigning cleaners, changing status, price, notes, times, etc.',
+    description: 'Update one or more bookings. Use for reassigning stylists, changing status, price, notes, times, etc.',
     input_schema: {
       type: 'object' as const,
       properties: {
@@ -157,8 +157,8 @@ const tools: Anthropic.Tool[] = [
         client_id: { type: 'string', description: 'Client ID (search for client first)' },
         start_time: { type: 'string', description: 'Start time as ISO string (YYYY-MM-DDTHH:MM:00)' },
         end_time: { type: 'string', description: 'End time as ISO string. Defaults to 2 hours after start_time if not provided.' },
-        service_type: { type: 'string', description: 'Service type: regular, deep_clean, move_in_out, emergency. Defaults to regular.' },
-        cleaner_id: { type: 'string', description: 'Cleaner ID to assign. Optional.' },
+        service_type: { type: 'string', description: 'Service type: haircut, blowout, color, manicure, pedicure, bridal, makeup, package. Defaults to haircut.' },
+        cleaner_id: { type: 'string', description: 'Stylist ID to assign. Optional.' },
         price: { type: 'number', description: 'Price in cents. Optional.' },
         notes: { type: 'string', description: 'Booking notes. Optional.' },
         confirmed: { type: 'boolean', description: 'Set to true only after user confirms the action' },

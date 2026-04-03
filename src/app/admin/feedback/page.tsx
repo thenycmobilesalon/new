@@ -108,7 +108,7 @@ export default function FeedbackPage() {
     if (s.includes('email')) return 'Email'
     if (s.includes('sms') || s.includes('text')) return 'SMS'
     if (s.includes('portal') || s.includes('client')) return 'Client Portal'
-    if (s.includes('cleaner')) return 'Cleaner Portal'
+    if (s.includes('cleaner')) return 'Stylist Portal'
     if (s.includes('book')) return 'Booking Flow'
     if (s.includes('web') || s.includes('site')) return 'Website'
     return source || 'Unknown'

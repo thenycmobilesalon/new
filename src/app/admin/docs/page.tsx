@@ -166,7 +166,7 @@ export default function DocsPage() {
             <T headers={['Route', 'What it does']} rows={[
               ['/', 'Redirects to /login'],
               ['/login', 'Admin password login'],
-              ['/apply', 'Cleaner job application (bilingual EN/ES)'],
+              ['/apply', 'Stylist job application (bilingual EN/ES)'],
               ['/feedback', 'Anonymous feedback form'],
             ]} />
 
@@ -181,9 +181,9 @@ export default function DocsPage() {
 
             <h3 className="text-lg font-semibold text-[#1E2A4A] mt-6 mb-3">Team Portal</h3>
             <T headers={['Route', 'What it does']} rows={[
-              ['/team', 'Cleaner PIN login'],
+              ['/team', 'Stylist PIN login'],
               ['/team/[token]', 'Job details via unique token link'],
-              ['/team/dashboard', 'Cleaner dashboard (jobs, check-in/out, earnings)'],
+              ['/team/dashboard', 'Stylist dashboard (jobs, check-in/out, earnings)'],
             ]} />
 
             <h3 className="text-lg font-semibold text-[#1E2A4A] mt-6 mb-3">Referral Portal</h3>
@@ -198,7 +198,7 @@ export default function DocsPage() {
               ['/admin/bookings', 'Manage all bookings'],
               ['/admin/calendar', 'Calendar view (month/week/day)'],
               ['/admin/clients', 'Client CRM + lifecycle analytics'],
-              ['/admin/cleaners', 'Cleaner roster + applications'],
+              ['/admin/cleaners', 'Stylist roster + applications'],
               ['/admin/leads', 'Lead management + EMD tracking'],
               ['/admin/referrals', 'Referral program management'],
               ['/admin/finance', 'Revenue, expenses, payroll, statements'],
@@ -219,13 +219,13 @@ export default function DocsPage() {
               ['Verification Code', 'Client', 'Login code request'],
             ]} />
 
-            <h3 className="text-lg font-semibold text-[#1E2A4A] mt-6 mb-3">Cleaner Emails (Bilingual EN/ES)</h3>
+            <h3 className="text-lg font-semibold text-[#1E2A4A] mt-6 mb-3">Stylist Emails (Bilingual EN/ES)</h3>
             <T headers={['Email', 'Sent To', 'Trigger']} rows={[
-              ['New Job Assigned', 'Cleaner', 'Booking created/assigned'],
-              ["Tomorrow's Schedule", 'All active cleaners', 'Midnight cron job'],
-              ['Job Cancelled', 'Cleaner', 'Booking cancelled'],
-              ['Job Rescheduled', 'Cleaner', 'Booking rescheduled'],
-              ['Welcome + PIN', 'Cleaner', 'Manual send from admin'],
+              ['New Job Assigned', 'Stylist', 'Booking created/assigned'],
+              ["Tomorrow's Schedule", 'All active stylists', 'Midnight cron job'],
+              ['Job Cancelled', 'Stylist', 'Booking cancelled'],
+              ['Job Rescheduled', 'Stylist', 'Booking rescheduled'],
+              ['Welcome + PIN', 'Stylist', 'Manual send from admin'],
             ]} />
 
             <h3 className="text-lg font-semibold text-[#1E2A4A] mt-6 mb-3">Referrer Emails</h3>
@@ -252,7 +252,7 @@ export default function DocsPage() {
             <h2 className="text-xl font-semibold text-[#1E2A4A] mt-10 mb-4">Automations — Cron Jobs</h2>
             <T headers={['Job', 'Schedule', 'What it does']} rows={[
               ['Reminders', 'Every hour', 'Client reminders (7d/3d/1d/2hr before), thank-you emails (3 days after first booking), pending booking alerts to admin (8am/2pm)'],
-              ['Daily Summary', 'Midnight', "Tomorrow's schedule to each cleaner, recurring booking expiration checks (30-day warning)"],
+              ['Daily Summary', 'Midnight', "Tomorrow's schedule to each stylist, recurring booking expiration checks (30-day warning)"],
               ['Backup', '5am', 'CSV export of all clients + bookings (6 months), emailed as attachments'],
             ]} />
 
@@ -260,18 +260,18 @@ export default function DocsPage() {
             <T headers={['Type', 'Title', 'Trigger']} rows={[
               ['new_booking', 'New booking from {name}', 'Client submits booking'],
               ['new_client', 'New client added/collected', 'Client created'],
-              ['check_in', 'Job Started / GPS Mismatch', 'Cleaner checks in'],
-              ['job_complete', 'Job Done: {client}', 'Cleaner checks out'],
+              ['check_in', 'Job Started / GPS Mismatch', 'Stylist checks in'],
+              ['job_complete', 'Job Done: {client}', 'Stylist checks out'],
               ['check_out', 'Job Completed', 'Admin marks completed'],
               ['payment_received', 'Payment Received', 'Admin logs payment'],
               ['booking_cancelled', 'Booking Cancelled', 'Booking cancelled'],
               ['reschedule', 'Booking rescheduled', 'Client reschedules'],
               ['job_broadcast', 'Job Broadcast Sent', 'Emergency broadcast'],
-              ['job_claimed', 'Emergency Job Claimed', 'Cleaner claims job'],
+              ['job_claimed', 'Emergency Job Claimed', 'Stylist claims job'],
               ['new_referrer', 'New referrer: {code}', 'Referrer signs up'],
               ['referral_commission', 'Referral Commission Created', 'Commission earned'],
               ['referral_lead', 'New Referrer Lead', 'Unmatched referrer name'],
-              ['cleaner_application', 'New Cleaner Application', 'Application submitted'],
+              ['cleaner_application', 'New Stylist Application', 'Application submitted'],
               ['pending_reminder', 'Pending Bookings', 'Cron finds unassigned bookings'],
               ['recurring_expiring', 'Recurring Booking Ending Soon', '30-day expiry warning'],
               ['feedback', 'Feedback from {source}', 'User submits feedback'],
@@ -290,20 +290,20 @@ export default function DocsPage() {
               ['Verification Code', 'Client', 'Login code request'],
             ]} />
 
-            <h3 className="text-lg font-semibold text-[#1E2A4A] mt-6 mb-3">Cleaner SMS (Bilingual EN/ES)</h3>
+            <h3 className="text-lg font-semibold text-[#1E2A4A] mt-6 mb-3">Stylist SMS (Bilingual EN/ES)</h3>
             <T headers={['SMS', 'Sent To', 'Trigger']} rows={[
-              ['Job Assignment', 'Cleaner', 'Booking created/assigned'],
-              ['Daily Summary', 'All active cleaners', 'Midnight cron job'],
-              ['Job Cancelled', 'Cleaner', 'Booking cancelled'],
-              ['Job Rescheduled', 'Cleaner', 'Booking rescheduled'],
-              ['Urgent Broadcast', 'All cleaners', 'Emergency job broadcast (with pay rate)'],
+              ['Job Assignment', 'Stylist', 'Booking created/assigned'],
+              ['Daily Summary', 'All active stylists', 'Midnight cron job'],
+              ['Job Cancelled', 'Stylist', 'Booking cancelled'],
+              ['Job Rescheduled', 'Stylist', 'Booking rescheduled'],
+              ['Urgent Broadcast', 'All stylists', 'Emergency job broadcast (with pay rate)'],
             ]} />
 
             <h3 className="text-lg font-semibold text-[#1E2A4A] mt-6 mb-3">Admin SMS</h3>
             <T headers={['SMS', 'Sent To', 'Trigger']} rows={[
               ['New Client Alert', 'Admin', 'Client created via /book/collect'],
               ['New Booking Alert', 'Admin', 'Client submits booking'],
-              ['New Application', 'Admin', 'Cleaner application submitted'],
+              ['New Application', 'Admin', 'Stylist application submitted'],
               ['New Referrer', 'Admin', 'Referrer signs up'],
             ]} />
 
@@ -317,15 +317,15 @@ export default function DocsPage() {
               ['Telnyx', 'SMS delivery + inbound webhook', 'Selena chatbot, booking confirmations, reminders, broadcasts'],
               ['Supabase', 'Database (PostgreSQL) — 19 tables', 'Everything'],
               ['Radar.io', 'GPS verification + address autocomplete', 'Check-in/check-out, address forms'],
-              ['Web Push (VAPID)', 'Browser push notifications', 'Admin, cleaner, and client real-time alerts'],
-              ['Google Maps', 'Map links in emails', 'Cleaner assignment/reschedule emails'],
+              ['Web Push (VAPID)', 'Browser push notifications', 'Admin, stylist, and client real-time alerts'],
+              ['Google Maps', 'Map links in emails', 'Stylist assignment/reschedule emails'],
               ['Vercel', 'Hosting + cron jobs', 'Deployment + 4 scheduled jobs'],
             ]} />
 
             <h2 className="text-xl font-semibold text-[#1E2A4A] mt-10 mb-4">Payment Flow</h2>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
-              <li><strong>Client pays</strong> — Zelle (hi@thenycmobilesalon.com) or Apple Pay (collected by cleaner on-site)</li>
-              <li><strong>Cleaner pay</strong> — actual_hours × cleaner.hourly_rate (stored in cents)</li>
+              <li><strong>Client pays</strong> — Zelle (hi@thenycmobilesalon.com) or Apple Pay (collected by stylist on-site)</li>
+              <li><strong>Stylist pay</strong> — actual_hours × cleaner.hourly_rate (stored in cents)</li>
               <li><strong>Referrer commissions</strong> — 10% of booking price, paid weekly via Zelle/Apple Cash</li>
               <li><strong>All money stored in cents</strong> — divide by 100 for display</li>
             </ul>
@@ -375,7 +375,7 @@ export default function DocsPage() {
 │   │   ├── page.tsx                # Revenue stats, today's jobs, map
 │   │   ├── bookings/page.tsx       # Booking CRUD + recurring + emergency
 │   │   ├── calendar/page.tsx       # FullCalendar with drag-drop
-│   │   ├── cleaners/page.tsx       # Team management + priority ordering
+│   │   ├── cleaners/page.tsx       # Stylist management + priority ordering
 │   │   ├── clients/page.tsx        # Client management + lifecycle analytics
 │   │   ├── finance/page.tsx        # Revenue, expenses, bank statements
 │   │   ├── websites/page.tsx       # 99 EMD domain portfolio
@@ -400,7 +400,7 @@ export default function DocsPage() {
 │       ├── auth/                   # Admin auth (login, logout)
 │       ├── bookings/               # Booking CRUD + broadcast
 │       ├── clients/                # Client CRUD + activity + transcript
-│       ├── cleaners/               # Team CRUD + priority + upload
+│       ├── cleaners/               # Stylist CRUD + priority + upload
 │       ├── referrers/              # Referrer CRUD + analytics
 │       ├── client/                 # Client portal APIs (11)
 │       ├── team/                   # Team portal APIs (7)
@@ -432,8 +432,8 @@ export default function DocsPage() {
             <T headers={['Column', 'Type', 'Notes']} rows={[['id', 'uuid', 'Primary key'], ['name', 'text', 'Full name'], ['email', 'text', 'For confirmations & reminders'], ['phone', 'text', 'For verification & contact'], ['address', 'text', 'Service address'], ['notes', 'text', 'Special instructions'], ['referrer_id', 'uuid', 'FK → referrers.id (nullable)'], ['do_not_service', 'boolean', 'DNS flag — blocks client from booking (default false)'], ['sms_consent', 'boolean', 'SMS opt-in (default true, STOP revokes)'], ['created_at', 'timestamp', 'When client was added']]} />
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">bookings</h2>
-            <p className="text-gray-500 text-sm mb-2">Scheduled cleaning appointments</p>
-            <T headers={['Column', 'Type', 'Notes']} rows={[['id', 'uuid', 'Primary key'], ['client_id', 'uuid', 'FK → clients.id'], ['cleaner_id', 'uuid', 'FK → cleaners.id'], ['start_time', 'timestamp', 'Appointment start'], ['end_time', 'timestamp', 'Appointment end'], ['service_type', 'text', 'Standard, Deep, Move In/Out, Post Construction, Emergency'], ['price', 'integer', 'Price in cents (15000 = $150)'], ['hourly_rate', 'integer', '$49, $75, or $100'], ['status', 'text', 'pending, scheduled, in_progress, completed, cancelled'], ['payment_status', 'text', 'pending or paid'], ['payment_method', 'text', 'zelle or apple_pay'], ['recurring_type', 'text', 'weekly, biweekly, monthly (nullable)'], ['recurring_group_id', 'uuid', 'Links recurring series'], ['cleaner_token', 'text', 'Unique token for team portal (24h)'], ['check_in_time', 'timestamp', 'When cleaner arrived (GPS or admin)'], ['check_out_time', 'timestamp', 'When cleaner finished (GPS or admin)'], ['check_in_location', 'jsonb', 'GPS coords at check-in'], ['check_out_location', 'jsonb', 'GPS coords at check-out'], ['actual_hours', 'decimal', 'Calculated hours worked (rounded to half-hour)'], ['cleaner_pay', 'integer', 'Cleaner payment in cents (actual_hours × $25 × 100)'], ['referrer_id', 'uuid', 'FK → referrers.id (nullable)'], ['ref_code', 'text', 'Referral code used at booking'], ['notes', 'text', 'Special instructions']]} />
+            <p className="text-gray-500 text-sm mb-2">Scheduled beauty service appointments</p>
+            <T headers={['Column', 'Type', 'Notes']} rows={[['id', 'uuid', 'Primary key'], ['client_id', 'uuid', 'FK → clients.id'], ['cleaner_id', 'uuid', 'FK → cleaners.id'], ['start_time', 'timestamp', 'Appointment start'], ['end_time', 'timestamp', 'Appointment end'], ['service_type', 'text', 'Haircut & Style, Color & Highlights, Blowout, Bridal & Event, Emergency'], ['price', 'integer', 'Price in cents (15000 = $150)'], ['hourly_rate', 'integer', '$49, $75, or $100'], ['status', 'text', 'pending, scheduled, in_progress, completed, cancelled'], ['payment_status', 'text', 'pending or paid'], ['payment_method', 'text', 'zelle or apple_pay'], ['recurring_type', 'text', 'weekly, biweekly, monthly (nullable)'], ['recurring_group_id', 'uuid', 'Links recurring series'], ['cleaner_token', 'text', 'Unique token for team portal (24h)'], ['check_in_time', 'timestamp', 'When stylist arrived (GPS or admin)'], ['check_out_time', 'timestamp', 'When stylist finished (GPS or admin)'], ['check_in_location', 'jsonb', 'GPS coords at check-in'], ['check_out_location', 'jsonb', 'GPS coords at check-out'], ['actual_hours', 'decimal', 'Calculated hours worked (rounded to half-hour)'], ['cleaner_pay', 'integer', 'Stylist payment in cents (actual_hours × $25 × 100)'], ['referrer_id', 'uuid', 'FK → referrers.id (nullable)'], ['ref_code', 'text', 'Referral code used at booking'], ['notes', 'text', 'Special instructions']]} />
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">referrers</h2>
             <p className="text-gray-500 text-sm mb-2">People who refer clients for 10% commission</p>
@@ -459,7 +459,7 @@ export default function DocsPage() {
               ['email_logs', 'Tracks sent emails (prevents duplicates)'],
               ['verification_codes', 'SMS codes for client login'],
               ['notifications', 'Dashboard notification bell items'],
-              ['push_subscriptions', 'Web push subscriptions (role: admin/cleaner/client, endpoint, keys)'],
+              ['push_subscriptions', 'Web push subscriptions (role: admin/stylist/client, endpoint, keys)'],
               ['settings', 'Platform configuration key-values'],
               ['expenses', 'Business expense records'],
               ['bank_statements', 'Uploaded bank statement metadata'],
@@ -485,7 +485,7 @@ export default function DocsPage() {
               ['admin/bookings/page.tsx', '/admin/bookings', 'Booking CRUD, recurring, emergency broadcast'],
               ['admin/calendar/page.tsx', '/admin/calendar', 'FullCalendar with drag-to-move/resize'],
               ['admin/clients/page.tsx', '/admin/clients', 'Client management + lifecycle analytics'],
-              ['admin/cleaners/page.tsx', '/admin/cleaners', 'Team members, priority ordering, applications'],
+              ['admin/cleaners/page.tsx', '/admin/cleaners', 'Stylists, priority ordering, applications'],
               ['admin/finance/page.tsx', '/admin/finance', 'Revenue, expenses, bank statements, CSV export'],
               ['admin/websites/page.tsx', '/admin/websites', '99 EMD domain portfolio + map'],
               ['admin/leads/page.tsx', '/admin/leads', 'Lead tracking, attribution, live feed'],
@@ -532,7 +532,7 @@ export default function DocsPage() {
             <T headers={['Endpoint', 'Methods', 'Purpose']} rows={[
               ['/api/bookings', 'GET, POST', 'List all / Create new (sends emails + SMS)'],
               ['/api/bookings/[id]', 'GET, PUT, DELETE', 'Read / Update (auto-emails+SMS on pending→scheduled) / Cancel (soft) / Hard delete'],
-              ['/api/bookings/broadcast', 'POST', 'Send emergency job to all cleaners (email + SMS + push)'],
+              ['/api/bookings/broadcast', 'POST', 'Send emergency job to all stylists (email + SMS + push)'],
               ['/api/clients', 'GET, POST', 'List all (with stats) / Create new'],
               ['/api/clients/[id]', 'GET, PUT, DELETE', 'Read / Update / Delete'],
               ['/api/clients/[id]/activity', 'GET', 'Full activity timeline (bookings, check-in/out GPS, payments)'],
@@ -540,7 +540,7 @@ export default function DocsPage() {
               ['/api/cleaners', 'GET, POST', 'List all / Create new (sends welcome email)'],
               ['/api/cleaners/[id]', 'PUT, DELETE', 'Update / Archive'],
               ['/api/cleaners/priority', 'PUT', 'Update team member display order'],
-              ['/api/cleaners/upload', 'POST', 'Upload cleaner photo to Supabase Storage'],
+              ['/api/cleaners/upload', 'POST', 'Upload stylist photo to Supabase Storage'],
             ]} />
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Client Portal (12)</h2>
@@ -561,9 +561,9 @@ export default function DocsPage() {
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Team Portal (7)</h2>
             <T headers={['Endpoint', 'Method', 'Purpose']} rows={[
               ['/api/team/login', 'POST', 'Team login (4-6 digit PIN)'],
-              ['/api/team/jobs', 'GET', 'Get logged-in cleaner\'s jobs + earnings (weekly/monthly/yearly)'],
+              ['/api/team/jobs', 'GET', 'Get logged-in stylist\'s jobs + earnings (weekly/monthly/yearly)'],
               ['/api/team/available-jobs', 'GET, POST', 'List claimable jobs / Claim a job (first-come-first-served)'],
-              ['/api/team/availability', 'GET, PUT', 'Get / Update cleaner schedule + days off'],
+              ['/api/team/availability', 'GET, PUT', 'Get / Update stylist schedule + days off'],
               ['/api/team/[token]', 'GET', 'Token-based job access (24h expiry)'],
               ['/api/team/[token]/check-in', 'POST', 'Record job start + GPS location + distance verification'],
               ['/api/team/[token]/check-out', 'POST', 'Record job end + GPS + calculate pay + create referral commission'],
@@ -599,7 +599,7 @@ export default function DocsPage() {
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Cron Jobs (4) — CRON_SECRET</h2>
             <T headers={['Endpoint', 'Schedule', 'Purpose']} rows={[
               ['/api/cron/reminders', 'Every hour', '7/3/1-day and 2-hour reminders (email+SMS+push) + thank-you emails + pending booking alerts (8am/2pm ET)'],
-              ['/api/cron/daily-summary', 'Midnight UTC', 'Email + SMS cleaners tomorrow\'s jobs + recurring booking expiry warnings'],
+              ['/api/cron/daily-summary', 'Midnight UTC', 'Email + SMS stylists tomorrow\'s jobs + recurring booking expiry warnings'],
               ['/api/cron/backup', '5am UTC', 'CSV backup emailed to admin (clients + 6 months of bookings)'],
               ['/api/cron/health-check', 'Periodic', 'Checks Supabase connectivity, error spikes, critical env vars — alerts admin'],
             ]} />
@@ -607,7 +607,7 @@ export default function DocsPage() {
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Webhooks & Push (2)</h2>
             <T headers={['Endpoint', 'Method', 'Purpose']} rows={[
               ['/api/webhook/telnyx', 'POST', 'Inbound SMS handler — routes to Selena chatbot (new) or existing client handler, delivery status updates, STOP/START consent'],
-              ['/api/push/subscribe', 'POST, DELETE', 'Web push subscription management (admin/cleaner/client roles)'],
+              ['/api/push/subscribe', 'POST, DELETE', 'Web push subscription management (admin/stylist/client roles)'],
             ]} />
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Other (10)</h2>
@@ -633,7 +633,7 @@ export default function DocsPage() {
               ['DashboardHeader', 'DashboardHeader.tsx', 'Main nav with all dashboard links + notification bell + mobile hamburger menu'],
               ['AdminHeader', 'AdminHeader.tsx', 'Alternative header component'],
               ['NotificationBell', 'NotificationBell.tsx', 'Bell icon with unread count + dropdown (20+ notification types)'],
-              ['DashboardMap', 'DashboardMap.tsx', 'Leaflet map for today\'s jobs (cleaner/status/time filter)'],
+              ['DashboardMap', 'DashboardMap.tsx', 'Leaflet map for today\'s jobs (stylist/status/time filter)'],
               ['WebsitesMap', 'WebsitesMap.tsx', 'Leaflet map for 99 EMD domain locations (region color-coded)'],
               ['AddressAutocomplete', 'AddressAutocomplete.tsx', 'Radar.io powered address input with suggestions'],
               ['RecurringOptions', 'RecurringOptions.tsx', 'Recurring booking frequency selector + date preview generator'],
@@ -641,8 +641,8 @@ export default function DocsPage() {
               ['ClientActivityFeed', 'ClientActivityFeed.tsx', 'Timeline view of client activity (bookings, GPS check-in/out, payments)'],
               ['ClientTranscript', 'ClientTranscript.tsx', 'Chat-bubble SMS transcript viewer (inbound/outbound, grouped by date)'],
               ['FeedbackWidget', 'FeedbackWidget.tsx', 'Floating anonymous feedback modal (embedded in client portal layout)'],
-              ['PushPrompt', 'PushPrompt.tsx', 'Web push notification enrollment (admin/cleaner/client, iOS PWA detection)'],
-              ['TranslatedNotes', 'TranslatedNotes.tsx', 'Displays cleaning notes with auto-generated Spanish translation (~80 word dictionary)'],
+              ['PushPrompt', 'PushPrompt.tsx', 'Web push notification enrollment (admin/stylist/client, iOS PWA detection)'],
+              ['TranslatedNotes', 'TranslatedNotes.tsx', 'Displays service notes with auto-generated Spanish translation (~80 word dictionary)'],
             ]} />
           </div>
         )}
@@ -654,11 +654,11 @@ export default function DocsPage() {
               ['supabase.ts', 'Supabase client (lazy-init admin via Proxy)', 'supabase, supabaseAdmin'],
               ['auth.ts', 'Auth utilities (HMAC-SHA256 sessions)', 'protectAdminAPI, protectCronAPI, protectClientAPI, isAdminAuthenticated'],
               ['email.ts', 'Resend email sending (3 retries, backoff)', 'sendEmail'],
-              ['email-templates.ts', 'HTML email templates (15+)', 'clientConfirmationEmail, clientReminderEmail, cleanerDailySummaryEmail, cleanerWelcomeEmail, referralCommissionEmail, ...'],
+              ['email-templates.ts', 'HTML email templates (15+)', 'clientConfirmationEmail, clientReminderEmail, stylistDailySummaryEmail, stylistWelcomeEmail, referralCommissionEmail, ...'],
               ['sms.ts', 'Telnyx SMS sending (3 retries, backoff)', 'sendSMS (consent check, delivery logging)'],
               ['sms-chatbot.ts', 'Selena AI chatbot (state machine + agentic tool loop)', 'handleChatbotMessage'],
-              ['sms-templates.ts', 'SMS templates (client/cleaner/admin, bilingual, TCPA)', 'smsTemplates (confirmation, reminder, cancellation, broadcast, ...)'],
-              ['push.ts', 'Web Push via VAPID protocol', 'sendPushToAll, sendPushToCleaner, sendPushToClient, sendPushToAllCleaners'],
+              ['sms-templates.ts', 'SMS templates (client/stylist/admin, bilingual, TCPA)', 'smsTemplates (confirmation, reminder, cancellation, broadcast, ...)'],
+              ['push.ts', 'Web Push via VAPID protocol', 'sendPushToAll, sendPushToStylist, sendPushToClient, sendPushToAllStylists'],
               ['notify.ts', 'Unified notification dispatch (DB + push)', 'notify (inserts notification + sends push)'],
               ['format.ts', 'Formatting utilities', 'formatPhone, formatName, formatEmail, formatAddress'],
               ['tokens.ts', 'Cryptographic token generation', 'generateToken, isTokenValid'],
@@ -683,7 +683,7 @@ export default function DocsPage() {
               ['Proxy (middleware)', 'Cookie check', '/admin/* pages'],
               ['protectAdminAPI()', 'Cookie check', 'All admin API routes'],
               ['protectCronAPI()', 'CRON_SECRET header', '/api/cron/* routes'],
-              ['Team tokens', 'Time-limited UUID (24h)', 'Cleaner check-in/out'],
+              ['Team tokens', 'Time-limited UUID (24h)', 'Stylist check-in/out'],
               ['Client auth', 'SMS verification code', 'Client portal actions'],
             ]} />
 
@@ -703,7 +703,7 @@ export default function DocsPage() {
               ['/api/cron/*', 'Protected', 'CRON_SECRET required'],
               ['/api/track', 'Public', 'Tracking pixel (intentional)'],
               ['/api/webhook/telnyx', 'Public', 'Telnyx SMS webhook (inbound messages)'],
-              ['/api/push/subscribe', 'Mixed', 'Role-based (admin requires auth, cleaner/client require IDs)'],
+              ['/api/push/subscribe', 'Mixed', 'Role-based (admin requires auth, stylist/client require IDs)'],
               ['/api/feedback', 'Public', 'Anonymous feedback (rate-limited, 3 per 10 min)'],
               ['/api/errors', 'Public', 'Client-side error reporting (filters transient errors)'],
             ]} />
@@ -721,7 +721,7 @@ export default function DocsPage() {
           <div>
             <h1 className="text-3xl font-bold text-[#1E2A4A] mb-6">Selena AI Chatbot</h1>
             <Card title="" accent="blue">
-              <p><strong>Character:</strong> Selena, 47, from Queens. Married to Carlos. Grammy energy but hip. 20+ years cleaning. Bilingual — naturally drops Spanglish.</p>
+              <p><strong>Character:</strong> Selena, 47, from Queens. Married to Carlos. Grammy energy but hip. 20+ years in beauty. Bilingual — naturally drops Spanglish.</p>
               <p><strong>Architecture:</strong> Deterministic state machine — no LLM, no inference costs, no hallucination. Every response is hand-written.</p>
               <p><strong>Phone:</strong> +1 (888) 316-4019 via Telnyx</p>
             </Card>
@@ -735,21 +735,21 @@ export default function DocsPage() {
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">New Prospect Flow (State Machine)</h2>
             <T headers={['State', 'Selena Asks', 'What She Collects']} rows={[
               ['welcome', '"What part of the city are you in?"', 'Initial greeting'],
-              ['ask_location', '"What service do you need? 1-Regular 2-Deep 3-Move 4-Emergency"', 'Neighborhood/area'],
-              ['ask_service', '"How many bedrooms?"', 'Service type (17 aliases mapped)'],
-              ['ask_bedrooms', '"How many bathrooms?"', 'Bedroom count (0=studio)'],
-              ['ask_bathrooms', '"A) $59/hr you supply or B) $75/hr we bring everything"', 'Bathroom count'],
+              ['ask_location', '"What service do you need? 1-Haircut 2-Color 3-Blowout 4-Emergency"', 'Neighborhood/area'],
+              ['ask_service', '"What type of service?"', 'Service type (17 aliases mapped)'],
+              ['ask_details', '"Any special requests?"', 'Service details'],
+              ['ask_pricing', '"A) $59/hr basic or B) $75/hr premium"', 'Pricing preference'],
               ['ask_pricing', 'Introduces herself as Selena, sends booking form URL', 'Pricing choice (A or B)'],
               ['form_sent', 'Conversation complete', 'Booking form: thenycmobilesalon.com/book/collect?src=sms-chatbot&convo_id={id}'],
             ]} />
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Existing Client Intents</h2>
             <T headers={['Intent', 'Example Input', 'What Selena Does']} rows={[
-              ['Schedule check', '"when is my next clean"', 'Shows date, time, service type, cleaner name'],
+              ['Schedule check', '"when is my next appointment"', 'Shows date, time, service type, stylist name'],
               ['Reschedule', '"can I change my time"', 'Acknowledges current booking, asks for new preference'],
               ['Cancel', '"cancel my booking"', 'First-time/one-time: no cancel or reschedule. Recurring: 7 days notice to reschedule, cancel only if discontinuing'],
-              ['Book again', '"I need another cleaning"', 'Checks for conflicts, invites scheduling'],
-              ['Who\'s coming', '"who is my cleaner"', 'Shows assigned cleaner name + reassurance'],
+              ['Book again', '"I need another appointment"', 'Checks for conflicts, invites scheduling'],
+              ['Who\'s coming', '"who is my stylist"', 'Shows assigned stylist name + reassurance'],
               ['Last bill', '"how much did I pay"', 'Shows date, service type, price'],
               ['Complaint', '"I\'m unhappy"', 'Immediately escalates to phone call (does NOT handle via text)'],
               ['Thanks/praise', '"great job today"', 'Warm acknowledgment, promises to tell the team'],
@@ -760,17 +760,17 @@ export default function DocsPage() {
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Knowledge Base (12 Topics)</h2>
             <T headers={['Topic', 'Key Info']} rows={[
               ['Pricing', '$59/hr (client supplies), $75/hr (company supplies), $100/hr emergency, 2hr minimum'],
-              ['Services', 'Regular, deep, move in/out, post-construction, Airbnb turnovers, same-day emergency'],
-              ['Supplies', '$59 = your own, $75 = full eco-friendly kit'],
+              ['Services', 'Haircut & style, color & highlights, blowout, bridal & event, same-day emergency'],
+              ['Supplies', '$59 = basic, $75 = premium full-service'],
               ['Insurance', 'Licensed, bonded, insured, background-checked'],
               ['Cancellation', 'First-time/one-time: no cancel or reschedule. Recurring: 7 days notice to reschedule, cancel only if discontinuing service'],
               ['Payment', 'Zelle or Apple Pay, 15 min before end of service'],
               ['Area', 'Manhattan only'],
-              ['About', 'Since 2018, 15,000+ cleanings, 4.9 stars, 98% retention'],
+              ['About', 'Since 2018, 15,000+ appointments, 4.9 stars, 98% retention'],
               ['Satisfaction', '24-hour guarantee, handled personally'],
-              ['Eco-friendly', 'All eco-friendly, professional grade'],
+              ['Products', 'All professional-grade, salon-quality products'],
               ['Emergency', '$100/hr, suggests calling for faster service'],
-              ['Deep clean', 'Inside oven, behind fridge, baseboards, ceiling fans, cabinets, ~3 hours'],
+              ['Full glam', 'Hair, makeup, nails, full styling package, ~3 hours'],
             ]} />
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Smart Features</h2>
@@ -779,7 +779,7 @@ export default function DocsPage() {
               <li><strong>Knowledge at any state</strong> — Questions answered mid-flow without breaking the state machine (appends a flow nudge to guide back)</li>
               <li><strong>Day-aware greetings</strong> — Happy Friday, Happy Monday, Happy weekend, or morning/afternoon/evening</li>
               <li><strong>Returning client detection</strong> — Checks inbound message count to know if first-time texter vs. returning</li>
-              <li><strong>Cleaner name personalization</strong> — Pulls assigned cleaner name for existing client responses</li>
+              <li><strong>Stylist name personalization</strong> — Pulls assigned stylist name for existing client responses</li>
               <li><strong>Start over command</strong> — "start over" or "reset" expires current conversation and restarts</li>
               <li><strong>Booking context</strong> — Fetches upcoming + last completed booking for existing clients in parallel</li>
             </ul>
@@ -817,8 +817,8 @@ export default function DocsPage() {
             <T headers={['Event', 'Action']} rows={[
               ['message.sent / message.delivered', 'Updates sms_logs status'],
               ['message.failed', 'Updates sms_logs status to "failed"'],
-              ['Inbound STOP/UNSUBSCRIBE/CANCEL/QUIT', 'Revokes sms_consent on clients + cleaners, expires active chatbot conversation'],
-              ['Inbound START/UNSTOP', 'Re-enables sms_consent on clients + cleaners'],
+              ['Inbound STOP/UNSUBSCRIBE/CANCEL/QUIT', 'Revokes sms_consent on clients + stylists, expires active chatbot conversation'],
+              ['Inbound START/UNSTOP', 'Re-enables sms_consent on clients + stylists'],
               ['Inbound from existing client', 'Logs to client_sms_messages, routes to Selena (existing client handler), sends response, notifies admin'],
               ['Inbound from unknown number', 'Routes to Selena chatbot (new prospect flow), fallback: notifies admin if error'],
             ]} />
@@ -827,8 +827,8 @@ export default function DocsPage() {
             <p className="text-gray-700 mb-4">All system-initiated SMS (not chatbot) include TCPA-compliant "Reply STOP to opt out" notice.</p>
             <T headers={['Category', 'Templates']} rows={[
               ['Client', 'Confirmation, reminder (standard + 2-hour), cancellation, reschedule, thank-you + 10% off, verification code'],
-              ['Cleaner (bilingual EN/ES)', 'Job assignment, daily summary, job cancelled, job rescheduled, urgent broadcast (with pay rate)'],
-              ['Admin', 'New client alert, new booking alert, new cleaner application, new referrer'],
+              ['Stylist (bilingual EN/ES)', 'Job assignment, daily summary, job cancelled, job rescheduled, urgent broadcast (with pay rate)'],
+              ['Admin', 'New client alert, new booking alert, new stylist application, new referrer'],
             ]} />
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Transcript Viewer</h2>
@@ -867,13 +867,13 @@ export default function DocsPage() {
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
               <li><strong>Today's jobs</strong> — Current day schedule</li>
               <li><strong>Upcoming jobs</strong> — Next 14 days</li>
-              <li><strong>Job details</strong> — Client name, service type, cleaner, status</li>
+              <li><strong>Job details</strong> — Client name, service type, stylist, status</li>
             </ul>
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Interactive Job Map</h2>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
               <li>Real-time map view of all job locations</li>
-              <li>Filter by cleaner, status, time range</li>
+              <li>Filter by stylist, status, time range</li>
               <li>Color-coded by team member</li>
               <li>Click marker for job details + quick actions</li>
             </ul>
@@ -890,18 +890,18 @@ export default function DocsPage() {
               <li><strong>New client inline</strong> — Create client during booking</li>
               <li><strong>Hourly rates</strong> — $59/hr, $75/hr, $100/hr</li>
               <li><strong>Duration</strong> — 1-8 hours in 30-min increments</li>
-              <li><strong>Service types</strong> — Standard, Deep, Move In/Out, Post Construction, Emergency</li>
+              <li><strong>Service types</strong> — Haircut & Style, Color & Highlights, Blowout, Bridal & Event, Emergency</li>
               <li><strong>10% discount</strong> — One-click discount toggle</li>
               <li><strong>Recurring setup</strong> — Weekly, biweekly, monthly, custom intervals</li>
-              <li><strong>Emergency broadcast</strong> — Send to all cleaners, first to claim gets it</li>
+              <li><strong>Emergency broadcast</strong> — Send to all stylists, first to claim gets it</li>
             </ul>
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Pending Booking Approval</h2>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
               <li><strong>Public bookings</strong> — All bookings from /book/new are created as "pending"</li>
               <li><strong>Red pending section</strong> — Pending bookings shown at top of bookings page with red styling</li>
-              <li><strong>Approval flow</strong> — Admin assigns cleaner → sets status to "scheduled" → auto-sends emails</li>
-              <li><strong>Auto-emails on approval</strong> — Client gets confirmation email, cleaner gets assignment email (bilingual)</li>
+              <li><strong>Approval flow</strong> — Admin assigns stylist → sets status to "scheduled" → auto-sends emails</li>
+              <li><strong>Auto-emails on approval</strong> — Client gets confirmation email, stylist gets assignment email (bilingual)</li>
               <li><strong>Admin notification</strong> — Admin receives email when new booking request is submitted</li>
               <li><strong>Pending reminders</strong> — Cron sends admin reminders at 8am and 2pm ET for unresolved pending bookings</li>
             </ul>
@@ -912,10 +912,10 @@ export default function DocsPage() {
               <li><strong>DNS warning</strong> — Red banner if client is flagged Do Not Service</li>
               <li><strong>Status management</strong> — Pending, scheduled, completed, cancelled</li>
               <li><strong>Payment tracking</strong> — Pending/paid, Zelle/Apple Pay</li>
-              <li><strong>Cleaner assignment</strong> — Change with dropdown</li>
-              <li><strong>Team link</strong> — Copy token URL for cleaner</li>
-              <li><strong>Admin check-in</strong> — Blue button to check in on behalf of cleaner (no GPS)</li>
-              <li><strong>Admin check-out</strong> — Green button to check out on behalf of cleaner (calculates hours, price, pay)</li>
+              <li><strong>Stylist assignment</strong> — Change with dropdown</li>
+              <li><strong>Team link</strong> — Copy token URL for stylist</li>
+              <li><strong>Admin check-in</strong> — Blue button to check in on behalf of stylist (no GPS)</li>
+              <li><strong>Admin check-out</strong> — Green button to check out on behalf of stylist (calculates hours, price, pay)</li>
               <li><strong>Check-in/out display</strong> — Shows timestamps for completed bookings</li>
               <li><strong>Resend email</strong> — Re-send confirmation to client</li>
               <li><strong>Recurring options</strong> — Update single or all future</li>
@@ -934,26 +934,26 @@ export default function DocsPage() {
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Booking Statuses</h2>
             <T headers={['Status', 'Color', 'Description']} rows={[
               ['Pending', 'Red', 'New request from client — awaiting admin approval'],
-              ['Scheduled', 'Blue', 'Confirmed by admin — cleaner assigned, emails sent'],
-              ['In Progress', 'Yellow', 'Cleaner has checked in'],
-              ['Completed', 'Green', 'Cleaner has checked out — hours and pay calculated'],
+              ['Scheduled', 'Blue', 'Confirmed by admin — stylist assigned, emails sent'],
+              ['In Progress', 'Yellow', 'Stylist has checked in'],
+              ['Completed', 'Green', 'Stylist has checked out — hours and pay calculated'],
               ['Cancelled', 'Gray', 'Cancelled by admin — cancellation emails sent'],
             ]} />
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Check-In / Check-Out</h2>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
-              <li><strong>Cleaner GPS check-in</strong> — Records location via Radar.io when cleaner starts job</li>
-              <li><strong>Cleaner GPS check-out</strong> — Records location, calculates hours (rounded up to nearest half-hour), sets cleaner pay ($25/hr × actual_hours)</li>
+              <li><strong>Stylist GPS check-in</strong> — Records location via Radar.io when stylist starts job</li>
+              <li><strong>Stylist GPS check-out</strong> — Records location, calculates hours (rounded up to nearest half-hour), sets stylist pay ($25/hr × actual_hours)</li>
               <li><strong>Admin check-in</strong> — Blue button in edit panel for remote check-in (no GPS)</li>
-              <li><strong>Admin check-out</strong> — Green button in edit panel, auto-calculates hours, price, and cleaner pay</li>
+              <li><strong>Admin check-out</strong> — Green button in edit panel, auto-calculates hours, price, and stylist pay</li>
               <li><strong>Half-hour rounding</strong> — Math.ceil(hours × 2) / 2 — always rounds up</li>
             </ul>
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Search & Filter</h2>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
-              <li>Full-text search (client name, phone, address, cleaner)</li>
-              <li>Filter by status (including pending), service type, cleaner, date range</li>
-              <li>Sort by date, client, cleaner, price</li>
+              <li>Full-text search (client name, phone, address, stylist)</li>
+              <li>Filter by status (including pending), service type, stylist, date range</li>
+              <li>Sort by date, client, stylist, price</li>
             </ul>
           </div>
         )}
@@ -982,7 +982,7 @@ export default function DocsPage() {
             </ul>
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Quick Stats</h2>
-            <p className="text-gray-700 mb-4">Inline counts at bottom: X scheduled, Y completed, Z total (filtered by selected cleaner)</p>
+            <p className="text-gray-700 mb-4">Inline counts at bottom: X scheduled, Y completed, Z total (filtered by selected stylist)</p>
           </div>
         )}
 
@@ -1052,7 +1052,7 @@ export default function DocsPage() {
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
               <li><strong>Drag-and-drop ordering</strong> — Reorder team members by priority</li>
               <li><strong>PIN generation</strong> — 4-6 digit auto-generated PINs</li>
-              <li><strong>Hourly rate</strong> — Individual pay rate per cleaner</li>
+              <li><strong>Hourly rate</strong> — Individual pay rate per stylist</li>
               <li><strong>Schedule setup</strong> — Working days + hours per day</li>
               <li><strong>Active/inactive</strong> — Archive without deleting</li>
             </ul>
@@ -1067,7 +1067,7 @@ export default function DocsPage() {
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Team Portal</h2>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
-              <li><strong>Bilingual</strong> — Full English/Spanish interface (TranslatedNotes component for cleaning instructions)</li>
+              <li><strong>Bilingual</strong> — Full English/Spanish interface (TranslatedNotes component for service instructions)</li>
               <li><strong>PIN login</strong> — No password needed</li>
               <li><strong>Daily jobs</strong> — Today's assigned work with expandable details</li>
               <li><strong>GPS check-in/out</strong> — Location recorded + distance verification from client address</li>
@@ -1105,7 +1105,7 @@ export default function DocsPage() {
               <li>Gets unique ref code and link: <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">thenycmobilesalon.com/book?ref=CODE</code></li>
               <li>Client books using the referral link</li>
               <li>Client is tagged with referrer_id</li>
-              <li>When cleaner checks out → commission auto-created</li>
+              <li>When stylist checks out → commission auto-created</li>
               <li>Referrer gets email notification</li>
               <li>Admin marks as paid in <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm">/admin/referrals</code></li>
             </ol>
@@ -1270,21 +1270,21 @@ export default function DocsPage() {
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Email Types (18+)</h2>
             <T headers={['Email', 'To', 'When']} rows={[
-              ['Booking Confirmation', 'Client', 'When admin approves pending → scheduled (includes cleaner name, prep tips, payment info, supplies, tipping, cancellation policy, portal link)'],
-              ['Cleaner Assignment', 'Cleaner', 'When admin approves pending → scheduled (bilingual EN/ES)'],
+              ['Booking Confirmation', 'Client', 'When admin approves pending → scheduled (includes stylist name, prep tips, payment info, supplies, tipping, cancellation policy, portal link)'],
+              ['Stylist Assignment', 'Stylist', 'When admin approves pending → scheduled (bilingual EN/ES)'],
               ['Client Reschedule', 'Client', 'When client reschedules from portal'],
               ['Admin Reschedule', 'Admin', 'When client reschedules (notification)'],
-              ['Cleaner Reschedule', 'Cleaner', 'When booking is rescheduled (bilingual EN/ES)'],
+              ['Stylist Reschedule', 'Stylist', 'When booking is rescheduled (bilingual EN/ES)'],
               ['7-Day Reminder', 'Client', '7 days before appointment'],
               ['3-Day Reminder', 'Client', '3 days before appointment'],
               ['1-Day Reminder', 'Client', 'Evening before appointment'],
               ['2-Hour Reminder', 'Client', '2 hours before service'],
               ['Pending Reminders', 'Admin', '8am and 2pm ET — unresolved pending bookings summary'],
-              ['Daily Job Summary', 'Cleaner', '7pm EST daily'],
+              ['Daily Job Summary', 'Stylist', '7pm EST daily'],
               ['Cancellation (Client)', 'Client', 'On booking cancellation'],
-              ['Cancellation (Cleaner)', 'Cleaner', 'On booking cancellation (bilingual EN/ES)'],
+              ['Cancellation (Stylist)', 'Stylist', 'On booking cancellation (bilingual EN/ES)'],
               ['Commission Notification', 'Referrer', 'On checkout (commission created)'],
-              ['Welcome Email', 'Cleaner', 'When new team member added (includes PIN + full guide, bilingual)'],
+              ['Welcome Email', 'Stylist', 'When new team member added (includes PIN + full guide, bilingual)'],
               ['Referrer Welcome', 'Referrer', 'When referrer signs up'],
               ['Referral Signup Notify', 'Referrer', 'When someone books using their code'],
               ['New Booking Request', 'Admin', 'When client submits public booking form'],
@@ -1297,7 +1297,7 @@ export default function DocsPage() {
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
               <li><strong>Deduplication</strong> — email_logs table prevents duplicate sends</li>
               <li><strong>Responsive design</strong> — Mobile-friendly HTML templates</li>
-              <li><strong>Bilingual</strong> — Cleaner emails include both English and Spanish</li>
+              <li><strong>Bilingual</strong> — Stylist emails include both English and Spanish</li>
               <li><strong>Conditional content</strong> — Reminder emails show "Need to reschedule?" for recurring clients, "Questions?" for one-time</li>
               <li><strong>Auto-triggered</strong> — Confirmation and assignment emails sent automatically when pending → scheduled</li>
               <li><strong>Test all emails</strong> — Settings → Tools → Send Test Emails</li>
@@ -1306,11 +1306,11 @@ export default function DocsPage() {
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Confirmation Email Details</h2>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
-              <li><strong>Welcome message</strong> — Personalized greeting with assigned cleaner name</li>
-              <li><strong>Appointment details</strong> — Date, time, address, service type, cleaner, price</li>
+              <li><strong>Welcome message</strong> — Personalized greeting with assigned stylist name</li>
+              <li><strong>Appointment details</strong> — Date, time, address, service type, stylist, price</li>
               <li><strong>Payment reminder</strong> — Zelle (hi@thenycmobilesalon.com) / Apple Pay 15 minutes before service</li>
-              <li><strong>Prep tips</strong> — What to do before the cleaner arrives</li>
-              <li><strong>Supplies note</strong> — Clients must provide cleaning supplies</li>
+              <li><strong>Prep tips</strong> — What to do before the stylist arrives</li>
+              <li><strong>Supplies note</strong> — Clients should have clean, dry hair (or as specified per service)</li>
               <li><strong>Tipping policy</strong> — Encouraged but not required</li>
               <li><strong>Cancellation policy</strong> — One-time non-cancellable, recurring 7 days notice</li>
               <li><strong>Portal link</strong> — Link to client booking portal</li>
@@ -1326,8 +1326,8 @@ export default function DocsPage() {
             </Card>
 
             <T headers={['Job', 'Cron', 'NYC Time', 'What It Does']} rows={[
-              ['/api/cron/reminders', '0 * * * *', 'Every hour', '7/3/1-day reminders (email+SMS+push), 2-hour reminders, thank-you emails (3d post-first booking), pending booking alerts (8am/2pm), unpaid cleaner alerts'],
-              ['/api/cron/daily-summary', '0 0 * * *', '7pm EST', 'Email + SMS each cleaner tomorrow\'s jobs, check recurring booking expiry (30-day warning)'],
+              ['/api/cron/reminders', '0 * * * *', 'Every hour', '7/3/1-day reminders (email+SMS+push), 2-hour reminders, thank-you emails (3d post-first booking), pending booking alerts (8am/2pm), unpaid stylist alerts'],
+              ['/api/cron/daily-summary', '0 0 * * *', '7pm EST', 'Email + SMS each stylist tomorrow\'s jobs, check recurring booking expiry (30-day warning)'],
               ['/api/cron/backup', '0 5 * * *', 'Midnight EST', 'CSV backup emailed to admin (clients + 6 months bookings)'],
               ['/api/cron/health-check', '*/15 * * * *', 'Every 15 min', 'Supabase connectivity, error spike detection (5+ errors/hr), critical env var check'],
             ]} />
@@ -1363,9 +1363,9 @@ export default function DocsPage() {
             <T headers={['Type', 'Color', 'Trigger']} rows={[
               ['new_booking', 'Blue', 'New booking created'],
               ['booking_cancelled', 'Red', 'Booking cancelled'],
-              ['booking_completed / job_complete', 'Green', 'Cleaner checked out'],
+              ['booking_completed / job_complete', 'Green', 'Stylist checked out'],
               ['booking_rescheduled / reschedule', 'Blue', 'Client rescheduled'],
-              ['check_in', 'Green', 'Cleaner checked in (GPS or admin) — includes distance verification'],
+              ['check_in', 'Green', 'Stylist checked in (GPS or admin) — includes distance verification'],
               ['check_out', 'Green', 'Job completed (GPS or admin)'],
               ['payment_received', 'Green', 'Payment marked paid'],
               ['pending_reminder', 'Yellow', 'Unresolved pending bookings reminder (8am/2pm cron)'],
@@ -1375,8 +1375,8 @@ export default function DocsPage() {
               ['referral_commission', 'Yellow', 'Commission auto-created at checkout'],
               ['hot_lead', 'Orange', 'Book/call/text click from EMD domain'],
               ['cleaner_application', 'Purple', 'New team member application'],
-              ['job_broadcast', 'Orange', 'Emergency job broadcast sent to all cleaners'],
-              ['job_claimed', 'Green', 'Emergency job claimed by cleaner'],
+              ['job_broadcast', 'Orange', 'Emergency job broadcast sent to all stylists'],
+              ['job_claimed', 'Green', 'Emergency job claimed by stylist'],
               ['recurring_expiring', 'Yellow', 'Recurring booking ending within 30 days'],
               ['sms_reply', 'Blue', 'Inbound SMS from existing client (admin notification)'],
               ['feedback', 'Gray', 'User submitted anonymous feedback'],
@@ -1394,7 +1394,7 @@ export default function DocsPage() {
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">6 Tabs</h2>
             <T headers={['Tab', 'Contents']} rows={[
               ['Business', 'Business name, phone, email, website, admin notification email, from address'],
-              ['Services & Pricing', 'Service types (Standard, Deep, Move In/Out, Post Construction), rates ($49/$59/$75/$100), payment methods (Cash, Zelle, Venmo, Apple Pay, Check)'],
+              ['Services & Pricing', 'Service types (Haircut & Style, Color & Highlights, Blowout, Bridal & Event), rates ($49/$59/$75/$100), payment methods (Cash, Zelle, Venmo, Apple Pay, Check)'],
               ['Scheduling', 'Business hours (start/end), booking buffer (minutes), default duration, minimum days ahead, same-day toggle'],
               ['Referrals & Policies', 'Commission rate (10%), attribution window (48hr), active client threshold (45d), at-risk (90d), reschedule notice (7d recurring, no reschedule one-time)'],
               ['Notifications', 'Reminder days (7/3/1), hours-before (2hr), daily summary toggle, email template preview, "Send All Test Emails" button'],
@@ -1403,7 +1403,7 @@ export default function DocsPage() {
 
             <h2 className="text-lg font-semibold text-[#1E2A4A] mt-8 mb-3">Tools Section Features</h2>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
-              <li><strong>Run Daily Summary</strong> — Manually send tomorrow's jobs to all cleaners</li>
+              <li><strong>Run Daily Summary</strong> — Manually send tomorrow's jobs to all stylists</li>
               <li><strong>Run Reminders</strong> — Manually trigger reminder check</li>
               <li><strong>Run Backup</strong> — Manually send CSV backup to admin</li>
               <li><strong>Send All Test Emails</strong> — Sends all 15+ email templates to admin for preview</li>
@@ -1502,7 +1502,7 @@ git push origin main`}
                 <p>Invalid ref code or email. Check referrer exists and is active in database.</p>
               </Card>
               <Card title="Team Member Can't Login" accent="red">
-                <p>Check PIN is correct (4-6 digits). Verify cleaner is marked as active.</p>
+                <p>Check PIN is correct (4-6 digits). Verify stylist is marked as active.</p>
               </Card>
               <Card title="Calendar Events Not Showing" accent="red">
                 <p>Check status filter checkboxes. "Scheduled" should be checked for upcoming jobs.</p>

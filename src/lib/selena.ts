@@ -19,10 +19,10 @@ async function selenaError(context: string, err: unknown, conversationId?: strin
 // ─── Types ──────────────────────────────────────────────────────────────────
 
 export interface BookingChecklist {
-  service_type: 'regular' | 'deep' | 'move_in_out' | 'airbnb' | 'emergency' | null
+  service_type: 'haircut' | 'blowout' | 'color' | 'manicure' | 'pedicure' | 'bridal' | 'makeup' | 'package' | null
   bedrooms: number | null
   bathrooms: number | null
-  rate: 49 | 59 | 75 | 100 | null
+  rate: 50 | 75 | 100 | 150 | 200 | null
   day: string | null
   date: string | null
   time: string | null
@@ -67,9 +67,9 @@ export function getNextStep(cl: BookingChecklist): NextStep {
 
   if (!cl.name) return { field: 'name', instruction: 'Ask for their first and last name.' }
   if (!cl.phone) return { field: 'phone', instruction: 'Ask for their best phone number.' }
-  if (!cl.service_type) return { field: 'service_type', instruction: 'Ask what type of cleaning — regular, deep, move-in/out, airbnb, or emergency. Use numbered options on SMS.' }
-  if (cl.bedrooms === null || cl.bathrooms === null) return { field: 'bedrooms', instruction: 'Ask how many bedrooms and bathrooms.' }
-  if (!cl.rate) return { field: 'rate', instruction: 'Give time estimate RANGE for their size (e.g. "typically runs 2-4 hours"), then pricing: $59/hr (client supplies), $75/hr (we bring everything), $100/hr (same-day). Use numbered options on SMS.' }
+  if (!cl.service_type) return { field: 'service_type', instruction: 'Ask what service they need — Haircut, Blowout, Color, Manicure, Pedicure, Bridal, Makeup, or Package. Use numbered options on SMS.' }
+  if (cl.bedrooms === null || cl.bathrooms === null) return { field: 'bedrooms', instruction: 'Ask how many people will be getting services (bedrooms field = number of people, bathrooms field = 0).' }
+  if (!cl.rate) return { field: 'rate', instruction: 'Give pricing based on service: Haircut $50, Blowout $75, Color $150, Manicure $50, Pedicure $75, Bridal $200, Makeup $100, Package (varies). Use numbered options on SMS.' }
   if (!cl.day) return { field: 'day', instruction: 'Ask what day works best. Use numbered options on SMS.' }
   if (!cl.time) return { field: 'time', instruction: 'Ask what time — morning or afternoon, or suggest available times. Use numbered options on SMS.' }
   if (!cl.address) return { field: 'address', instruction: 'Ask for full address — street, apt/unit, city, zip.' }
@@ -110,9 +110,9 @@ export function getQuickReplies(cl: BookingChecklist, next: NextStep): string[] 
   if (cl.status === 'confirmed' || cl.status === 'closed') return []
 
   switch (next.field) {
-    case 'service_type': return ['Regular cleaning', 'Deep cleaning', 'Move-in/move-out', 'Airbnb turnover']
-    case 'bedrooms': return ['1 bed 1 bath', '2 bed 1 bath', '2 bed 2 bath', '3 bed 2 bath']
-    case 'rate': return ['$75 — you bring everything', '$59 — I have supplies']
+    case 'service_type': return ['Haircut', 'Blowout', 'Color', 'Manicure', 'Pedicure', 'Makeup']
+    case 'bedrooms': return ['Just me', '2 people', '3 people', '4+ people']
+    case 'rate': return ['$50 — Haircut', '$75 — Blowout/Pedi', '$100 — Makeup', '$150 — Color', '$200 — Bridal']
     case 'day': return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     case 'time': return ['8am', '10am', '12pm', '2pm', '4pm']
     case 'name': case 'phone': case 'address': case 'email': case 'notes': return []
@@ -157,18 +157,22 @@ export async function updateChecklist(conversationId: string, updates: Partial<B
 // ════════════════════════════════════════════════════════════════════════════
 
 const SERVICE_TYPE_MAP: Record<string, BookingChecklist['service_type']> = {
-  '1': 'regular', 'regular': 'regular', 'standard': 'regular', 'weekly': 'regular', 'biweekly': 'regular', 'bi-weekly': 'regular', 'monthly': 'regular',
-  '2': 'deep', 'deep': 'deep', 'deep clean': 'deep', 'deep cleaning': 'deep',
-  '3': 'move_in_out', 'move': 'move_in_out', 'move in': 'move_in_out', 'move out': 'move_in_out', 'move-in': 'move_in_out', 'move-out': 'move_in_out', 'move in/out': 'move_in_out', 'move-in/out': 'move_in_out', 'move-in/move-out': 'move_in_out',
-  '4': 'airbnb', 'airbnb': 'airbnb', 'turnover': 'airbnb', 'airbnb turnover': 'airbnb',
-  '5': 'emergency', 'emergency': 'emergency', 'same day': 'emergency', 'same-day': 'emergency', 'asap': 'emergency', 'today': 'emergency',
+  '1': 'haircut', 'haircut': 'haircut', 'cut': 'haircut', 'trim': 'haircut', 'hair cut': 'haircut',
+  '2': 'blowout', 'blowout': 'blowout', 'blow out': 'blowout', 'blow dry': 'blowout', 'blowdry': 'blowout',
+  '3': 'color', 'color': 'color', 'colour': 'color', 'dye': 'color', 'highlights': 'color', 'balayage': 'color', 'hair color': 'color',
+  '4': 'manicure', 'manicure': 'manicure', 'mani': 'manicure', 'nails': 'manicure',
+  '5': 'pedicure', 'pedicure': 'pedicure', 'pedi': 'pedicure',
+  '6': 'bridal', 'bridal': 'bridal', 'wedding': 'bridal', 'bride': 'bridal',
+  '7': 'makeup', 'makeup': 'makeup', 'make up': 'makeup', 'make-up': 'makeup', 'glam': 'makeup',
+  '8': 'package', 'package': 'package', 'combo': 'package', 'bundle': 'package', 'mani pedi': 'package', 'mani/pedi': 'package',
 }
 
-const RATE_MAP: Record<string, 49 | 59 | 75 | 100> = {
-  '1': 59, '49': 49, '$49': 49,
-  '59': 59, '$59': 59,
+const RATE_MAP: Record<string, 50 | 75 | 100 | 150 | 200> = {
+  '1': 50, '50': 50, '$50': 50,
   '2': 75, '75': 75, '$75': 75,
   '3': 100, '100': 100, '$100': 100,
+  '4': 150, '150': 150, '$150': 150,
+  '5': 200, '200': 200, '$200': 200,
 }
 
 const DAY_MAP: Record<string, string> = {
@@ -280,13 +284,8 @@ async function extractAndSave(
       const rateNum = lower.match(/\$?(\d{2,3})(?:\s*(?:\/hr|per hour|an hour|one))?/)
       if (rateNum) {
         const val = parseInt(rateNum[1])
-        if (val === 49 || val === 59 || val === 75 || val === 100) extracted.rate = val as 49 | 59 | 75 | 100
+        if (val === 50 || val === 75 || val === 100 || val === 150 || val === 200) extracted.rate = val as 50 | 75 | 100 | 150 | 200
       }
-    }
-    // "you bring everything" / "I have supplies"
-    if (!extracted.rate) {
-      if (/you bring|you provide|bring everything|full service/i.test(lower)) extracted.rate = 75
-      if (/i have supplies|my supplies|i provide|client supplies/i.test(lower)) extracted.rate = 59
     }
   }
 
@@ -458,7 +457,7 @@ const SYSTEM_PROMPT = `You are Selena, the booking concierge for The NYC Mobile 
 YOUR ROLE: You are the voice. The system already extracted and saved any booking info from the client's message. The BOOKING CHECKLIST below is always up-to-date. Your ONLY jobs are:
 1. Acknowledge what was just captured (if anything new)
 2. Ask for the next missing field
-3. Handle questions about our service
+3. Handle questions about our services
 4. Do the recap when all fields are filled
 5. Call create_booking when client confirms the recap
 
@@ -472,28 +471,30 @@ STYLE:
 - Match their energy.
 - 😊 only emoji. Once per message max.
 - NEVER say: "certainly" "absolutely" "of course" "great question" "happy to help"
-- Say "You are welcome" not "no problem". Say "she" for the cleaner.
+- Say "You are welcome" not "no problem". Say "she" for the stylist.
 - On SMS: give numbered options for multiple choice fields.
 - Plain text only. No markdown.
 - If Spanish detected, respond entirely in Spanish.
 
-PRICING:
-$59/hr — client provides supplies and equipment
-$75/hr — we provide everything needed
-$100/hr — same-day/emergency
-RECURRING DISCOUNT: Weekly/bi-weekly/monthly get 10% off $75/hr = $67.50/hr.
-Estimates (ALWAYS give a RANGE, never a single number):
-1BR/1BA: 2-3 hours | 2BR/1BA: 2-4 hours | 2BR/2BA: 3-4 hours | 3BR/2BA: 3-5 hours
-Deep/first-time: add 1-2 hours to the range.
-Say "typically runs" or "averages" — NEVER say "about X hours" with a single number. Always a range like "typically runs 2-4 hours".
+SERVICES & PRICING:
+Haircut — $50 (45-60 min)
+Blowout — $75 (30-45 min)
+Color (highlights, balayage, full color) — $150 (2-3 hours)
+Manicure — $50 (30-45 min)
+Pedicure — $75 (45-60 min)
+Bridal (hair + makeup) — $200 (2-3 hours)
+Makeup — $100 (45-60 min)
+Package (custom combo) — varies, quote based on services selected
+RECURRING DISCOUNT: Weekly/bi-weekly/monthly clients get 10% off.
+Say "typically takes" or "runs about" — give a time RANGE for services.
 
 COMMON QUESTIONS:
-"Can I leave?" → "Yes totally fine as long as payment is made before completion."
-"Same cleaner?" → "We do our best to keep the same cleaner each time"
-"Insured?" → "Yes, fully insured"
-"Supplies?" → "At $75/hr we bring everything. At $59/hr you provide."
-"Deep clean?" → "Full top to bottom — kitchen, bathrooms, all surfaces, floors."
-"Move out?" → "Yes, typically 4-6 hours depending on size."
+"Same stylist?" → "We do our best to keep the same stylist each time"
+"Licensed?" → "Yes, all our stylists are licensed and insured"
+"What products?" → "We use professional-grade products — happy to accommodate any preferences or allergies"
+"Bridal?" → "Yes! We do bridal hair and makeup. We recommend a trial session beforehand."
+"Color options?" → "We offer highlights, balayage, full color, and more. Your stylist will consult with you on the best option."
+"Mani/pedi combo?" → "Yes! We can do both — just choose Package and we'll customize."
 
 SERVICE AREA:
 Manhattan, Brooklyn, Queens — yes
@@ -508,21 +509,21 @@ Recurring: 7 days notice to reschedule. Cancellations only if discontinuing enti
 Why: We don't take payment upfront. We hold spots and turn away other clients.
 
 RECAP FORMAT:
-"Ok let's recap: [Name], [address] — [day] @ [time] ([weekday: 30 min / weekend: 60 min] arrival buffer) for about [X] hours at $[RATE]/hr paid via Zelle or Apple 15 minutes before completion. [cancellation policy]. I want to make sure all is correct 😊"
+"Ok let's recap: [Name], [address] — [day] @ [time] ([weekday: 30 min / weekend: 60 min] arrival buffer) for [service] at $[RATE] paid via Zelle or Apple Pay before the appointment. [cancellation policy]. I want to make sure all is correct 😊"
 
 AFTER CLIENT CONFIRMS RECAP:
 IMMEDIATELY call create_booking. Do NOT recap again. Do NOT ask for anything else.
 
 POST-CONFIRMATION:
-"Thank you so much [Name]! We really appreciate you and look forward to working with you. Thanks for the opportunity 😊 Your booking is pending and will be confirmed by our team shortly — you'll be notified once it's all set!"
+"Thank you so much [Name]! We really appreciate you and look forward to making you look amazing. Thanks for the opportunity 😊 Your booking is pending and will be confirmed by our team shortly — you'll be notified once it's all set!"
 
 WAITLIST: If check_availability returns no openings, tell client you'll add them to the waiting list. Call add_to_waitlist.
 
-ESCALATION: Say "Let me have my manager look at this — one sec 😊" then [ESCALATE: reason] when client is upset, damage reported, unusual request, or outside normal flow.
+ESCALATION: Say "Let me have my manager look at this — one sec 😊" then [ESCALATE: reason] when client is upset, issue reported, unusual request, or outside normal flow.
 
-RETURNING CLIENTS: If CLIENT PROFILE is below, greet by name. Don't re-ask for info you have. Reference their preferred cleaner.
+RETURNING CLIENTS: If CLIENT PROFILE is below, greet by name. Don't re-ask for info you have. Reference their preferred stylist.
 
-IMPORTANT: When a client answers a question about your service, answer it AND continue the booking flow. Check the checklist and move to the next missing field.`
+IMPORTANT: When a client answers a question about your services, answer it AND continue the booking flow. Check the checklist and move to the next missing field.`
 
 // ─── Tool Definitions (reduced — no more save_info or create_client) ────────
 
@@ -535,7 +536,7 @@ const TOOLS: Anthropic.Tool[] = [
       properties: {
         date: { type: 'string', description: 'YYYY-MM-DD' },
         time: { type: 'string', description: 'e.g. "10:00 AM"' },
-        cleaner_name: { type: 'string', description: 'Check specific cleaner' },
+        cleaner_name: { type: 'string', description: 'Check specific stylist' },
       },
       required: ['date'],
     },
@@ -601,12 +602,12 @@ async function handleCheckAvailability(input: Record<string, unknown>): Promise<
         const matched = cleanerSlots.find(c => c.name.toLowerCase().includes(cleanerName.toLowerCase()))
         if (matched) {
           if (matched.available) {
-            return JSON.stringify({ available: true, cleaner: matched.name, message: `${matched.name} is available at ${requestedTime} on ${date}.` })
+            return JSON.stringify({ available: true, stylist: matched.name, message: `${matched.name} is available at ${requestedTime} on ${date}.` })
           }
           const alts = await getSmartSuggestions(date)
-          return JSON.stringify({ available: false, cleaner: matched.name, conflict: matched.conflict, alternative: alts[0], message: `${matched.name} isn't available at ${requestedTime}. Suggest ${alts[0] || 'a different day'}.` })
+          return JSON.stringify({ available: false, stylist: matched.name, conflict: matched.conflict, alternative: alts[0], message: `${matched.name} isn't available at ${requestedTime}. Suggest ${alts[0] || 'a different day'}.` })
         }
-        return JSON.stringify({ available: false, message: `No cleaner named "${cleanerName}" found.` })
+        return JSON.stringify({ available: false, message: `No stylist named "${cleanerName}" found.` })
       }
     }
 
@@ -668,7 +669,7 @@ async function handleCreateBooking(input: Record<string, unknown>, conversationI
       status: 'pending', service_type: serviceType,
       hourly_rate: hourlyRate, price: hourlyRate * estimatedHours * 100,
       recurring_type: recurringType,
-      notes: `SMS booking | ${bedrooms}BR/${bathrooms}BA`,
+      notes: `SMS booking | ${bedrooms} guest(s)`,
     }).select('id').single()
 
     if (error) throw error
@@ -676,7 +677,7 @@ async function handleCreateBooking(input: Record<string, unknown>, conversationI
     await supabaseAdmin.from('sms_conversations').update({
       booking_id: booking.id, completed_at: new Date().toISOString(),
       updated_at: new Date().toISOString(), outcome: 'booked',
-      summary: `Booked ${serviceType} ${date} ${time} $${hourlyRate}/hr`,
+      summary: `Booked ${serviceType} ${date} ${time} $${hourlyRate}`,
     }).eq('id', conversationId)
 
     await updateChecklist(conversationId, { status: 'confirmed' })
@@ -742,7 +743,7 @@ export async function getClientProfile(phone: string): Promise<string> {
       .select('id', { count: 'exact', head: true })
       .eq('client_id', client.id).in('status', ['completed', 'scheduled', 'in_progress'])
 
-    let preferredCleaner: string | null = null
+    let preferredStylist: string | null = null
     const { data: completedBookings } = await supabaseAdmin.from('bookings')
       .select('cleaners(name)').eq('client_id', client.id).eq('status', 'completed')
     if (completedBookings && completedBookings.length > 0) {
@@ -752,7 +753,7 @@ export async function getClientProfile(phone: string): Promise<string> {
         if (n) counts[n] = (counts[n] || 0) + 1
       }
       const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1])
-      if (sorted.length > 0) preferredCleaner = sorted[0][0]
+      if (sorted.length > 0) preferredStylist = sorted[0][0]
     }
 
     const formatTime = (s: string | null) => {
@@ -765,7 +766,7 @@ export async function getClientProfile(phone: string): Promise<string> {
       .filter(b => ['scheduled', 'pending', 'in_progress'].includes(b.status))
       .map(b => ({
         booking_id: b.id, date: b.start_time?.split('T')[0], time: formatTime(b.start_time),
-        service_type: b.service_type, cleaner: (b.cleaners as unknown as { name: string })?.name || 'unassigned',
+        service_type: b.service_type, stylist: (b.cleaners as unknown as { name: string })?.name || 'unassigned',
         hourly_rate: b.hourly_rate, status: b.status,
       }))
 
@@ -780,12 +781,12 @@ export async function getClientProfile(phone: string): Promise<string> {
     return JSON.stringify({
       name: client.name, address: client.address, email: client.email,
       notes: client.notes, active: client.active, do_not_service: client.do_not_service,
-      total_bookings: totalBookings || 0, preferred_cleaner: preferredCleaner,
+      total_bookings: totalBookings || 0, preferred_stylist: preferredStylist,
       last_rate: recentBookings?.[0]?.hourly_rate || null,
       upcoming,
       recent_bookings: (recentBookings || []).map(b => ({
         date: b.start_time?.split('T')[0], service_type: b.service_type,
-        cleaner: (b.cleaners as unknown as { name: string })?.name || 'unassigned',
+        stylist: (b.cleaners as unknown as { name: string })?.name || 'unassigned',
         hourly_rate: b.hourly_rate, status: b.status,
       })),
       conversation_history: (prevConvos || []).map(c => ({ date: c.created_at?.split('T')[0], outcome: c.outcome, summary: c.summary })),

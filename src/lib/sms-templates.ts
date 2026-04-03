@@ -13,23 +13,23 @@ const STOP_TEXT_ES = '\nResponde STOP para cancelar.'
 export function smsBookingReceived(booking: any): string {
   const date = new Date(booking.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
   const time = new Date(booking.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-  return `NYC Mobile Salon: We received your booking request for ${date} at ${time}. We'll confirm with your cleaner's details shortly. Questions? (212) 202-8400${STOP_TEXT}`
+  return `NYC Mobile Salon: We received your booking request for ${date} at ${time}. We'll confirm with your stylist's details shortly. Questions? (212) 202-8400${STOP_TEXT}`
 }
 
 export function smsBookingConfirmation(booking: any): string {
   const date = new Date(booking.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
   const time = new Date(booking.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-  const cleanerName = booking.cleaners?.name?.split(' ')[0] || 'Your cleaner'
+  const cleanerName = booking.cleaners?.name?.split(' ')[0] || 'Your stylist'
   const isRecurring = !!booking.recurring_type
   const cancelPolicy = isRecurring
     ? 'Recurring services require 7 days notice to reschedule. No cancellations unless discontinuing service with 7 days notice.'
     : 'First-time/one-time services cannot be cancelled or rescheduled.'
-  return `NYC Mobile Salon: Confirmed — ${date} at ${time} with ${cleanerName}.\n\nPayment: Zelle (hi@thenycmobilesalon.com) or Apple Pay, collected 15 min before end. Time billed until cleaner leaves/payment is collected.\n\n${cancelPolicy} We hold your spot without payment upfront, turning away other clients — late changes affect our team members who depend on this income.\n\nPortal: thenycmobilesalon.com/book${STOP_TEXT}`
+  return `NYC Mobile Salon: Confirmed — ${date} at ${time} with ${cleanerName}.\n\nPayment: Zelle (hi@thenycmobilesalon.com) or Apple Pay, collected 15 min before end. Time billed until your stylist leaves/payment is collected.\n\n${cancelPolicy} We hold your spot without payment upfront, turning away other clients — late changes affect our team members who depend on this income.\n\nPortal: thenycmobilesalon.com/book${STOP_TEXT}`
 }
 
 export function smsReminder(booking: any, timeframe: string): string {
   const time = new Date(booking.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-  const cleanerName = booking.cleaners?.name?.split(' ')[0] || 'Your cleaner'
+  const cleanerName = booking.cleaners?.name?.split(' ')[0] || 'Your stylist'
   const isRecurring = !!booking.recurring_type
   const policy = isRecurring
     ? 'Recurring services require 7 days notice to reschedule. No cancellations unless discontinuing with 7 days notice.'
@@ -37,18 +37,18 @@ export function smsReminder(booking: any, timeframe: string): string {
   if (timeframe === 'in 2 hours') {
     return `NYC Mobile Salon: Reminder — ${cleanerName} arrives at ${time}. Almost time!\n\n${policy}${STOP_TEXT}`
   }
-  return `NYC Mobile Salon: Reminder — cleaning ${timeframe} at ${time} with ${cleanerName}.\n\n${policy}${STOP_TEXT}`
+  return `NYC Mobile Salon: Reminder — appointment ${timeframe} at ${time} with ${cleanerName}.\n\n${policy}${STOP_TEXT}`
 }
 
 export function smsCancellation(booking: any): string {
   const date = new Date(booking.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
-  return `NYC Mobile Salon: Your ${date} cleaning has been cancelled. Rebook: thenycmobilesalon.com/book${STOP_TEXT}`
+  return `NYC Mobile Salon: Your ${date} appointment has been cancelled. Rebook: thenycmobilesalon.com/book${STOP_TEXT}`
 }
 
 export function smsReschedule(booking: any): string {
   const newDate = new Date(booking.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
   const newTime = new Date(booking.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-  return `NYC Mobile Salon: Your cleaning has been rescheduled to ${newDate} at ${newTime}. Details: thenycmobilesalon.com/book${STOP_TEXT}`
+  return `NYC Mobile Salon: Your appointment has been rescheduled to ${newDate} at ${newTime}. Details: thenycmobilesalon.com/book${STOP_TEXT}`
 }
 
 export function smsThankYou(clientName: string): string {
@@ -67,13 +67,13 @@ export function smsVerificationCode(code: string): string {
 export function smsBookingConfirmationES(booking: any): string {
   const date = new Date(booking.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
   const time = new Date(booking.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-  const cleanerName = booking.cleaners?.name?.split(' ')[0] || 'Tu limpiador/a'
-  return `NYC Mobile Salon: Tu limpieza está confirmada para ${date} a las ${time} con ${cleanerName}. Detalles: thenycmobilesalon.com/book${STOP_TEXT_ES}`
+  const cleanerName = booking.cleaners?.name?.split(' ')[0] || 'Tu estilista'
+  return `NYC Mobile Salon: Tu cita está confirmada para ${date} a las ${time} con ${cleanerName}. Detalles: thenycmobilesalon.com/book${STOP_TEXT_ES}`
 }
 
 export function smsReminderES(booking: any, timeframe: string): string {
   const time = new Date(booking.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-  const cleanerName = booking.cleaners?.name?.split(' ')[0] || 'Tu limpiador/a'
+  const cleanerName = booking.cleaners?.name?.split(' ')[0] || 'Tu estilista'
   const tfMap: Record<string, string> = {
     'in 2 hours': 'en 2 horas',
     'tomorrow': 'mañana',
@@ -83,18 +83,18 @@ export function smsReminderES(booking: any, timeframe: string): string {
   if (timeframe === 'in 2 hours') {
     return `NYC Mobile Salon: Recordatorio — ${cleanerName} llega a las ${time}. ¡Ya casi!${STOP_TEXT_ES}`
   }
-  return `NYC Mobile Salon: Recordatorio — limpieza ${tfES} a las ${time} con ${cleanerName}.${STOP_TEXT_ES}`
+  return `NYC Mobile Salon: Recordatorio — cita ${tfES} a las ${time} con ${cleanerName}.${STOP_TEXT_ES}`
 }
 
 export function smsCancellationES(booking: any): string {
   const date = new Date(booking.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
-  return `NYC Mobile Salon: Tu limpieza del ${date} ha sido cancelada. Reservar de nuevo: thenycmobilesalon.com/book${STOP_TEXT_ES}`
+  return `NYC Mobile Salon: Tu cita del ${date} ha sido cancelada. Reservar de nuevo: thenycmobilesalon.com/book${STOP_TEXT_ES}`
 }
 
 export function smsRescheduleES(booking: any): string {
   const newDate = new Date(booking.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
   const newTime = new Date(booking.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-  return `NYC Mobile Salon: Tu limpieza ha sido reprogramada para ${newDate} a las ${newTime}. Detalles: thenycmobilesalon.com/book${STOP_TEXT_ES}`
+  return `NYC Mobile Salon: Tu cita ha sido reprogramada para ${newDate} a las ${newTime}. Detalles: thenycmobilesalon.com/book${STOP_TEXT_ES}`
 }
 
 export function smsThankYouES(clientName: string): string {
@@ -159,12 +159,12 @@ export function smsUrgentBroadcast(booking: any): string {
 
 export function smsPaymentDue(clientName: string, amount: string): string {
   const firstName = clientName?.split(' ')[0] || 'there'
-  return `NYC Mobile Salon: Hi ${firstName}, your cleaning is wrapping up soon! Payment of $${amount} is due via Zelle (hi@thenycmobilesalon.com) or Apple Pay (2120292200). Our team can't leave until payment is processed — thank you!${STOP_TEXT}`
+  return `NYC Mobile Salon: Hi ${firstName}, your appointment is wrapping up soon! Payment of $${amount} is due via Zelle (hi@thenycmobilesalon.com) or Apple Pay (2120292200). Our team can't leave until payment is processed — thank you!${STOP_TEXT}`
 }
 
 export function smsPaymentDueES(clientName: string, amount: string): string {
   const firstName = clientName?.split(' ')[0] || ''
-  return `NYC Mobile Salon: Hola ${firstName}, tu limpieza está por terminar. El pago de $${amount} se puede hacer por Zelle (hi@thenycmobilesalon.com) o Apple Pay (2120292200). Nuestro equipo no puede irse hasta que se procese el pago — ¡gracias!${STOP_TEXT_ES}`
+  return `NYC Mobile Salon: Hola ${firstName}, tu cita está por terminar. El pago de $${amount} se puede hacer por Zelle (hi@thenycmobilesalon.com) o Apple Pay (2120292200). Nuestro equipo no puede irse hasta que se procese el pago — ¡gracias!${STOP_TEXT_ES}`
 }
 
 // ============================================
@@ -211,7 +211,7 @@ export function smsNewBooking(booking: any): string {
 }
 
 export function smsNewApplication(name: string): string {
-  return `NYC Mobile Salon: New cleaner application — ${name}`
+  return `NYC Mobile Salon: New stylist application — ${name}`
 }
 
 export function smsNewReferrer(name: string, code: string): string {

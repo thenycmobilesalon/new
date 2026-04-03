@@ -1,5 +1,5 @@
 // ============================================
-// CLEAN EMAIL TEMPLATES - GOOGLE/APPLE STYLE
+// EMAIL TEMPLATES - GOOGLE/APPLE STYLE
 // ============================================
 
 export const emailWrapper = (content: string) => `
@@ -108,12 +108,12 @@ export function clientBookingReceivedEmail(booking: any) {
     ${infoTable(`
       ${infoRow('Date', date)}
       ${infoRow('Time', startTime)}
-      ${infoRow('Service', booking.service_type || 'Standard Cleaning')}
+      ${infoRow('Service', booking.service_type || 'Beauty Service')}
       ${infoRow('Status', '<strong style="color: #f59e0b;">Pending Confirmation</strong>')}
     `)}
 
     <p style="color: #333; font-size: 14px; line-height: 1.7; margin: 24px 0 0 0;">
-      We'll assign a cleaner and send you a confirmation with all the details — including your cleaner's name, preparation tips, and payment info.
+      We'll assign a stylist and send you a confirmation with all the details — including your stylist's name, preparation tips, and payment info.
     </p>
 
     ${booking.clients?.pin ? `
@@ -136,8 +136,8 @@ export function clientBookingReceivedEmail(booking: any) {
 export function clientConfirmationEmail(booking: any) {
   const date = new Date(booking.start_time).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
   const startTime = new Date(booking.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-  const cleanerName = booking.cleaners?.name || 'Your cleaner'
-  const cleanerFirst = (booking.cleaners?.name || 'Your cleaner').split(' ')[0]
+  const cleanerName = booking.cleaners?.name || 'Your stylist'
+  const cleanerFirst = (booking.cleaners?.name || 'Your stylist').split(' ')[0]
   const clientName = booking.clients?.name?.split(' ')[0] || 'there'
   const hourlyRate = booking.hourly_rate || 75
   const isRecurring = booking.recurring_type ? true : false
@@ -150,12 +150,12 @@ export function clientConfirmationEmail(booking: any) {
   const cleanerPhotoHtml = cleanerPhotoUrl ? `
     <div style="text-align: left; margin: 0 0 24px 0;">
       <img src="${cleanerPhotoUrl}" alt="${cleanerFirst}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #eee;" />
-      <p style="color: #666; font-size: 14px; margin: 8px 0 0 0;">Your cleaner: <strong>${cleanerFirst}</strong></p>
+      <p style="color: #666; font-size: 14px; margin: 8px 0 0 0;">Your stylist: <strong>${cleanerFirst}</strong></p>
     </div>
   ` : ''
 
   const content = `
-    <h1 style="font-size: 24px; font-weight: 600; color: #000; margin: 0 0 8px 0;">Your cleaning is confirmed!</h1>
+    <h1 style="font-size: 24px; font-weight: 600; color: #000; margin: 0 0 8px 0;">Your appointment is confirmed!</h1>
     <p style="color: #666; font-size: 15px; margin: 0 0 24px 0;">Hi ${clientName}, thank you for giving us the opportunity to be your mobile beauty service provider. Here's everything you need to know.</p>
 
     ${cleanerPhotoHtml}
@@ -165,7 +165,7 @@ export function clientConfirmationEmail(booking: any) {
       ${infoRow('Time', startTime)}
       ${infoRow('Address', booking.clients?.address || 'On file')}
       ${infoRow('Service', booking.service_type)}
-      ${infoRow('Cleaner', cleanerName)}
+      ${infoRow('Stylist', cleanerName)}
       ${isRecurring ? infoRow('Schedule', booking.recurring_type) : ''}
       ${infoRow('Estimate', `${estimatedRange} hrs × $${hourlyRate}/hr`)}
     `)}
@@ -174,31 +174,31 @@ export function clientConfirmationEmail(booking: any) {
 
     <h2 style="font-size: 18px; font-weight: 600; color: #000; margin: 0 0 16px 0;">What to expect</h2>
     <p style="color: #333; font-size: 14px; line-height: 1.7; margin: 0 0 16px 0;">
-      ${cleanerFirst} is usually right on time, but we allow up to 30 minutes for traffic and delays. Once ${cleanerFirst} arrives, they'll provide a thorough, quality service. If you forgot to mention something, just let ${cleanerFirst} know — that's the best part about our hourly pricing model.
+      ${cleanerFirst} is usually right on time, but we allow up to 30 minutes for traffic and delays. Once ${cleanerFirst} arrives, they'll provide a thorough, quality service. If you'd like to adjust anything, just let ${cleanerFirst} know — that's the best part about our hourly pricing model.
     </p>
 
     ${divider()}
 
     <h2 style="font-size: 18px; font-weight: 600; color: #000; margin: 0 0 16px 0;">Payment</h2>
     <p style="color: #333; font-size: 14px; line-height: 1.7; margin: 0 0 8px 0;">
-      About 15 minutes before wrapping up, we'll reach out to collect payment via <strong>Zelle (hi@thenycmobilesalon.com) or Apple Pay</strong>. Our team is not allowed to leave until payment has been processed. Please note that time is billed until the cleaner leaves/payment is confirmed.
+      About 15 minutes before wrapping up, we'll reach out to collect payment via <strong>Zelle (hi@thenycmobilesalon.com) or Apple Pay</strong>. Our team is not allowed to leave until payment has been processed. Please note that time is billed until your stylist leaves/payment is confirmed.
     </p>
 
     ${divider()}
 
-    <h2 style="font-size: 18px; font-weight: 600; color: #000; margin: 0 0 16px 0;">Tips for preparing your home</h2>
+    <h2 style="font-size: 18px; font-weight: 600; color: #000; margin: 0 0 16px 0;">Tips for preparing</h2>
     <p style="color: #333; font-size: 14px; line-height: 1.7; margin: 0;">
-      • Clear countertops and surfaces so your cleaner can get to them<br>
-      • Pick up clothes and personal items from floors<br>
-      • If you have pets, please let us know — secure them if they're anxious around strangers<br>
+      • Have a clean, well-lit area ready for your stylist to work<br>
+      • If you have reference photos or inspiration, have them handy<br>
+      • If you have pets, please secure them if they're anxious around strangers<br>
       • Make sure building/door access is arranged (doorman notified, keys ready, codes shared in your notes)
     </p>
 
     ${divider()}
 
-    ${hourlyRate === 49 ? noteBox('<strong>Supplies needed:</strong> Please have cleaning supplies ready — all-purpose cleaner, vacuum, mop, cloths, and trash bags.', 'warning') : noteBox('<strong>All supplies included!</strong> ' + cleanerFirst + ' will bring everything needed — no need to prepare anything.', 'success')}
+    ${hourlyRate === 49 ? noteBox('<strong>Supplies needed:</strong> Please have any personal products or tools ready that you prefer your stylist to use.', 'warning') : noteBox('<strong>All supplies included!</strong> ' + cleanerFirst + ' will bring everything needed — no need to prepare anything.', 'success')}
 
-    ${noteBox(`<strong>Tipping:</strong> Tips are always appreciated but never required. 100% of all tips included with Apple Pay and Zelle (hi@thenycmobilesalon.com) go directly to your cleaner.`, 'info')}
+    ${noteBox(`<strong>Tipping:</strong> Tips are always appreciated but never required. 100% of all tips included with Apple Pay and Zelle (hi@thenycmobilesalon.com) go directly to your stylist.`, 'info')}
 
     ${noteBox(`<strong>Cancellation &amp; Reschedule Policy:</strong> ${isRecurring
       ? 'Recurring (weekly, bi-weekly, monthly) services require <strong>7 days notice</strong> to reschedule. Cancellations are not permitted on recurring services unless the service is being discontinued entirely with 7 days notice.'
@@ -229,24 +229,24 @@ export function clientConfirmationEmail(booking: any) {
     </p>
   `
 
-  return { subject: `Cleaning Confirmed – ${date}`, html: emailWrapper(content) }
+  return { subject: `Appointment Confirmed – ${date}`, html: emailWrapper(content) }
 }
 
 export function clientReminderEmail(booking: any, daysOut: string) {
   const date = new Date(booking.start_time).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
   const startTime = new Date(booking.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-  const cleanerName = booking.cleaners?.name || 'Your cleaner'
+  const cleanerName = booking.cleaners?.name || 'Your stylist'
   const clientName = booking.clients?.name?.split(' ')[0] || 'there'
   const isRecurring = booking.recurring_type ? true : false
 
   const content = `
-    <h1 style="font-size: 24px; font-weight: 600; color: #000; margin: 0 0 8px 0;">Reminder: Cleaning ${daysOut}</h1>
+    <h1 style="font-size: 24px; font-weight: 600; color: #000; margin: 0 0 8px 0;">Reminder: Appointment ${daysOut}</h1>
     <p style="color: #666; font-size: 15px; margin: 0 0 24px 0;">Hi ${clientName}, just a friendly reminder.</p>
 
     ${infoTable(`
       ${infoRow('Date', date)}
       ${infoRow('Time', startTime)}
-      ${infoRow('Cleaner', cleanerName)}
+      ${infoRow('Stylist', cleanerName)}
     `)}
 
     ${primaryButton('View Details', 'https://www.thenycmobilesalon.com/book')}
@@ -261,7 +261,7 @@ export function clientReminderEmail(booking: any, daysOut: string) {
     </p>
   `
 
-  return { subject: `Reminder: Cleaning ${daysOut}`, html: emailWrapper(content) }
+  return { subject: `Reminder: Appointment ${daysOut}`, html: emailWrapper(content) }
 }
 
 export function clientCancellationEmail(booking: any) {
@@ -270,7 +270,7 @@ export function clientCancellationEmail(booking: any) {
 
   const content = `
     <h1 style="font-size: 24px; font-weight: 600; color: #000; margin: 0 0 8px 0;">Appointment cancelled</h1>
-    <p style="color: #666; font-size: 15px; margin: 0 0 24px 0;">Hi ${clientName}, your cleaning has been cancelled.</p>
+    <p style="color: #666; font-size: 15px; margin: 0 0 24px 0;">Hi ${clientName}, your appointment has been cancelled.</p>
 
     ${infoTable(`
       ${infoRow('Date', date)}
@@ -295,24 +295,24 @@ export function clientThankYouEmail(clientName: string) {
     <p style="color: #666; font-size: 15px; margin: 0 0 24px 0;">Hi ${firstName},</p>
 
     <p style="color: #333; font-size: 15px; line-height: 1.6; margin: 0 0 24px 0;">
-      Thank you for giving us the opportunity to be your mobile beauty service provider. We hope you loved your experience and we look forward to keeping your space spotless!
+      Thank you for giving us the opportunity to be your mobile beauty service provider. We hope you loved your experience and we look forward to seeing you again!
     </p>
 
     <div style="background: #f0fdf4; border-radius: 8px; padding: 20px; margin: 24px 0;">
       <p style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #166534;">🎉 10% off all future services!</p>
       <p style="margin: 0; font-size: 14px; color: #166534; line-height: 1.5;">
-        As a valued client, you automatically get <strong>10% off</strong> every future booking (excludes $59/hr self-supply option). No code needed — it's applied automatically.
+        As a valued client, you automatically get <strong>10% off</strong> every future booking. No code needed — it's applied automatically.
       </p>
     </div>
 
     <div style="background: #f0f7ff; border-radius: 8px; padding: 20px; margin: 24px 0;">
-      <p style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #1e40af;">💰 Earn free cleanings & cash!</p>
+      <p style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #1e40af;">💰 Earn free services & cash!</p>
       <p style="margin: 0; font-size: 14px; color: #1e40af; line-height: 1.5;">
-        Our referral rewards program is one of our most popular features. Many clients get <strong>free cleanings and cash in their pockets</strong> just by referring someone one time!
+        Our referral rewards program is one of our most popular features. Many clients get <strong>free services and cash in their pockets</strong> just by referring someone one time!
       </p>
     </div>
 
-    ${primaryButton('Learn About Referral Rewards', 'https://www.thenycmobilesalon.com/get-paid-for-cleaning-referrals-every-time-they-are-serviced')}
+    ${primaryButton('Learn About Referral Rewards', 'https://www.thenycmobilesalon.com/referral-rewards')}
 
     ${divider()}
 
@@ -330,11 +330,11 @@ export function clientThankYouEmail(clientName: string) {
 
 export function clientPaymentDueEmail(booking: any, amount: string) {
   const clientName = booking.clients?.name?.split(' ')[0] || 'there'
-  const cleanerName = booking.cleaners?.name?.split(' ')[0] || 'Your cleaner'
+  const cleanerName = booking.cleaners?.name?.split(' ')[0] || 'Your stylist'
 
   const content = `
     <h1 style="font-size: 24px; font-weight: 600; color: #000; margin: 0 0 8px 0;">Time to wrap up — payment due</h1>
-    <p style="color: #666; font-size: 15px; margin: 0 0 24px 0;">Hi ${clientName}, ${cleanerName} is finishing up your cleaning.</p>
+    <p style="color: #666; font-size: 15px; margin: 0 0 24px 0;">Hi ${clientName}, ${cleanerName} is finishing up your appointment.</p>
 
     <div style="background: #f0f7ff; border-radius: 8px; padding: 24px; margin: 24px 0; text-align: left;">
       <p style="margin: 0 0 8px 0; color: #1e40af; font-size: 14px;">Amount due</p>
@@ -350,7 +350,7 @@ export function clientPaymentDueEmail(booking: any, amount: string) {
 
     ${noteBox('<strong>Important:</strong> Our team cannot leave until payment has been processed. Thank you for your prompt payment!', 'warning')}
 
-    ${noteBox('<strong>Tipping:</strong> Tips are always appreciated but never required. 100% of all tips go directly to your cleaner.', 'info')}
+    ${noteBox('<strong>Tipping:</strong> Tips are always appreciated but never required. 100% of all tips go directly to your stylist.', 'info')}
 
     <p style="color: #666; font-size: 14px; margin: 24px 0 0 0;">
       Questions? <a href="tel:2122028400" style="color: #000;">(212) 202-8400</a>
@@ -375,7 +375,7 @@ export function cleanerAssignmentEmail(booking: any) {
   
   const content = `
     <h1 style="font-size: 24px; font-weight: 600; color: #000; margin: 0;">New job assigned</h1>
-    <p style="color: #666; font-size: 14px; margin: 4px 0 24px 0;">Nueva limpieza asignada</p>
+    <p style="color: #666; font-size: 14px; margin: 4px 0 24px 0;">Nuevo trabajo asignado</p>
     
     <p style="color: #444; font-size: 15px; margin: 0 0 24px 0;">Hi ${firstName} / Hola ${firstName}</p>
 
@@ -392,8 +392,8 @@ export function cleanerAssignmentEmail(booking: any) {
       <a href="${mapsLink}" style="color: #0066cc; font-size: 14px;">Open in Maps / Abrir en Mapas →</a>
     </div>
 
-    ${hourlyRate === 49 
-      ? noteBox('<strong>⚠️ Client supplies</strong> – Do NOT bring your own.<br><span style="font-size:12px">El cliente proporciona suministros – NO traigas los tuyos.</span>', 'warning')
+    ${hourlyRate === 49
+      ? noteBox('<strong>⚠️ Client supplies</strong> – Client will provide their own products.<br><span style="font-size:12px">El cliente proporcionará sus propios productos.</span>', 'warning')
       : noteBox('<strong>✓ Bring all supplies</strong><br><span style="font-size:12px">Trae todos los suministros y equipos.</span>', 'success')
     }
 
@@ -435,7 +435,7 @@ export function cleanerDailySummaryEmail(cleanerName: string, bookings: any[]) {
           <p style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600; color: #000;">${startTime} – ${b.clients?.name || 'Client'}</p>
           <p style="margin: 0 0 8px 0; font-size: 14px;"><a href="${mapsLink}" style="color: #0066cc;">${address}</a></p>
           <span style="display: inline-block; background: ${hourlyRate === 49 ? '#fffbeb' : '#f0fdf4'}; color: ${hourlyRate === 49 ? '#92400e' : '#166534'}; padding: 4px 8px; border-radius: 4px; font-size: 12px;">
-            ${hourlyRate === 49 ? '📦 Client supplies / Suministros del cliente' : '🧴 Bring supplies / Trae suministros'}
+            ${hourlyRate === 49 ? '📦 Client products / Productos del cliente' : '💼 Bring supplies / Trae suministros'}
           </span>
           ${b.notes ? `<p style="margin: 12px 0 0 0; padding: 10px; background: #fffbeb; border-radius: 4px; color: #92400e; font-size: 13px;">${b.notes}</p>` : ''}
         </div>
@@ -537,7 +537,7 @@ export function referralCommissionEmail(referrer: any, booking: any, commission:
   
   const content = `
     <h1 style="font-size: 24px; font-weight: 600; color: #000; margin: 0 0 8px 0;">You earned $${commissionDollars}!</h1>
-    <p style="color: #666; font-size: 15px; margin: 0 0 24px 0;">Nice work, ${firstName}. Your referral just completed a beauty.</p>
+    <p style="color: #666; font-size: 15px; margin: 0 0 24px 0;">Nice work, ${firstName}. Your referral just completed a service.</p>
 
     ${infoTable(`
       ${infoRow('Service total', `$${bookingTotal}`)}
@@ -589,7 +589,7 @@ export function newBookingAdminEmail(booking: any) {
       ${infoRow('Date', `${date} at ${time}`)}
       ${infoRow('Service', booking.service_type)}
       ${infoRow('Address', booking.clients?.address || 'On file')}
-      ${infoRow('Cleaner', booking.cleaners?.name || 'Unassigned')}
+      ${infoRow('Stylist', booking.cleaners?.name || 'Unassigned')}
       ${booking.ref_code ? infoRow('Referral', booking.ref_code) : ''}
     `)}
 
@@ -734,7 +734,7 @@ export function adminNewBookingRequestEmail(booking: any, details: { time?: stri
       ${details.referred_by ? infoRow('Referred By', details.referred_by) : ''}
     `)}
 
-    ${primaryButton('Review & Assign Cleaner', 'https://www.thenycmobilesalon.com/admin/bookings')}
+    ${primaryButton('Review & Assign Stylist', 'https://www.thenycmobilesalon.com/admin/bookings')}
   `
 
   return { subject: `New Booking Request: ${booking.clients?.name || 'Unknown'}`, html: emailWrapper(content) }
@@ -836,7 +836,7 @@ export function adminDailyOpsRecapEmail(data: {
       <thead>
         <tr style="border-bottom: 2px solid #000;">
           <th style="padding: 8px; font-size: 13px; color: #666; text-align: left; font-weight: 600;">Client</th>
-          <th style="padding: 8px; font-size: 13px; color: #666; text-align: left; font-weight: 600;">Cleaner</th>
+          <th style="padding: 8px; font-size: 13px; color: #666; text-align: left; font-weight: 600;">Stylist</th>
           <th style="padding: 8px; font-size: 13px; color: #666; text-align: left; font-weight: 600;">Time</th>
           <th style="padding: 8px; font-size: 13px; color: #666; text-align: right; font-weight: 600;">Revenue</th>
           <th style="padding: 8px; font-size: 13px; color: #666; text-align: right; font-weight: 600;">Labor</th>
@@ -897,17 +897,17 @@ export function clientRescheduleEmail(booking: any, oldDate: string, oldTime: st
   const newDate = new Date(booking.start_time).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
   const newTime = new Date(booking.start_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
   const clientName = booking.clients?.name?.split(' ')[0] || 'there'
-  const cleanerName = booking.cleaners?.name || 'Your cleaner'
+  const cleanerName = booking.cleaners?.name || 'Your stylist'
 
   const content = `
-    <h1 style="font-size: 24px; font-weight: 600; color: #000; margin: 0 0 8px 0;">Your cleaning has been rescheduled</h1>
+    <h1 style="font-size: 24px; font-weight: 600; color: #000; margin: 0 0 8px 0;">Your appointment has been rescheduled</h1>
     <p style="color: #666; font-size: 15px; margin: 0 0 24px 0;">Hi ${clientName}, your appointment has been updated.</p>
 
     ${infoTable(`
       ${infoRow('New Date', newDate)}
       ${infoRow('New Time', newTime)}
       ${infoRow('Previous', `${oldDate} at ${oldTime}`)}
-      ${infoRow('Cleaner', cleanerName)}
+      ${infoRow('Stylist', cleanerName)}
       ${infoRow('Service', booking.service_type)}
     `)}
 
@@ -918,7 +918,7 @@ export function clientRescheduleEmail(booking: any, oldDate: string, oldTime: st
     </p>
   `
 
-  return { subject: `Rescheduled: Cleaning on ${newDate}`, html: emailWrapper(content) }
+  return { subject: `Rescheduled: Appointment on ${newDate}`, html: emailWrapper(content) }
 }
 
 export function adminRescheduleEmail(booking: any, oldDate: string, oldTime: string) {
@@ -927,7 +927,7 @@ export function adminRescheduleEmail(booking: any, oldDate: string, oldTime: str
 
   const content = `
     <h1 style="font-size: 24px; font-weight: 600; color: #000; margin: 0 0 8px 0;">Booking rescheduled by client</h1>
-    <p style="color: #666; font-size: 15px; margin: 0 0 24px 0;">${booking.clients?.name || 'A client'} has rescheduled their cleaning.</p>
+    <p style="color: #666; font-size: 15px; margin: 0 0 24px 0;">${booking.clients?.name || 'A client'} has rescheduled their appointment.</p>
 
     ${infoTable(`
       ${infoRow('Client', booking.clients?.name || 'Unknown')}
@@ -935,7 +935,7 @@ export function adminRescheduleEmail(booking: any, oldDate: string, oldTime: str
       ${infoRow('New Time', newTime)}
       ${infoRow('Previous', `${oldDate} at ${oldTime}`)}
       ${infoRow('Service', booking.service_type)}
-      ${infoRow('Cleaner', booking.cleaners?.name || 'Unassigned')}
+      ${infoRow('Stylist', booking.cleaners?.name || 'Unassigned')}
     `)}
 
     ${primaryButton('View Booking', 'https://www.thenycmobilesalon.com/admin/bookings')}

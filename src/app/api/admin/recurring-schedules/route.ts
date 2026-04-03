@@ -121,7 +121,7 @@ export async function POST(request: Request) {
         cleaner_id: cleaner_id || null,
         start_time: startTime,
         end_time: endTime,
-        service_type: service_type || 'Standard Cleaning',
+        service_type: service_type || 'Standard Service',
         price: price || 0,
         hourly_rate: hourly_rate || null,
         notes: notes || null,
@@ -165,15 +165,15 @@ export async function POST(request: Request) {
         // Client push
         const bookingDate = new Date(first.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
         if (first.client_id) {
-          sendPushToClient(first.client_id, 'Booking Confirmed', `Your ${recurring_type} cleaning starts ${bookingDate}`, '/book/dashboard').catch(() => {})
+          sendPushToClient(first.client_id, 'Booking Confirmed', `Your ${recurring_type} appointment starts ${bookingDate}`, '/book/dashboard').catch(() => {})
         }
-        // Cleaner email
+        // Stylist email
         if (first.cleaners?.email) {
           const email = cleanerAssignmentEmail(first)
           await sendEmail(first.cleaners.email, email.subject, email.html)
           await supabaseAdmin.from('email_logs').insert({ booking_id: first.id, email_type: 'assignment', recipient: first.cleaners.email })
         }
-        // Cleaner SMS + push via unified dispatch
+        // Stylist SMS + push via unified dispatch
         if (first.cleaner_id) {
           const report = await notifyCleaner({
             cleanerId: first.cleaner_id,
@@ -186,7 +186,7 @@ export async function POST(request: Request) {
           })
           await supabaseAdmin.from('notifications').insert({
             type: 'cleaner_notified',
-            title: 'Cleaner Notified',
+            title: 'Stylist Notified',
             message: `${report.cleanerName}: ${formatDeliveryReport(report)}`,
             booking_id: first.id
           })

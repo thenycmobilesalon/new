@@ -7,14 +7,14 @@ export async function POST() {
   const authError = await protectAdminAPI()
   if (authError) return authError
 
-  // Fetch all active cleaners
+  // Fetch all active stylists
   const { data: cleaners, error } = await supabaseAdmin
     .from('cleaners')
     .select('id, name, pin')
     .eq('active', true)
 
   if (error || !cleaners) {
-    return NextResponse.json({ error: 'Failed to fetch cleaners' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to fetch stylists' }, { status: 500 })
   }
 
   const reports: DeliveryReport[] = []

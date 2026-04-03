@@ -51,7 +51,7 @@ interface Booking {
 }
 
 interface Client { id: string; name: string; phone: string; email: string; address: string; created_at: string; do_not_service?: boolean }
-interface Cleaner { id: string; name: string; hourly_rate?: number; working_days?: string[]; unavailable_dates?: string[]; schedule?: Record<string, unknown>; active?: boolean; max_jobs_per_day?: number }
+interface Stylist { id: string; name: string; hourly_rate?: number; working_days?: string[]; unavailable_dates?: string[]; schedule?: Record<string, unknown>; active?: boolean; max_jobs_per_day?: number }
 interface Referrer { id: string; name: string; ref_code: string; active: boolean }
 
 // Parse timestamp as UTC — Supabase may return without timezone offset
@@ -73,7 +73,7 @@ function BookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [filteredBookings, setFilteredBookings] = useState<Booking[]>([])
   const [clients, setClients] = useState<Client[]>([])
-  const [cleaners, setCleaners] = useState<Cleaner[]>([])
+  const [cleaners, setCleaners] = useState<Stylist[]>([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
@@ -93,7 +93,7 @@ function BookingsPage() {
   })
   const [createForm, setCreateForm] = useState({
     client_id: '', cleaner_id: '', start_date: '', start_time: '09:00',
-    hours: 2, hourly_rate: 75, service_type: 'Standard Cleaning', notes: '',
+    hours: 2, hourly_rate: 75, service_type: 'Haircut & Style', notes: '',
     repeat_enabled: false, repeat_type: 'weekly', repeat_end: 'never',
     repeat_end_count: 10, repeat_end_date: '', custom_interval: 3,
     discount_enabled: false,
@@ -160,7 +160,7 @@ function BookingsPage() {
       setCreateForm({
         client_id: client ? client.id : '',
         cleaner_id: '', start_date: tomorrow.toISOString().split('T')[0],
-        start_time: '09:00', hours: 2, hourly_rate: 75, service_type: 'Standard Cleaning', notes: '',
+        start_time: '09:00', hours: 2, hourly_rate: 75, service_type: 'Haircut & Style', notes: '',
         repeat_enabled: false, repeat_type: 'weekly', repeat_end: 'never',
         repeat_end_count: 10, repeat_end_date: endDate.toISOString().split('T')[0], custom_interval: 3,
         discount_enabled: false, is_emergency: false, cleaner_pay_rate: 40, status: 'scheduled'
@@ -195,7 +195,7 @@ function BookingsPage() {
       endDate.setMonth(endDate.getMonth() + 3)
       setCreateForm({
         client_id: '', cleaner_id: '', start_date: date,
-        start_time: time || '09:00', hours: 2, hourly_rate: 75, service_type: 'Standard Cleaning', notes: '',
+        start_time: time || '09:00', hours: 2, hourly_rate: 75, service_type: 'Haircut & Style', notes: '',
         repeat_enabled: false, repeat_type: 'weekly', repeat_end: 'never',
         repeat_end_count: 10, repeat_end_date: endDate.toISOString().split('T')[0], custom_interval: 3,
         discount_enabled: false, is_emergency: false, cleaner_pay_rate: 40, status: 'scheduled'
@@ -229,7 +229,7 @@ function BookingsPage() {
     setWaitlistLoading(false)
   }
 
-  const getCleanerAvailability = (cleaner: Cleaner, dateStr: string, timeStr?: string, durationHours?: number): { available: boolean; reason?: string; dayBookings?: Array<{ time: string; client: string; hours: number }> } => {
+  const getCleanerAvailability = (cleaner: Stylist, dateStr: string, timeStr?: string, durationHours?: number): { available: boolean; reason?: string; dayBookings?: Array<{ time: string; client: string; hours: number }> } => {
     if (!dateStr) return { available: true }
     const dateObj = new Date(dateStr + 'T12:00:00')
     const dayShort = dateObj.toLocaleDateString('en-US', { weekday: 'short' })
@@ -424,7 +424,7 @@ function BookingsPage() {
     endDate.setMonth(endDate.getMonth() + 3)
     setCreateForm({
       client_id: '', cleaner_id: '', start_date: tomorrow.toISOString().split('T')[0],
-      start_time: '09:00', hours: 2, hourly_rate: 75, service_type: 'Standard Cleaning', notes: '',
+      start_time: '09:00', hours: 2, hourly_rate: 75, service_type: 'Haircut & Style', notes: '',
       repeat_enabled: false, repeat_type: 'weekly', repeat_end: 'never',
       repeat_end_count: 10, repeat_end_date: endDate.toISOString().split('T')[0], custom_interval: 3,
       discount_enabled: false, is_emergency: false, cleaner_pay_rate: 40, status: 'scheduled'
@@ -933,7 +933,7 @@ function BookingsPage() {
   }
 
   const serviceTypesData = useServiceTypes()
-  const serviceTypes = serviceTypesData.length > 0 ? serviceTypesData.map(s => s.name) : ['Standard Cleaning', 'Deep Cleaning', 'Move In/Out', 'Post Construction']
+  const serviceTypes = serviceTypesData.length > 0 ? serviceTypesData.map(s => s.name) : ['Haircut & Style', 'Color & Highlights', 'Blowout', 'Bridal & Event']
 
   // Reverse-map stored recurring_type display name back to form repeat_type
   const reverseRecurringType = (displayName: string | null): string => {
@@ -1017,7 +1017,7 @@ function BookingsPage() {
                 b.clients?.name || '', b.cleaners?.name || '', b.service_type || '', b.status,
                 b.hourly_rate ? '$' + b.hourly_rate : '', '$' + (b.price / 100).toFixed(0), b.payment_status || ''
               ].map(v => `"${v}"`).join(','))
-              const csv = 'Date,Time,Client,Cleaner,Service,Status,Rate,Price,Payment\n' + rows.join('\n')
+              const csv = 'Date,Time,Client,Stylist,Service,Status,Rate,Price,Payment\n' + rows.join('\n')
               const blob = new Blob([csv], { type: 'text/csv' })
               const url = URL.createObjectURL(blob)
               const a = document.createElement('a'); a.href = url; a.download = `bookings-${new Date().toISOString().split('T')[0]}.csv`; a.click()
@@ -1068,7 +1068,7 @@ function BookingsPage() {
           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
             <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           </div>
-          <input type="text" placeholder="Search client, cleaner, address..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm text-[#1E2A4A] bg-white focus:outline-none focus:ring-2 focus:ring-[#1E2A4A]/10 focus:border-[#1E2A4A] transition-all" />
+          <input type="text" placeholder="Search client, stylist, address..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm text-[#1E2A4A] bg-white focus:outline-none focus:ring-2 focus:ring-[#1E2A4A]/10 focus:border-[#1E2A4A] transition-all" />
         </div>
 
         {/* Status Filter Pills */}
@@ -1107,7 +1107,7 @@ function BookingsPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Cleaner</label>
+                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Stylist</label>
                 <select value={filters.cleaner_id} onChange={(e) => setFilters({ ...filters, cleaner_id: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-xl text-[#1E2A4A] text-sm bg-white focus:outline-none focus:border-[#1E2A4A]">
                   <option value="">All</option>
                   {cleaners.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -1214,7 +1214,7 @@ function BookingsPage() {
                               client_id: entry.client_id || '',
                               cleaner_id: '', start_date: entry.preferred_date || tomorrow.toISOString().split('T')[0],
                               start_time: entry.preferred_time ? entry.preferred_time.replace(/\s*(am|pm)/i, (_, ap) => ap.toLowerCase() === 'am' ? ':00' : ':00').replace(/(\d{1,2})(am|pm)/i, (_, h, ap) => { const hr = parseInt(h); const hour = ap.toLowerCase() === 'pm' && hr < 12 ? hr + 12 : ap.toLowerCase() === 'am' && hr === 12 ? 0 : hr; return `${String(hour).padStart(2, '0')}:00` }) : '09:00',
-                              hours: 2, hourly_rate: 75, service_type: entry.service_type || 'Standard Cleaning', notes: 'Booked from waitlist',
+                              hours: 2, hourly_rate: 75, service_type: entry.service_type || 'Haircut & Style', notes: 'Booked from waitlist',
                               repeat_enabled: false, repeat_type: 'weekly', repeat_end: 'never',
                               repeat_end_count: 10, repeat_end_date: endDate.toISOString().split('T')[0], custom_interval: 3,
                               discount_enabled: false, is_emergency: false, cleaner_pay_rate: 40, status: 'scheduled'
@@ -1336,7 +1336,7 @@ function BookingsPage() {
                               Apple
                             </button>
                           </div>
-                          {/* Cleaner Paid */}
+                          {/* Stylist Paid */}
                           <button
                             disabled={isSaving}
                             onClick={() => handleCloseOutUpdate(b.id, { cleaner_paid: !b.cleaner_paid })}
@@ -1409,7 +1409,7 @@ function BookingsPage() {
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Client</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Service</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Date & Time</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Cleaner</th>
+                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Stylist</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider hidden lg:table-cell">Rate</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">Amount</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider hidden lg:table-cell">Recurring</th>
@@ -1813,9 +1813,9 @@ function BookingsPage() {
               </div>
             </div>
 
-            {/* ── CLEANER ── */}
+            {/* ── STYLIST ── */}
             <div className="mb-3">
-              <label className="block text-[10px] text-gray-400 uppercase mb-1">Cleaner</label>
+              <label className="block text-[10px] text-gray-400 uppercase mb-1">Stylist</label>
               {editingBooking.suggested_cleaner_id && !editingBooking.cleaner_id && (() => {
                 const suggested = cleaners.find(c => c.id === editingBooking.suggested_cleaner_id)
                 return suggested ? (
@@ -1979,7 +1979,7 @@ function BookingsPage() {
                   </div>
                 ) : (
                   <div>
-                    <label className="block text-sm font-medium text-[#1E2A4A] mb-1">Cleaner *</label>
+                    <label className="block text-sm font-medium text-[#1E2A4A] mb-1">Stylist *</label>
                     <div className="space-y-1">
                       {cleaners.filter(c => c.active !== false).map((c) => {
                         const avail = getCleanerAvailability(c, createForm.start_date, createForm.start_time, createForm.hours)

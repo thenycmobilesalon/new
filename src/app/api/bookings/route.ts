@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     }
   }
 
-  // Validate cleaner availability before assignment
+  // Validate stylist availability before assignment
   if (body.cleaner_id && body.start_time && !body.force) {
     const bookingDate = body.start_time.split('T')[0]
     const dayOfWeek = new Date(bookingDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short' })
@@ -97,7 +97,7 @@ export async function POST(request: Request) {
             unavailable: true, reason: 'not_scheduled'
           }, { status: 409 })
         }
-        // Check if booking falls within cleaner's working hours
+        // Check if booking falls within stylist's working hours
         if (daySchedule.start && daySchedule.end) {
           const parseSchedTime = (t: string): number => {
             const m = t.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i)
@@ -212,9 +212,9 @@ export async function POST(request: Request) {
       // Client push
       const bookingDate = new Date(data.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
       if (data.client_id) {
-        sendPushToClient(data.client_id, 'Booking Confirmed', `Your cleaning on ${bookingDate} is confirmed`, '/book/dashboard').catch(() => {})
+        sendPushToClient(data.client_id, 'Booking Confirmed', `Your appointment on ${bookingDate} is confirmed`, '/book/dashboard').catch(() => {})
       }
-      // Cleaner email + SMS + push via unified dispatch
+      // Stylist email + SMS + push via unified dispatch
       if (data.cleaners?.email) {
         const cleanerEmail = cleanerAssignmentEmail(data)
         await sendEmail(data.cleaners.email, cleanerEmail.subject, cleanerEmail.html)
@@ -232,7 +232,7 @@ export async function POST(request: Request) {
         })
         await supabaseAdmin.from('notifications').insert({
           type: 'cleaner_notified',
-          title: 'Cleaner Notified',
+          title: 'Stylist Notified',
           message: `${report.cleanerName}: ${formatDeliveryReport(report)}`,
           booking_id: data.id
         })

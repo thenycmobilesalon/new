@@ -132,7 +132,7 @@ export async function GET() {
 
   const calcRevenue = (jobs: any[] | null) => (jobs || []).reduce((sum, b) => sum + (b.price || 0), 0)
 
-  // Get cleaners for filter dropdown
+  // Get stylists for filter dropdown
   const { data: cleanersList } = await supabaseAdmin
     .from('cleaners')
     .select('id, name')

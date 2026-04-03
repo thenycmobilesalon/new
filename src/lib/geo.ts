@@ -50,7 +50,7 @@ export async function geocodeClient(clientId: string, address: string): Promise<
   return coords
 }
 
-// Geocode and cache lat/lng on a cleaner record
+// Geocode and cache lat/lng on a stylist record
 export async function geocodeCleaner(cleanerId: string, address: string): Promise<{ lat: number; lng: number } | null> {
   const coords = await geocodeAddress(address)
   if (coords) {

@@ -38,7 +38,7 @@ const toMinutes = (timeStr: string) => {
   return h * 60 + m
 }
 
-// Get cleaners available on a given day (filters by holidays, working_days, schedule, unavailable_dates)
+// Get stylists available on a given day (filters by holidays, working_days, schedule, unavailable_dates)
 async function getCleanersForDay(date: string) {
   // Block holidays — no one works
   if (isHoliday(date)) return []
@@ -115,8 +115,8 @@ function hasConflict(
 }
 
 /**
- * Public availability: which time slots have at least one available cleaner?
- * Duration-aware — a 4hr deep clean won't show 3PM as available.
+ * Public availability: which time slots have at least one available stylist?
+ * Duration-aware — a 4hr session won't show 3PM as available.
  * Returns all slots, with preferred pockets (8am, 12pm, 4pm) first.
  */
 export async function checkAvailability(date: string, durationHours: number = 2): Promise<AvailabilityResult> {
@@ -133,7 +133,7 @@ export async function checkAvailability(date: string, durationHours: number = 2)
   const cleaners = await getCleanersForDay(date)
   if (cleaners.length === 0) {
     const dayOfWeek = new Date(date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short' })
-    return { slots: [], message: 'No cleaners available on ' + dayOfWeek }
+    return { slots: [], message: 'No stylists available on ' + dayOfWeek }
   }
 
   const existingBookings = await getBookingsForDay(date)
@@ -182,8 +182,8 @@ export async function getSmartSuggestions(date: string, durationHours: number = 
 }
 
 /**
- * Admin: which cleaners are available for a specific time slot?
- * Returns all cleaners with available/conflict status.
+ * Admin: which stylists are available for a specific time slot?
+ * Returns all stylists with available/conflict status.
  */
 export async function checkCleanerAvailability(
   date: string,
@@ -198,7 +198,7 @@ export async function checkCleanerAvailability(
   const slotStartMin = h * 60 + m
   const slotEndMin = slotStartMin + durationHours * 60
 
-  // Also get cleaners NOT working this day so we can show them as unavailable
+  // Also get stylists NOT working this day so we can show them as unavailable
   const { data: allCleaners } = await supabaseAdmin
     .from('cleaners')
     .select('id, name')
