@@ -1,6 +1,12 @@
 'use client'
 import { useState, useRef } from 'react'
+import { createClient } from '@supabase/supabase-js'
 import { boroughs } from '@/lib/constants'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 const specialties = [
   'Hairstylist',
@@ -44,6 +50,7 @@ export default function ApplicationForm() {
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
   const [uploadProgress, setUploadProgress] = useState('')
+  const [uploadPercent, setUploadPercent] = useState(0)
 
   const handleResumeSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -86,15 +93,13 @@ export default function ApplicationForm() {
       setError(errData.error || `Failed to prepare ${type} upload.`)
       return null
     }
-    const { signedUrl, publicUrl } = await signedRes.json()
+    const { path, token, publicUrl } = await signedRes.json()
 
-    const uploadRes = await fetch(signedUrl, {
-      method: 'PUT',
-      headers: { 'Content-Type': file.type },
-      body: file,
-    })
+    const { error } = await supabase.storage
+      .from('uploads')
+      .uploadToSignedUrl(path, token, file, { contentType: file.type })
 
-    if (!uploadRes.ok) {
+    if (error) {
       setError(`Failed to upload ${type}. Please try again.`)
       return null
     }
@@ -108,6 +113,10 @@ export default function ApplicationForm() {
 
     if (!form.name.trim() || !form.email.trim() || !form.phone.trim() || !form.specialty || !form.borough) {
       setError('Please fill in all required fields.')
+      return
+    }
+    if (!videoFile) {
+      setError('Please upload a video selfie (minimum 30 seconds).')
       return
     }
     for (let i = 0; i < 3; i++) {
@@ -414,8 +423,14 @@ export default function ApplicationForm() {
         disabled={loading}
         className="w-full py-4 rounded-full bg-purple-600 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-purple-700 disabled:opacity-60"
       >
-        {loading ? (uploadProgress || 'Submitting...') : 'Submit Application'}
+        {loading ? (uploadPercent > 0 ? `Uploading... ${uploadPercent}%` : (uploadProgress || 'Submitting...')) : 'Submit Application'}
       </button>
+
+      {loading && uploadPercent > 0 && (
+        <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+          <div className="bg-purple-600 h-2 rounded-full transition-all duration-300" style={{ width: `${uploadPercent}%` }} />
+        </div>
+      )}
 
       <p className="text-center text-xs text-gray-400">
         By applying, you confirm you hold a valid NYS license for your specialty.

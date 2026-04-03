@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getResend } from "@/lib/resend";
+import { supabaseAdmin } from "@/lib/supabase";
 
 export async function POST(request: Request) {
   try {
@@ -31,6 +32,25 @@ export async function POST(request: Request) {
 
     if (Object.keys(errors).length > 0) {
       return NextResponse.json({ errors }, { status: 400 });
+    }
+
+    // Save to Supabase
+    const { error: dbError } = await supabaseAdmin.from("applications").insert({
+      name: name.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+      specialty,
+      borough,
+      instagram: instagram || null,
+      experience: experience || null,
+      availability: availability || null,
+      message: message || null,
+      resume_url: resumeUrl || null,
+      video_url: videoUrl || null,
+    });
+
+    if (dbError) {
+      console.error("Supabase insert error:", dbError);
     }
 
     const businessEmail = process.env.BUSINESS_EMAIL;

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getResend } from "@/lib/resend";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase";
 import { validateLeadForm, type LeadFormData } from "@/lib/validation";
 
 export async function POST(request: Request) {
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     }
 
     // Save to Supabase
-    const { error: dbError } = await supabase.from("leads").insert({
+    const { error: dbError } = await supabaseAdmin.from("leads").insert({
       name: data.name,
       email: data.email,
       phone: data.phone,
