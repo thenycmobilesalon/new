@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 
-// Simple translations for common cleaning notes phrases
+// Simple translations for common appointment notes phrases
 const translations: Record<string, string> = {
   // Common words/phrases
   'door code': 'código de puerta',
