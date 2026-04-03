@@ -152,10 +152,10 @@ export default function PricingPage() {
                 <p className="text-xs font-semibold uppercase tracking-widest text-purple-600">Individual Services</p>
                 <p className="font-display mt-2 text-4xl font-bold text-gray-900">$99<span className="text-lg font-normal text-gray-400">/hour</span></p>
                 <p className="mt-1 text-sm text-gray-500">1-hour minimum</p>
-                <p className="mt-2 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">10% off for 2+ hours</p>
+                <p className="mt-2 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">10% multi-hour discount available</p>
               </div>
               <p className="mb-6 text-sm text-gray-600">
-                Perfect for solo appointments. Book any beauty service for yourself and pay only for the time your stylist spends with you. Combine multiple services in one visit for maximum convenience. Book 2 or more hours and save 10% automatically.
+                Perfect for solo appointments. Book any beauty service for yourself and pay only for the time your stylist spends with you. Combine multiple services in one visit for maximum convenience. Ask about our 10% multi-hour discount.
               </p>
               <ul className="mb-6 space-y-3">
                 {[

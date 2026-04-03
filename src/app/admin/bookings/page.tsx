@@ -482,8 +482,7 @@ function BookingsPage() {
 
   const calculatePrice = () => {
     const basePrice = createForm.hours * createForm.hourly_rate * 100
-    // Auto 10% discount for 2+ hours
-    if (createForm.hours >= 2 || createForm.discount_enabled) {
+    if (createForm.discount_enabled) {
       const discounted = basePrice * 0.9
       return Math.round(discounted)
     }
