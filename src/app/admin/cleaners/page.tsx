@@ -3,9 +3,6 @@
 import { useState, useEffect, useRef } from 'react'
 
 import SidePanel from '@/components/SidePanel'
-import { SERVICE_ZONES } from '@/lib/service-zones'
-import dynamic from 'next/dynamic'
-const CoverageMap = dynamic(() => import('@/components/CoverageMap'), { ssr: false })
 import AddressAutocomplete from '@/components/AddressAutocomplete'
 
 // Compress image client-side before upload (max 1200px, JPEG quality 0.8)
@@ -521,8 +518,6 @@ export default function StylistsPage() {
           Apply form: <a href="https://www.thenycmobilesalon.com/apply" target="_blank" className="text-[#1E2A4A] hover:underline ml-1 py-2 inline-block">thenycmobilesalon.com/apply</a> ·
           Ops Admin: <a href="https://www.thenycmobilesalon.com/apply/operations-coordinator" target="_blank" className="text-[#1E2A4A] hover:underline ml-1 py-2 inline-block">thenycmobilesalon.com/apply/operations-coordinator</a>
         </div>
-        <CoverageMap />
-
         {/* Tabs */}
         <div className="flex gap-4 mb-6 border-b">
           <button
@@ -1003,25 +998,6 @@ export default function StylistsPage() {
                     placeholder="Unlimited"
                   />
                   <p className="text-xs text-gray-500 mt-1">Leave blank for unlimited</p>
-                </div>
-              </div>
-
-              {/* Service Zones */}
-              <div>
-                <label className="block text-sm font-medium text-[#1E2A4A] mb-2">Service Zones</label>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {SERVICE_ZONES.map(zone => (
-                    <label key={zone.id} className="flex items-center gap-2 px-2 py-1.5 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 text-xs">
-                      <input
-                        type="checkbox"
-                        checked={form.service_zones.includes(zone.id)}
-                        onChange={(e) => setForm({ ...form, service_zones: e.target.checked ? [...form.service_zones, zone.id] : form.service_zones.filter(z => z !== zone.id) })}
-                        className="w-3.5 h-3.5 rounded border-gray-300"
-                      />
-                      <span className="text-[#1E2A4A]">{zone.label}</span>
-                      {zone.car_required && <span className="text-[9px] bg-yellow-100 text-yellow-700 px-1 rounded">Car</span>}
-                    </label>
-                  ))}
                 </div>
               </div>
 
