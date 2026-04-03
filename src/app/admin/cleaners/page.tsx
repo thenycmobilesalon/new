@@ -61,14 +61,16 @@ interface Application {
   name: string
   email: string | null
   phone: string
-  address: string | null
+  specialty: string | null
+  borough: string | null
+  instagram: string | null
   experience: string | null
   availability: string | null
-  notes: string | null
-  photo_url: string | null
-  status: 'pending' | 'approved' | 'rejected'
+  message: string | null
+  resume_url: string | null
+  video_url: string | null
+  status: string
   created_at: string
-  reviewed_at: string | null
 }
 
 interface MgmtApplication {
@@ -84,7 +86,7 @@ interface MgmtApplication {
   video_url: string | null
   resume_url: string | null
   notes: string | null
-  status: 'pending' | 'reviewed' | 'rejected'
+  status: string
   created_at: string
   reviewed_at: string | null
 }
@@ -148,8 +150,11 @@ export default function StylistsPage() {
 
   const loadApplications = async () => {
     try {
-      const res = await fetch('/api/cleaner-applications')
-      if (res.ok) setApplications(await res.json())
+      const res = await fetch('/api/admin?tab=applications')
+      if (res.ok) {
+        const json = await res.json()
+        setApplications(json.data || [])
+      }
     } catch (err) {
       console.error('Failed to load applications:', err)
     }
@@ -315,13 +320,13 @@ export default function StylistsPage() {
         name: app.name,
         email: app.email,
         phone: app.phone,
-        address: app.address,
+        address: app.borough || '',
         pin,
         hourly_rate: 25,
         active: true,
         working_days: [],
         schedule: {},
-        photo_url: app.photo_url || null,
+        photo_url: '',
         service_zones: (app as any).service_zones || [],
         has_car: (app as any).has_car || false,
       })
@@ -334,10 +339,10 @@ export default function StylistsPage() {
     }
 
     // Update application status
-    await fetch('/api/cleaner-applications', {
-      method: 'PUT',
+    await fetch('/api/admin', {
+      method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: app.id, status: 'approved' })
+      body: JSON.stringify({ id: app.id, table: 'applications', status: 'hired' })
     })
 
     // Send welcome email
@@ -355,17 +360,21 @@ export default function StylistsPage() {
 
   const handleRejectApplication = async (id: string) => {
     if (!confirm('Reject this application?')) return
-    await fetch('/api/cleaner-applications', {
-      method: 'PUT',
+    await fetch('/api/admin', {
+      method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status: 'rejected' })
+      body: JSON.stringify({ id, table: 'applications', status: 'rejected' })
     })
     loadApplications()
   }
 
   const handleDeleteApplication = async (id: string) => {
     if (!confirm('Delete this application permanently?')) return
-    await fetch(`/api/cleaner-applications?id=${id}`, { method: 'DELETE' })
+    await fetch('/api/admin', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, table: 'applications', status: 'rejected' })
+    })
     loadApplications()
   }
 
@@ -494,7 +503,7 @@ export default function StylistsPage() {
     setDragOverId(null)
   }
 
-  const pendingApps = applications.filter(a => a.status === 'pending')
+  const pendingApps = applications.filter(a => a.status === 'new' || a.status === 'pending')
 
   return (
     <>
@@ -558,8 +567,8 @@ export default function StylistsPage() {
                         <div key={app.id} className="p-4">
                           <div className="flex justify-between items-start">
                             <div className="flex gap-3">
-                              {app.photo_url ? (
-                                <img src={app.photo_url} alt={app.name} className="w-12 h-12 rounded-full object-cover border border-gray-200 flex-shrink-0" />
+                              { false ? (
+                                <img src="" alt={app.name} className="w-12 h-12 rounded-full object-cover border border-gray-200 flex-shrink-0" />
                               ) : (
                                 <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 text-lg">
                                   👤
@@ -580,8 +589,8 @@ export default function StylistsPage() {
                                       🎥 Watch Video
                                     </a>
                                   )}
-                                  {app.resume_url && (
-                                    <a href={app.resume_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 rounded text-xs hover:bg-green-100">
+                                  {false && (
+                                    <a href="#" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 rounded text-xs hover:bg-green-100">
                                       📄 Resume
                                     </a>
                                   )}
@@ -611,17 +620,17 @@ export default function StylistsPage() {
                   </div>
                 )}
 
-                {mgmtApplications.filter(a => a.status !== 'pending').length > 0 && (
+                {mgmtApplications.filter(a => a.status !== 'new' && a.status !== 'pending').length > 0 && (
                   <div className="bg-white rounded-lg border border-gray-200">
                     <div className="p-4 border-b">
                       <h3 className="font-semibold text-[#1E2A4A]">Past Applications</h3>
                     </div>
                     <div className="divide-y">
-                      {mgmtApplications.filter(a => a.status !== 'pending').map(app => (
+                      {mgmtApplications.filter(a => a.status !== 'new' && a.status !== 'pending').map(app => (
                         <div key={app.id} className="p-4 flex justify-between items-center">
                           <div className="flex gap-3 items-center">
-                            {app.photo_url ? (
-                              <img src={app.photo_url} alt={app.name} className="w-10 h-10 rounded-full object-cover border border-gray-200 flex-shrink-0" />
+                            { false ? (
+                              <img src="" alt={app.name} className="w-10 h-10 rounded-full object-cover border border-gray-200 flex-shrink-0" />
                             ) : (
                               <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 text-sm">👤</div>
                             )}
@@ -634,8 +643,8 @@ export default function StylistsPage() {
                             {app.video_url && (
                               <a href={app.video_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 text-xs hover:underline">🎥 Video</a>
                             )}
-                            {app.resume_url && (
-                              <a href={app.resume_url} target="_blank" rel="noopener noreferrer" className="text-green-600 text-xs hover:underline">📄 Resume</a>
+                            {false && (
+                              <a href="#" target="_blank" rel="noopener noreferrer" className="text-green-600 text-xs hover:underline">📄 Resume</a>
                             )}
                             <span className={`px-2 py-1 rounded-full text-xs ${app.status === 'reviewed' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                               {app.status}
@@ -771,8 +780,8 @@ export default function StylistsPage() {
                         <div key={app.id} className="p-4">
                           <div className="flex justify-between items-start">
                             <div className="flex gap-3">
-                              {app.photo_url ? (
-                                <img src={app.photo_url} alt={app.name} className="w-12 h-12 rounded-full object-cover border border-gray-200 flex-shrink-0" />
+                              { false ? (
+                                <img src="" alt={app.name} className="w-12 h-12 rounded-full object-cover border border-gray-200 flex-shrink-0" />
                               ) : (
                                 <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 text-lg">
                                   👤
@@ -780,13 +789,19 @@ export default function StylistsPage() {
                               )}
                             <div>
                               <p className="font-semibold text-[#1E2A4A]">{app.name}</p>
-                              <p className="text-sm text-gray-600">{app.phone} · {app.email || 'No email'}</p>
-                              {app.address && <p className="text-sm text-gray-500">📍 {app.address}</p>}
+                              {app.specialty && <span className="inline-block mt-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-700">{app.specialty}</span>}
+                              <p className="text-sm text-gray-600 mt-1">{app.phone} · {app.email || 'No email'}</p>
+                              {app.borough && <p className="text-sm text-gray-500">📍 {app.borough}</p>}
+                              {app.instagram && <p className="text-sm text-purple-600">@{app.instagram}</p>}
                               <p className="text-sm text-gray-500 mt-1">
                                 {app.experience && <span className="mr-3">Experience: {app.experience}</span>}
                                 {app.availability && <span>Availability: {app.availability}</span>}
                               </p>
-                              {app.notes && <p className="text-sm text-gray-500 mt-1 italic">&quot;{app.notes}&quot;</p>}
+                              {app.message && <p className="text-sm text-gray-500 mt-1 italic">&quot;{app.message}&quot;</p>}
+                              <div className="flex gap-2 mt-1">
+                                {app.resume_url && <a href={app.resume_url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 underline">Resume</a>}
+                                {app.video_url && <a href={app.video_url} target="_blank" rel="noopener noreferrer" className="text-xs text-purple-600 underline">Video</a>}
+                              </div>
                               <p className="text-xs text-gray-400 mt-2">Applied {formatDate(app.created_at)}</p>
                             </div>
                             </div>
@@ -817,17 +832,20 @@ export default function StylistsPage() {
                   </div>
                 )}
 
-                {applications.filter(a => a.status !== 'pending').length > 0 && (
+                {applications.filter(a => a.status !== 'new' && a.status !== 'pending').length > 0 && (
                   <div className="bg-white rounded-lg border border-gray-200">
                     <div className="p-4 border-b">
                       <h3 className="font-semibold text-[#1E2A4A]">Past Applications</h3>
                     </div>
                     <div className="divide-y">
-                      {applications.filter(a => a.status !== 'pending').map(app => (
+                      {applications.filter(a => a.status !== 'new' && a.status !== 'pending').map(app => (
                         <div key={app.id} className="p-4 flex justify-between items-center">
                           <div>
                             <p className="font-medium text-[#1E2A4A]">{app.name}</p>
-                            <p className="text-sm text-gray-500">{app.phone}</p>
+                            <div className="flex gap-2 items-center">
+                              {app.specialty && <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-700">{app.specialty}</span>}
+                              <p className="text-sm text-gray-500">{app.phone}</p>
+                            </div>
                           </div>
                           <div className="flex items-center gap-3">
                             <span className={`px-2 py-1 rounded-full text-xs ${app.status === 'approved' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
