@@ -83,7 +83,7 @@ function BookingsPage() {
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null)
   const [form, setForm] = useState({
     status: '', payment_status: '', payment_method: '', notes: '', cleaner_id: '',
-    start_date: '', start_time: '', hours: 2, service_type: '', hourly_rate: 75,
+    start_date: '', start_time: '', hours: 2, service_type: '', hourly_rate: 99,
     discount_enabled: false,
     repeat_enabled: false, repeat_type: 'weekly', repeat_end: 'never',
     repeat_end_count: 10, repeat_end_date: '', custom_interval: 3,
@@ -93,7 +93,7 @@ function BookingsPage() {
   })
   const [createForm, setCreateForm] = useState({
     client_id: '', cleaner_id: '', start_date: '', start_time: '09:00',
-    hours: 2, hourly_rate: 75, service_type: 'Haircut & Style', notes: '',
+    hours: 2, hourly_rate: 99, service_type: 'Haircut & Style', notes: '',
     repeat_enabled: false, repeat_type: 'weekly', repeat_end: 'never',
     repeat_end_count: 10, repeat_end_date: '', custom_interval: 3,
     discount_enabled: false,
@@ -160,7 +160,7 @@ function BookingsPage() {
       setCreateForm({
         client_id: client ? client.id : '',
         cleaner_id: '', start_date: tomorrow.toISOString().split('T')[0],
-        start_time: '09:00', hours: 2, hourly_rate: 75, service_type: 'Haircut & Style', notes: '',
+        start_time: '09:00', hours: 2, hourly_rate: 99, service_type: 'Haircut & Style', notes: '',
         repeat_enabled: false, repeat_type: 'weekly', repeat_end: 'never',
         repeat_end_count: 10, repeat_end_date: endDate.toISOString().split('T')[0], custom_interval: 3,
         discount_enabled: false, is_emergency: false, cleaner_pay_rate: 40, status: 'scheduled'
@@ -195,7 +195,7 @@ function BookingsPage() {
       endDate.setMonth(endDate.getMonth() + 3)
       setCreateForm({
         client_id: '', cleaner_id: '', start_date: date,
-        start_time: time || '09:00', hours: 2, hourly_rate: 75, service_type: 'Haircut & Style', notes: '',
+        start_time: time || '09:00', hours: 2, hourly_rate: 99, service_type: 'Haircut & Style', notes: '',
         repeat_enabled: false, repeat_type: 'weekly', repeat_end: 'never',
         repeat_end_count: 10, repeat_end_date: endDate.toISOString().split('T')[0], custom_interval: 3,
         discount_enabled: false, is_emergency: false, cleaner_pay_rate: 40, status: 'scheduled'
@@ -424,7 +424,7 @@ function BookingsPage() {
     endDate.setMonth(endDate.getMonth() + 3)
     setCreateForm({
       client_id: '', cleaner_id: '', start_date: tomorrow.toISOString().split('T')[0],
-      start_time: '09:00', hours: 2, hourly_rate: 75, service_type: 'Haircut & Style', notes: '',
+      start_time: '09:00', hours: 2, hourly_rate: 99, service_type: 'Haircut & Style', notes: '',
       repeat_enabled: false, repeat_type: 'weekly', repeat_end: 'never',
       repeat_end_count: 10, repeat_end_date: endDate.toISOString().split('T')[0], custom_interval: 3,
       discount_enabled: false, is_emergency: false, cleaner_pay_rate: 40, status: 'scheduled'
@@ -482,9 +482,10 @@ function BookingsPage() {
 
   const calculatePrice = () => {
     const basePrice = createForm.hours * createForm.hourly_rate * 100
-    if (createForm.discount_enabled) {
+    // Auto 10% discount for 2+ hours
+    if (createForm.hours >= 2 || createForm.discount_enabled) {
       const discounted = basePrice * 0.9
-      return Math.floor(discounted / 500) * 500 // round down to nearest $5
+      return Math.round(discounted)
     }
     return basePrice
   }
@@ -933,7 +934,13 @@ function BookingsPage() {
   }
 
   const serviceTypesData = useServiceTypes()
-  const serviceTypes = serviceTypesData.length > 0 ? serviceTypesData.map(s => s.name) : ['Haircut & Style', 'Color & Highlights', 'Blowout', 'Bridal & Event']
+  const serviceTypes = serviceTypesData.length > 0 ? serviceTypesData.map(s => s.name) : [
+    'Blowouts & Styling', 'Haircut', 'Color / Highlights', 'Silk Press',
+    'Braids & Protective Styles', 'Extensions', 'Updo & Formal Styling',
+    'Manicure', 'Pedicure', 'Nail Art / Acrylics', 'Makeup', 'Facial',
+    'Waxing', "Men's Haircut / Fade", 'Beard Trim / Shave', "Men's Grooming",
+    'Event / Group Booking', 'Class / Workshop',
+  ]
 
   // Reverse-map stored recurring_type display name back to form repeat_type
   const reverseRecurringType = (displayName: string | null): string => {
@@ -1214,7 +1221,7 @@ function BookingsPage() {
                               client_id: entry.client_id || '',
                               cleaner_id: '', start_date: entry.preferred_date || tomorrow.toISOString().split('T')[0],
                               start_time: entry.preferred_time ? entry.preferred_time.replace(/\s*(am|pm)/i, (_, ap) => ap.toLowerCase() === 'am' ? ':00' : ':00').replace(/(\d{1,2})(am|pm)/i, (_, h, ap) => { const hr = parseInt(h); const hour = ap.toLowerCase() === 'pm' && hr < 12 ? hr + 12 : ap.toLowerCase() === 'am' && hr === 12 ? 0 : hr; return `${String(hour).padStart(2, '0')}:00` }) : '09:00',
-                              hours: 2, hourly_rate: 75, service_type: entry.service_type || 'Haircut & Style', notes: 'Booked from waitlist',
+                              hours: 2, hourly_rate: 99, service_type: entry.service_type || 'Haircut & Style', notes: 'Booked from waitlist',
                               repeat_enabled: false, repeat_type: 'weekly', repeat_end: 'never',
                               repeat_end_count: 10, repeat_end_date: endDate.toISOString().split('T')[0], custom_interval: 3,
                               discount_enabled: false, is_emergency: false, cleaner_pay_rate: 40, status: 'scheduled'
