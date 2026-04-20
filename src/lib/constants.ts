@@ -288,6 +288,7 @@ export const moreNav = [
   { label: "Locations", href: "/locations" },
   { label: "Reviews", href: "/reviews" },
   { label: "FAQ", href: "/faq" },
+  { label: "Contact", href: "/contact" },
   { label: "Join the Team", href: "/join" },
 ];
 
