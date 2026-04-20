@@ -49,7 +49,6 @@ interface Stylist {
 export default function DashboardPage() {
   const router = useRouter()
   const [authed, setAuthed] = useState<boolean | null>(null)
-  const [loginEmail, setLoginEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState('')
   const [loginLoading, setLoginLoading] = useState(false)
@@ -129,7 +128,7 @@ export default function DashboardPage() {
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: loginEmail, password })
+      body: JSON.stringify({ password })
     })
     if (res.ok) {
       setAuthed(true)
@@ -277,26 +276,16 @@ export default function DashboardPage() {
               <p className="text-gray-500 mt-1">Admin Portal</p>
             </div>
             <form onSubmit={handleLogin}>
-              <div className="mb-3">
-                <label className="block text-sm font-medium text-[#1E2A4A] mb-1">Email</label>
-                <input
-                  type="email"
-                  value={loginEmail}
-                  onChange={(e) => setLoginEmail(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-[#1E2A4A] focus:ring-2 focus:ring-[#1E2A4A] outline-none"
-                  placeholder="Email address"
-                  disabled={attempts >= 5}
-                />
-              </div>
               <div>
-                <label className="block text-sm font-medium text-[#1E2A4A] mb-1">Password</label>
+                <label className="block text-sm font-medium text-[#1E2A4A] mb-1">PIN</label>
                 <input
                   type="password"
                   required
+                  inputMode="numeric"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg text-[#1E2A4A] focus:ring-2 focus:ring-[#1E2A4A] outline-none"
-                  placeholder="Password or PIN"
+                  placeholder="Enter your PIN"
                   disabled={attempts >= 5}
                 />
               </div>
@@ -308,7 +297,6 @@ export default function DashboardPage() {
               >
                 {loginLoading ? 'Signing in...' : 'Sign In'}
               </button>
-              <p className="text-xs text-gray-400 text-center mt-3">Owner PIN login still works — leave email blank</p>
             </form>
           </div>
         </div>
