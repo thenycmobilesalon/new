@@ -103,6 +103,7 @@ const PAGE_KEY_MAP: Record<string, string> = {
   '/admin/clients': 'clients',
   '/admin/selena': 'selena',
   '/admin/leads': 'leads',
+  '/admin/requests': 'requests',
   '/admin/finance': 'finance',
   '/admin/cleaners': 'team',
   '/admin/websites': 'websites',
@@ -121,7 +122,7 @@ const PAGE_KEY_MAP: Record<string, string> = {
 const ROLE_PAGES: Record<string, string[]> = {
   owner: ['*'],
   admin: ['dashboard', 'bookings', 'calendar', 'clients', 'team', 'finance', 'feedback'],
-  manager: ['dashboard', 'bookings', 'calendar', 'clients', 'selena', 'leads', 'sales', 'feedback'],
+  manager: ['dashboard', 'bookings', 'calendar', 'clients', 'selena', 'leads', 'requests', 'sales', 'feedback'],
   viewer: ['dashboard', 'bookings', 'calendar'],
 }
 
@@ -135,6 +136,7 @@ const navGroups = [
       { name: 'Clients', href: '/admin/clients', icon: '◻' },
       { name: 'Selena', href: '/admin/selena', icon: '◻' },
       { name: 'Leads', href: '/admin/leads', icon: '◻' },
+      { name: 'Requests', href: '/admin/requests', icon: '◻' },
       { name: 'Sales', href: '/admin/sales', icon: '◻' },
       { name: 'Finance', href: '/admin/finance', icon: '◻' },
       { name: 'Team', href: '/admin/cleaners', icon: '◻' },
