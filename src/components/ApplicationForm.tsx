@@ -1,7 +1,6 @@
 'use client'
 import { useState, useRef } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import { boroughs } from '@/lib/constants'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -28,44 +27,20 @@ const formatPhone = (value: string) => {
 export default function ApplicationForm() {
   const [form, setForm] = useState({
     name: '',
-    email: '',
     phone: '',
     specialty: '',
-    borough: '',
     instagram: '',
     experience: '',
     availability: '',
     message: '',
-    references: [
-      { name: '', phone: '' },
-      { name: '', phone: '' },
-      { name: '', phone: '' },
-    ],
   })
-  const [resumeFile, setResumeFile] = useState<File | null>(null)
   const [videoFile, setVideoFile] = useState<File | null>(null)
-  const resumeInputRef = useRef<HTMLInputElement>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
   const [uploadProgress, setUploadProgress] = useState('')
   const [uploadPercent, setUploadPercent] = useState(0)
-
-  const handleResumeSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    if (!['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(file.type)) {
-      setError('Please select a PDF or DOC file.')
-      return
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      setError('Resume must be under 10MB.')
-      return
-    }
-    setResumeFile(file)
-    setError('')
-  }
 
   const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -111,7 +86,7 @@ export default function ApplicationForm() {
     e.preventDefault()
     setError('')
 
-    if (!form.name.trim() || !form.email.trim() || !form.phone.trim() || !form.specialty || !form.borough) {
+    if (!form.name.trim() || !form.phone.trim() || !form.specialty) {
       setError('Please fill in all required fields.')
       return
     }
@@ -119,23 +94,10 @@ export default function ApplicationForm() {
       setError('Please upload a video selfie (minimum 30 seconds).')
       return
     }
-    for (let i = 0; i < 3; i++) {
-      if (!form.references[i].name.trim() || !form.references[i].phone.trim()) {
-        setError(`Please fill in all 3 references (name and phone).`)
-        return
-      }
-    }
 
     setLoading(true)
 
     try {
-      let resumeUrl: string | null = null
-      if (resumeFile) {
-        setUploadProgress('Uploading resume...')
-        resumeUrl = await uploadFile(resumeFile, 'resume')
-        if (!resumeUrl) { setLoading(false); setUploadProgress(''); return }
-      }
-
       let videoUrl: string | null = null
       if (videoFile) {
         setUploadProgress('Uploading video...')
@@ -150,7 +112,6 @@ export default function ApplicationForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
-          resumeUrl,
           videoUrl,
         }),
       })
@@ -207,62 +168,33 @@ export default function ApplicationForm() {
         />
       </div>
 
-      {/* Email + Phone */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div>
-          <label className={labelClass}>Email *</label>
-          <input
-            type="email"
-            required
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className={inputClass}
-            placeholder="you@email.com"
-          />
-        </div>
-        <div>
-          <label className={labelClass}>Phone *</label>
-          <input
-            type="tel"
-            required
-            value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: formatPhone(e.target.value) })}
-            className={inputClass}
-            placeholder="(555) 123-4567"
-          />
-        </div>
+      {/* Phone */}
+      <div>
+        <label className={labelClass}>Phone *</label>
+        <input
+          type="tel"
+          required
+          value={form.phone}
+          onChange={(e) => setForm({ ...form, phone: formatPhone(e.target.value) })}
+          className={inputClass}
+          placeholder="(555) 123-4567"
+        />
       </div>
 
-      {/* Specialty + Borough */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div>
-          <label className={labelClass}>Specialty *</label>
-          <select
-            required
-            value={form.specialty}
-            onChange={(e) => setForm({ ...form, specialty: e.target.value })}
-            className={inputClass}
-          >
-            <option value="">Choose one</option>
-            {specialties.map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className={labelClass}>Preferred Area *</label>
-          <select
-            required
-            value={form.borough}
-            onChange={(e) => setForm({ ...form, borough: e.target.value })}
-            className={inputClass}
-          >
-            <option value="">Select area</option>
-            {boroughs.map((b) => (
-              <option key={b} value={b}>{b}</option>
-            ))}
-          </select>
-        </div>
+      {/* Specialty */}
+      <div>
+        <label className={labelClass}>Specialty *</label>
+        <select
+          required
+          value={form.specialty}
+          onChange={(e) => setForm({ ...form, specialty: e.target.value })}
+          className={inputClass}
+        >
+          <option value="">Choose one</option>
+          {specialties.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
       </div>
 
       {/* Instagram */}
@@ -313,34 +245,6 @@ export default function ApplicationForm() {
         </div>
       </div>
 
-      {/* Resume Upload */}
-      <div>
-        <label className={labelClass}>Resume <span className="text-gray-300">(optional)</span></label>
-        <p className="text-xs text-gray-400 mb-2">PDF or DOC, under 10MB.</p>
-        <div className="flex items-center gap-3">
-          {resumeFile ? (
-            <div className="flex items-center gap-2 bg-purple-50 px-3 py-2 rounded-lg flex-1 min-w-0">
-              <span className="text-sm text-slate-700 truncate">{resumeFile.name}</span>
-              <span className="text-xs text-slate-400 flex-shrink-0">({(resumeFile.size / 1024 / 1024).toFixed(1)}MB)</span>
-            </div>
-          ) : null}
-          <button
-            type="button"
-            onClick={() => resumeInputRef.current?.click()}
-            className="px-4 py-2.5 border border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-purple-300 hover:bg-purple-50 flex-shrink-0"
-          >
-            {resumeFile ? 'Change' : 'Upload Resume'}
-          </button>
-          <input
-            ref={resumeInputRef}
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={handleResumeSelect}
-            className="hidden"
-          />
-        </div>
-      </div>
-
       {/* Video Selfie */}
       <div>
         <label className={labelClass}>Video Selfie <span className="text-purple-500">(min 30 seconds)</span></label>
@@ -367,39 +271,6 @@ export default function ApplicationForm() {
             className="hidden"
           />
         </div>
-      </div>
-
-      {/* References */}
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-        <p className={`${labelClass} mb-3`}>Professional References (3 Required) *</p>
-        {form.references.map((ref, i) => (
-          <div key={i} className="grid grid-cols-1 gap-2 sm:grid-cols-2 mb-3 last:mb-0">
-            <input
-              type="text"
-              required
-              value={ref.name}
-              onChange={(e) => {
-                const updated = [...form.references]
-                updated[i] = { ...updated[i], name: e.target.value }
-                setForm({ ...form, references: updated })
-              }}
-              className={inputClass}
-              placeholder={`Reference ${i + 1} — Full Name`}
-            />
-            <input
-              type="tel"
-              required
-              value={ref.phone}
-              onChange={(e) => {
-                const updated = [...form.references]
-                updated[i] = { ...updated[i], phone: formatPhone(e.target.value) }
-                setForm({ ...form, references: updated })
-              }}
-              className={inputClass}
-              placeholder="Phone number"
-            />
-          </div>
-        ))}
       </div>
 
       {/* Message */}
