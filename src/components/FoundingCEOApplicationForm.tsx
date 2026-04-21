@@ -461,7 +461,7 @@ export default function FoundingCEOApplicationForm() {
           Why does sweat equity work for you right now? *
         </label>
         <p className="text-xs text-gray-400 mb-2">
-          Be honest. This is the single most important question on the application. We want to understand your motivation for a sweat-equity + hourly structure vs. a traditional salary — and what you&rsquo;re looking for in the equity stake.
+          Be honest. This is the single most important question on the application. This role is pre-revenue, pre-funding — equity only, no salary during the ramp. Tell us why that structure works for you right now and what you&rsquo;re looking for in the equity stake.
         </p>
         <textarea
           required

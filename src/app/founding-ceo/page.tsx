@@ -5,12 +5,12 @@ import { faqSchema, breadcrumbSchema } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Founding CEO / Head of Operations — The NYC Mobile Salon",
   description:
-    "Founding CEO / Head of Operations opportunity at The NYC Mobile Salon. 21,100 pages indexed, 30+ inbound calls, AI-automated backend, zero capital entry — sweat equity + $49/hr while building. Ex-marketplace operators (Glamsquad, Soothe, StyleSeat, Priv, Urban Company) apply.",
+    "Founding CEO / Head of Operations opportunity at The NYC Mobile Salon. 21,100 pages indexed, 30+ inbound calls, AI-automated backend, zero capital entry — founder equity stake, pre-revenue pre-funding. Ex-marketplace operators (Glamsquad, Soothe, StyleSeat, Priv, Urban Company) apply.",
   alternates: { canonical: "https://thenycmobilesalon.com/founding-ceo" },
   openGraph: {
     title: "Founding CEO / Head of Operations — The NYC Mobile Salon",
     description:
-      "Take a brand-new NYC mobile beauty platform from founder-led to operator-led. Traction, brand, and AI automation already built. Sweat equity + hourly income from day one.",
+      "Take a brand-new NYC mobile beauty platform from founder-led to operator-led. Traction, brand, and AI automation already built. Founder equity stake, pre-revenue pre-funding — real ownership of a real business.",
     url: "https://thenycmobilesalon.com/founding-ceo",
   },
 };
@@ -108,14 +108,14 @@ const compensation = [
       "You put in work, not capital. You earn a meaningful ownership stake over time by hitting operational and growth milestones. This is not a small ESOP grant — this is co-founder-level ownership in a multi-million-dollar NYC business that is about to go live.",
   },
   {
-    title: "$49/hr While Building the Team",
+    title: "Pre-Revenue, Pre-Funding — Honest About That",
     detail:
-      "You are not expected to work for free. While you are interviewing, hiring, and onboarding the first operations team, you are paid hourly at $49/hr via Zelle or Apple Cash — the same rate the licensed pros on the platform earn. Income from day one.",
+      "This is a bootstrapped startup. There is no outside capital to pay a salary and no hourly rate during the ramp. The comp is the equity — period. If you need salary income from day one, this is not the right fit, and it is better that we both know that up front.",
   },
   {
     title: "You Run It Once the Team Is In Place",
     detail:
-      "The goal is to transition the business from founder-led to operator-led within 90 days. Once the first team is hired, trained, and running, the hourly pay converts into an operator compensation structure with salary + equity + performance bonuses tied to revenue milestones.",
+      "The goal is to transition the business from founder-led to operator-led within 90 days. As revenue comes in, the compensation structure builds out — revenue-share, salary draw, and performance bonuses tied to milestones — all negotiated at the offer stage alongside the equity terms.",
   },
   {
     title: "Real Ownership of a Real Business",
@@ -158,7 +158,7 @@ const faqs = [
   },
   {
     q: "Is this a W-2 job or a founder role?",
-    a: "It is a founder / co-founder-level role. During the ramp period (typically 90 days), you are paid hourly at $49/hr via Zelle or Apple Cash while you are actively building the team. Once the team is in place and the business transitions to operator-led, the hourly converts into a full operator compensation structure with salary, equity vesting, and performance bonuses. The details are discussed and finalized during the offer stage.",
+    a: "Founder / co-founder-level role. It is not a W-2 position and there is no salary or hourly pay during the ramp. The business is pre-revenue and bootstrapped — there is no outside capital to pay an operator today, and we are not pretending otherwise. The comp during ramp is the equity stake. As revenue comes in, a compensation structure builds on top of the equity — revenue-share, salary draw, and performance bonuses tied to milestones — all negotiated at the offer stage. If you need income from day one, this is the wrong fit and we both need to know that up front.",
   },
   {
     q: "How much capital does the business need before it can scale?",
@@ -233,7 +233,7 @@ export default function FoundingCEOPage() {
             "@type": "JobPosting",
             title: "Founding CEO / Head of Operations",
             description:
-              "Founding CEO / Head of Operations at The NYC Mobile Salon — take a brand-new mobile beauty platform from founder-led to operator-led. 21,100 pages indexed, 30+ inbound calls, AI-automated backend, sweat equity + $49/hr while building. Ex-marketplace operators preferred.",
+              "Founding CEO / Head of Operations at The NYC Mobile Salon — take a brand-new mobile beauty platform from founder-led to operator-led. 21,100 pages indexed, 30+ inbound calls, AI-automated backend. Pre-revenue bootstrapped startup: founder equity stake only, no salary or hourly during ramp. Ex-marketplace operators preferred.",
             identifier: {
               "@type": "PropertyValue",
               name: "The NYC Mobile Salon",
@@ -261,20 +261,11 @@ export default function FoundingCEOPage() {
               "@type": "City",
               name: "New York",
             },
-            baseSalary: {
-              "@type": "MonetaryAmount",
-              currency: "USD",
-              value: {
-                "@type": "QuantitativeValue",
-                value: 49,
-                unitText: "HOUR",
-              },
-            },
             directApply: true,
             qualifications:
               "5+ years in marketplace / on-demand services. P&L ownership. NYC-based. Scaled a supply-constrained two-sided platform.",
             jobBenefits:
-              "Meaningful equity stake, hourly pay during ramp, AI-automated operational backend, pre-built SEO engine, pre-built brand, inbound demand from day one.",
+              "Meaningful founder-level equity stake, AI-automated operational backend, pre-built SEO engine, pre-built brand, inbound demand from day one. Pre-revenue bootstrapped — no salary during ramp.",
           }),
         }}
       />
