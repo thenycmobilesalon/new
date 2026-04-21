@@ -289,7 +289,7 @@ export const moreNav = [
   { label: "Reviews", href: "/reviews" },
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
-  { label: "Founding CEO Position", href: "/founding-ceo" },
+  { label: "Founding CEO Position", href: "/founding-ceo-position-search" },
   { label: "Join the Team", href: "/join" },
 ];
 

@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   title: "Founding CEO / Head of Operations — The NYC Mobile Salon",
   description:
     "Founding CEO / Head of Operations opportunity at The NYC Mobile Salon. 21,100 pages indexed, 30+ inbound calls, AI-automated backend, zero capital entry — founder equity stake, pre-revenue pre-funding. Ex-marketplace operators (Glamsquad, Soothe, StyleSeat, Priv, Urban Company) apply.",
-  alternates: { canonical: "https://thenycmobilesalon.com/founding-ceo" },
+  alternates: { canonical: "https://thenycmobilesalon.com/founding-ceo-position-search" },
   openGraph: {
     title: "Founding CEO / Head of Operations — The NYC Mobile Salon",
     description:
       "Take a brand-new NYC mobile beauty platform from founder-led to operator-led. Traction, brand, and AI automation already built. Founder equity stake, pre-revenue pre-funding — real ownership of a real business.",
-    url: "https://thenycmobilesalon.com/founding-ceo",
+    url: "https://thenycmobilesalon.com/founding-ceo-position-search",
   },
 };
 
@@ -220,7 +220,7 @@ export default function FoundingCEOPage() {
           __html: JSON.stringify(
             breadcrumbSchema([
               { name: "Home", url: "/" },
-              { name: "Founding CEO", url: "/founding-ceo" },
+              { name: "Founding CEO", url: "/founding-ceo-position-search" },
             ])
           ),
         }}
@@ -292,7 +292,7 @@ export default function FoundingCEOPage() {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/founding-ceo/application"
+              href="/founding-ceo-position-search/application"
               className="inline-block rounded-full bg-white px-10 py-4 text-sm font-bold text-purple-600 shadow-lg transition hover:bg-purple-50"
             >
               Apply — Founding Equity
@@ -576,7 +576,7 @@ export default function FoundingCEOPage() {
             The application is deliberately in-depth. It includes a video intro, a question about your marketplace track record, and a short 30/60/90 plan. We are not looking for a resume drop — we are looking for someone who can tell us, in their own words, why this is obviously their next move.
           </p>
           <Link
-            href="/founding-ceo/application"
+            href="/founding-ceo-position-search/application"
             className="inline-block rounded-full bg-purple-600 px-10 py-4 text-sm font-bold text-white shadow-lg shadow-purple-500/20 transition hover:-translate-y-0.5 hover:bg-purple-700"
           >
             Start Your Application
@@ -634,7 +634,7 @@ export default function FoundingCEOPage() {
             Brand built. SEO built. Automation built. Demand arriving. The only thing missing is the operator who turns it on.
           </p>
           <Link
-            href="/founding-ceo/application"
+            href="/founding-ceo-position-search/application"
             className="inline-block rounded-full bg-white px-10 py-4 text-sm font-bold text-purple-600 shadow-lg transition hover:bg-purple-50"
           >
             Apply Now

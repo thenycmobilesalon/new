@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   description:
     "Apply to be the Founding CEO / Head of Operations at The NYC Mobile Salon. Video intro + in-depth questions. For ex-marketplace operators (Glamsquad, Soothe, StyleSeat, Priv, Urban Company, or similar) who have scaled supply-constrained services platforms.",
   alternates: {
-    canonical: "https://thenycmobilesalon.com/founding-ceo/application",
+    canonical: "https://thenycmobilesalon.com/founding-ceo-position-search/application",
   },
   openGraph: {
     title: "Apply — Founding CEO / Head of Operations | The NYC Mobile Salon",
     description:
       "In-depth application for the founding operator role at NYC's newest mobile beauty platform. Video intro required.",
-    url: "https://thenycmobilesalon.com/founding-ceo/application",
+    url: "https://thenycmobilesalon.com/founding-ceo-position-search/application",
   },
 };
 
@@ -26,8 +26,8 @@ export default function FoundingCEOApplicationPage() {
           __html: JSON.stringify(
             breadcrumbSchema([
               { name: "Home", url: "/" },
-              { name: "Founding CEO", url: "/founding-ceo" },
-              { name: "Apply", url: "/founding-ceo/application" },
+              { name: "Founding CEO", url: "/founding-ceo-position-search" },
+              { name: "Apply", url: "/founding-ceo-position-search/application" },
             ])
           ),
         }}

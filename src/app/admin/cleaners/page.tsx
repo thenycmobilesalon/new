@@ -562,7 +562,7 @@ export default function StylistsPage() {
           <div className="space-y-4">
             {ceoApplications.length === 0 ? (
               <div className="text-center py-12 text-gray-500">
-                No Founding CEO applications yet. Share the link: <a href="https://www.thenycmobilesalon.com/founding-ceo" className="text-[#1E2A4A]">thenycmobilesalon.com/founding-ceo</a>
+                No Founding CEO applications yet. Share the link: <a href="https://www.thenycmobilesalon.com/founding-ceo-position-search" className="text-[#1E2A4A]">thenycmobilesalon.com/founding-ceo-position-search</a>
               </div>
             ) : (
               <>

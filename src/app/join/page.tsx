@@ -798,7 +798,7 @@ export default function JoinPage() {
             We&rsquo;re also hiring a <strong>Founding CEO / Head of Operations</strong> — ex-marketplace operators (Glamsquad, Soothe, StyleSeat, Priv, Urban Company, or similar) who&rsquo;ve scaled supply-constrained platforms. Sweat equity + $49/hr while building the team. Real ownership, no capital required.
           </p>
           <Link
-            href="/founding-ceo"
+            href="/founding-ceo-position-search"
             className="inline-block rounded-full bg-purple-600 px-8 py-3 text-sm font-bold text-white shadow-lg shadow-purple-500/20 transition hover:-translate-y-0.5 hover:bg-purple-700"
           >
             See the Founding CEO Role &rarr;
