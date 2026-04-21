@@ -25,52 +25,57 @@ export async function POST(request: Request) {
 
     if (dbError) {
       console.error("Supabase insert error:", dbError);
-    }
-
-    const businessEmail = process.env.BUSINESS_EMAIL;
-    if (!businessEmail) {
-      console.error("BUSINESS_EMAIL not set");
       return NextResponse.json(
-        { error: "Server configuration error" },
+        { error: "We couldn't save your request. Please try again." },
         { status: 500 }
       );
     }
 
-    // Send notification to business
-    await getResend().emails.send({
-      from: "NYC Mobile Salon <notifications@thenycmobilesalon.com>",
-      replyTo: "hey@thenycmobilesalon.com",
-      to: businessEmail,
-      subject: `New Lead: ${data.name} — ${data.service}`,
-      html: `
-        <h2>New Lead from NYC Mobile Salon</h2>
-        <table style="border-collapse:collapse;width:100%;max-width:500px">
-          <tr><td style="padding:8px;font-weight:bold">Name</td><td style="padding:8px">${data.name}</td></tr>
-          <tr style="background:#f0f9ff"><td style="padding:8px;font-weight:bold">Email</td><td style="padding:8px">${data.email}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold">Phone</td><td style="padding:8px">${data.phone}</td></tr>
-          <tr style="background:#f0f9ff"><td style="padding:8px;font-weight:bold">Service</td><td style="padding:8px">${data.service}</td></tr>
-          <tr><td style="padding:8px;font-weight:bold">Borough</td><td style="padding:8px">${data.borough}</td></tr>
-          <tr style="background:#f0f9ff"><td style="padding:8px;font-weight:bold">Preferred Date</td><td style="padding:8px">${data.date}</td></tr>
-          ${data.message ? `<tr><td style="padding:8px;font-weight:bold">Message</td><td style="padding:8px">${data.message}</td></tr>` : ""}
-        </table>
-      `,
-    });
+    const businessEmail = process.env.BUSINESS_EMAIL;
+    if (!businessEmail) {
+      console.error("BUSINESS_EMAIL not set — lead saved without notification");
+      return NextResponse.json({ success: true });
+    }
 
-    // Send confirmation to lead
-    await getResend().emails.send({
-      from: "NYC Mobile Salon <notifications@thenycmobilesalon.com>",
-      replyTo: "hey@thenycmobilesalon.com",
-      to: data.email,
-      subject: "We got your request! — NYC Mobile Salon",
-      html: `
-        <div style="font-family:Arial,sans-serif;max-width:500px;margin:0 auto">
-          <h2 style="color:#0369a1">Thanks, ${data.name}!</h2>
-          <p>We received your request for <strong>${data.service}</strong> in <strong>${data.borough}</strong>.</p>
-          <p>Our team will reach out within 24 hours to confirm your appointment for <strong>${data.date}</strong>.</p>
-          <p style="margin-top:24px;color:#64748b;font-size:14px">— The NYC Mobile Salon Team</p>
-        </div>
-      `,
-    });
+    // Send notification to business (email failure should not fail the request — lead is already saved)
+    try {
+      await getResend().emails.send({
+        from: "NYC Mobile Salon <notifications@thenycmobilesalon.com>",
+        replyTo: "hey@thenycmobilesalon.com",
+        to: businessEmail,
+        subject: `New Lead: ${data.name} — ${data.service}`,
+        html: `
+          <h2>New Lead from NYC Mobile Salon</h2>
+          <table style="border-collapse:collapse;width:100%;max-width:500px">
+            <tr><td style="padding:8px;font-weight:bold">Name</td><td style="padding:8px">${data.name}</td></tr>
+            <tr style="background:#f0f9ff"><td style="padding:8px;font-weight:bold">Email</td><td style="padding:8px">${data.email}</td></tr>
+            <tr><td style="padding:8px;font-weight:bold">Phone</td><td style="padding:8px">${data.phone}</td></tr>
+            <tr style="background:#f0f9ff"><td style="padding:8px;font-weight:bold">Service</td><td style="padding:8px">${data.service}</td></tr>
+            <tr><td style="padding:8px;font-weight:bold">Borough</td><td style="padding:8px">${data.borough}</td></tr>
+            <tr style="background:#f0f9ff"><td style="padding:8px;font-weight:bold">Preferred Date</td><td style="padding:8px">${data.date}</td></tr>
+            ${data.message ? `<tr><td style="padding:8px;font-weight:bold">Message</td><td style="padding:8px">${data.message}</td></tr>` : ""}
+          </table>
+        `,
+      });
+
+      // Send confirmation to lead
+      await getResend().emails.send({
+        from: "NYC Mobile Salon <notifications@thenycmobilesalon.com>",
+        replyTo: "hey@thenycmobilesalon.com",
+        to: data.email,
+        subject: "We got your request! — NYC Mobile Salon",
+        html: `
+          <div style="font-family:Arial,sans-serif;max-width:500px;margin:0 auto">
+            <h2 style="color:#0369a1">Thanks, ${data.name}!</h2>
+            <p>We received your request for <strong>${data.service}</strong> in <strong>${data.borough}</strong>.</p>
+            <p>Our team will reach out within 24 hours to confirm your appointment for <strong>${data.date}</strong>.</p>
+            <p style="margin-top:24px;color:#64748b;font-size:14px">— The NYC Mobile Salon Team</p>
+          </div>
+        `,
+      });
+    } catch (emailError) {
+      console.error("Lead email send failed (row already saved):", emailError);
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

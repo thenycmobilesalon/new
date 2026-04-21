@@ -33,6 +33,7 @@ export default function ApplicationForm() {
     experience: '',
     availability: '',
     message: '',
+    website: '',
   })
   const [videoFile, setVideoFile] = useState<File | null>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)
@@ -40,7 +41,6 @@ export default function ApplicationForm() {
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
   const [uploadProgress, setUploadProgress] = useState('')
-  const [uploadPercent, setUploadPercent] = useState(0)
 
   const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -289,19 +289,27 @@ export default function ApplicationForm() {
         <p className="text-red-600 text-sm bg-red-50 px-4 py-3 rounded-lg">{error}</p>
       )}
 
+      {/* Honeypot — hidden from humans, bots will fill it */}
+      <div aria-hidden="true" style={{ position: 'absolute', left: '-10000px', top: 'auto', width: '1px', height: '1px', overflow: 'hidden' }}>
+        <label>
+          Website
+          <input
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={form.website}
+            onChange={(e) => setForm({ ...form, website: e.target.value })}
+          />
+        </label>
+      </div>
+
       <button
         type="submit"
         disabled={loading}
         className="w-full py-4 rounded-full bg-purple-600 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-purple-700 disabled:opacity-60"
       >
-        {loading ? (uploadPercent > 0 ? `Uploading... ${uploadPercent}%` : (uploadProgress || 'Submitting...')) : 'Submit Application'}
+        {loading ? (uploadProgress || 'Submitting...') : 'Submit Application'}
       </button>
-
-      {loading && uploadPercent > 0 && (
-        <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-          <div className="bg-purple-600 h-2 rounded-full transition-all duration-300" style={{ width: `${uploadPercent}%` }} />
-        </div>
-      )}
 
       <p className="text-center text-xs text-gray-400">
         By applying, you confirm you hold a valid NYS license for your specialty.

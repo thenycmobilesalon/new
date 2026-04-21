@@ -290,6 +290,7 @@ export const moreNav = [
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
   { label: "Join the Team", href: "/join" },
+  { label: "Founding CEO", href: "/founding-ceo" },
 ];
 
 // ─── Neighborhoods by Borough ───────────────────────────────────────

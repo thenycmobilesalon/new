@@ -785,6 +785,27 @@ export default function JoinPage() {
         </div>
       </section>
 
+      {/* ── Operators / Leadership Callout ─────────────────────── */}
+      <section className="bg-white px-4 py-12">
+        <div className="mx-auto max-w-3xl rounded-xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-white p-8 text-center">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-purple-600">
+            For Operators &amp; Leaders
+          </p>
+          <h3 className="mb-3 font-display text-2xl font-black text-slate-800">
+            Not a Beauty Pro — But You Run Things?
+          </h3>
+          <p className="mb-6 text-sm leading-relaxed text-slate-600">
+            We&rsquo;re also hiring a <strong>Founding CEO / Head of Operations</strong> — ex-marketplace operators (Glamsquad, Soothe, StyleSeat, Priv, Urban Company, or similar) who&rsquo;ve scaled supply-constrained platforms. Sweat equity + $49/hr while building the team. Real ownership, no capital required.
+          </p>
+          <Link
+            href="/founding-ceo"
+            className="inline-block rounded-full bg-purple-600 px-8 py-3 text-sm font-bold text-white shadow-lg shadow-purple-500/20 transition hover:-translate-y-0.5 hover:bg-purple-700"
+          >
+            See the Founding CEO Role &rarr;
+          </Link>
+        </div>
+      </section>
+
       {/* ── 11. Final CTA Banner ──────────────────────────────────── */}
       <section
         className="px-4 py-16 text-white"
