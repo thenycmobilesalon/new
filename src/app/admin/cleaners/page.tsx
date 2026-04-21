@@ -73,22 +73,28 @@ interface Application {
   created_at: string
 }
 
-interface MgmtApplication {
+interface CeoApplication {
   id: string
   name: string
   email: string
   phone: string
-  location: string | null
-  years_experience: string | null
-  bilingual: string | null
-  availability_start: string | null
-  photo_url: string | null
-  video_url: string | null
+  linkedin_url: string
+  location: string
+  current_title: string | null
+  current_company: string | null
+  years_experience: string
+  marketplace_background: string
+  other_platforms: string | null
+  pl_experience: string
+  team_size: string
+  biggest_scale: string
+  why_sweat_equity: string
+  plan_30_60_90: string
+  anything_else: string | null
+  video_url: string
   resume_url: string | null
-  notes: string | null
   status: string
   created_at: string
-  reviewed_at: string | null
 }
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -106,7 +112,7 @@ export default function StylistsPage() {
   const [activeTab, setActiveTab] = useState<'team' | 'applications' | 'ops-manager'>('team')
   const [stylists, setStylists] = useState<Stylist[]>([])
   const [applications, setApplications] = useState<Application[]>([])
-  const [mgmtApplications, setMgmtApplications] = useState<MgmtApplication[]>([])
+  const [ceoApplications, setCeoApplications] = useState<CeoApplication[]>([])
   const [showModal, setShowModal] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [form, setForm] = useState({
@@ -136,7 +142,7 @@ export default function StylistsPage() {
   useEffect(() => {
     loadStylists()
     loadApplications()
-    loadMgmtApplications()
+    loadCeoApplications()
   }, [])
 
   const loadStylists = async () => {
@@ -160,23 +166,26 @@ export default function StylistsPage() {
     }
   }
 
-  const loadMgmtApplications = async () => {
+  const loadCeoApplications = async () => {
     try {
-      const res = await fetch('/api/management-applications')
-      if (res.ok) setMgmtApplications(await res.json())
+      const res = await fetch('/api/admin?tab=ceo_applications')
+      if (res.ok) {
+        const json = await res.json()
+        setCeoApplications(json.data || [])
+      }
     } catch (err) {
-      console.error('Failed to load management applications:', err)
+      console.error('Failed to load CEO applications:', err)
     }
   }
 
-  const handleMgmtStatus = async (id: string, status: string) => {
+  const handleCeoStatus = async (id: string, status: string) => {
     if (status === 'rejected' && !confirm('Reject this application?')) return
-    await fetch('/api/management-applications', {
-      method: 'PUT',
+    await fetch('/api/admin', {
+      method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status })
+      body: JSON.stringify({ id, table: 'ceo_applications', status })
     })
-    loadMgmtApplications()
+    loadCeoApplications()
   }
 
   const handlePhotoUpload = async (rawFile: File, stylistId?: string) => {
@@ -545,70 +554,98 @@ export default function StylistsPage() {
             onClick={() => setActiveTab('ops-manager')}
             className={`pb-3 px-1 ${activeTab === 'ops-manager' ? 'border-b-2 border-[#1E2A4A] font-semibold' : 'text-gray-500'}`}
           >
-            Ops Admin {mgmtApplications.filter(a => a.status === 'pending').length > 0 && <span className="ml-1 px-2 py-0.5 bg-orange-100 text-orange-700 rounded-full text-xs">{mgmtApplications.filter(a => a.status === 'pending').length}</span>}
+            Founding CEO {ceoApplications.filter(a => a.status === 'new').length > 0 && <span className="ml-1 px-2 py-0.5 bg-orange-100 text-orange-700 rounded-full text-xs">{ceoApplications.filter(a => a.status === 'new').length}</span>}
           </button>
         </div>
 
         {activeTab === 'ops-manager' ? (
           <div className="space-y-4">
-            {mgmtApplications.length === 0 ? (
+            {ceoApplications.length === 0 ? (
               <div className="text-center py-12 text-gray-500">
-                No coordinator applications yet. Share the link: <a href="https://www.thenycmobilesalon.com/apply/operations-coordinator" className="text-[#1E2A4A]">thenycmobilesalon.com/apply/operations-coordinator</a>
+                No Founding CEO applications yet. Share the link: <a href="https://www.thenycmobilesalon.com/founding-ceo" className="text-[#1E2A4A]">thenycmobilesalon.com/founding-ceo</a>
               </div>
             ) : (
               <>
-                {mgmtApplications.filter(a => a.status === 'pending').length > 0 && (
+                {ceoApplications.filter(a => a.status === 'new').length > 0 && (
                   <div className="bg-white rounded-lg border border-orange-200">
                     <div className="p-4 border-b bg-orange-50">
-                      <h3 className="font-semibold text-[#1E2A4A]">Pending Ops Manager Applications ({mgmtApplications.filter(a => a.status === 'pending').length})</h3>
+                      <h3 className="font-semibold text-[#1E2A4A]">New Founding CEO Applications ({ceoApplications.filter(a => a.status === 'new').length})</h3>
                     </div>
                     <div className="divide-y">
-                      {mgmtApplications.filter(a => a.status === 'pending').map(app => (
-                        <div key={app.id} className="p-4">
-                          <div className="flex justify-between items-start">
-                            <div className="flex gap-3">
-                              { false ? (
-                                <img src="" alt={app.name} className="w-12 h-12 rounded-full object-cover border border-gray-200 flex-shrink-0" />
-                              ) : (
-                                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 text-lg">
-                                  👤
-                                </div>
-                              )}
-                              <div>
-                                <p className="font-semibold text-[#1E2A4A]">{app.name}</p>
-                                <p className="text-sm text-gray-600">{app.phone} · {app.email}</p>
-                                {app.location && <p className="text-sm text-gray-500">📍 {app.location}</p>}
-                                <p className="text-sm text-gray-500 mt-1">
-                                  {app.years_experience && <span className="mr-3">Experience: {app.years_experience}</span>}
-                                  {app.bilingual && <span className="mr-3">Bilingual: {app.bilingual}</span>}
-                                  {app.availability_start && <span>Start: {app.availability_start}</span>}
-                                </p>
-                                <div className="flex gap-2 mt-2">
-                                  {app.video_url && (
-                                    <a href={app.video_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs hover:bg-blue-100">
-                                      🎥 Watch Video
-                                    </a>
-                                  )}
-                                  {false && (
-                                    <a href="#" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 rounded text-xs hover:bg-green-100">
-                                      📄 Resume
-                                    </a>
-                                  )}
-                                </div>
-                                {app.notes && <p className="text-sm text-gray-500 mt-2 italic">&quot;{app.notes}&quot;</p>}
-                                <p className="text-xs text-gray-400 mt-2">Applied {formatDate(app.created_at)}</p>
+                      {ceoApplications.filter(a => a.status === 'new').map(app => (
+                        <div key={app.id} className="p-5">
+                          <div className="flex justify-between items-start gap-4">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-baseline flex-wrap gap-2">
+                                <p className="font-semibold text-lg text-[#1E2A4A]">{app.name}</p>
+                                <a href={app.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">LinkedIn ↗</a>
                               </div>
+                              <p className="text-sm text-gray-600 mt-0.5">{app.phone} · <a href={`mailto:${app.email}`} className="hover:underline">{app.email}</a></p>
+                              <p className="text-sm text-gray-500 mt-0.5">📍 {app.location.replace(/-/g, ' ')}</p>
+
+                              <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-sm text-gray-600">
+                                {app.current_title && app.current_company && (
+                                  <span><strong>Role:</strong> {app.current_title} @ {app.current_company}</span>
+                                )}
+                                <span><strong>Marketplace:</strong> {app.marketplace_background}</span>
+                                {app.other_platforms && <span><strong>Also:</strong> {app.other_platforms}</span>}
+                                <span><strong>Years:</strong> {app.years_experience}</span>
+                                <span><strong>P&amp;L:</strong> {app.pl_experience.replace(/-/g, ' ')}</span>
+                                <span><strong>Team led:</strong> {app.team_size}</span>
+                              </div>
+
+                              <details className="mt-3">
+                                <summary className="text-sm font-semibold text-[#1E2A4A] cursor-pointer hover:text-blue-700">Biggest platform scaled ▸</summary>
+                                <p className="mt-2 p-3 bg-purple-50 border-l-4 border-purple-300 text-sm text-gray-700 whitespace-pre-wrap">{app.biggest_scale}</p>
+                              </details>
+
+                              <details className="mt-2">
+                                <summary className="text-sm font-semibold text-[#1E2A4A] cursor-pointer hover:text-blue-700">Why sweat equity ▸</summary>
+                                <p className="mt-2 p-3 bg-purple-50 border-l-4 border-purple-300 text-sm text-gray-700 whitespace-pre-wrap">{app.why_sweat_equity}</p>
+                              </details>
+
+                              <details className="mt-2">
+                                <summary className="text-sm font-semibold text-[#1E2A4A] cursor-pointer hover:text-blue-700">30 / 60 / 90 plan ▸</summary>
+                                <p className="mt-2 p-3 bg-purple-50 border-l-4 border-purple-300 text-sm text-gray-700 whitespace-pre-wrap">{app.plan_30_60_90}</p>
+                              </details>
+
+                              {app.anything_else && (
+                                <details className="mt-2">
+                                  <summary className="text-sm font-semibold text-[#1E2A4A] cursor-pointer hover:text-blue-700">Other notes ▸</summary>
+                                  <p className="mt-2 p-3 bg-gray-50 border-l-4 border-gray-300 text-sm text-gray-700 whitespace-pre-wrap">{app.anything_else}</p>
+                                </details>
+                              )}
+
+                              <div className="flex gap-2 mt-3">
+                                {app.video_url && (
+                                  <a href={app.video_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-700 rounded text-xs hover:bg-blue-100">
+                                    🎥 Watch Video Intro
+                                  </a>
+                                )}
+                                {app.resume_url && (
+                                  <a href={app.resume_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 bg-green-50 text-green-700 rounded text-xs hover:bg-green-100">
+                                    📄 Resume
+                                  </a>
+                                )}
+                              </div>
+                              <p className="text-xs text-gray-400 mt-2">Applied {formatDate(app.created_at)}</p>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex flex-col gap-2 flex-shrink-0">
                               <button
-                                onClick={() => handleMgmtStatus(app.id, 'reviewed')}
-                                className="px-3 py-2.5 bg-green-600 text-white rounded text-sm hover:bg-green-700"
+                                onClick={() => handleCeoStatus(app.id, 'reviewing')}
+                                className="px-3 py-2.5 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 whitespace-nowrap"
                               >
-                                Mark Reviewed
+                                Mark Reviewing
                               </button>
                               <button
-                                onClick={() => handleMgmtStatus(app.id, 'rejected')}
-                                className="px-3 py-2.5 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300"
+                                onClick={() => handleCeoStatus(app.id, 'first_call')}
+                                className="px-3 py-2.5 bg-green-600 text-white rounded text-sm hover:bg-green-700 whitespace-nowrap"
+                              >
+                                First Call Booked
+                              </button>
+                              <button
+                                onClick={() => handleCeoStatus(app.id, 'rejected')}
+                                className="px-3 py-2.5 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 whitespace-nowrap"
                               >
                                 Reject
                               </button>
@@ -620,34 +657,31 @@ export default function StylistsPage() {
                   </div>
                 )}
 
-                {mgmtApplications.filter(a => a.status !== 'new' && a.status !== 'pending').length > 0 && (
+                {ceoApplications.filter(a => a.status !== 'new').length > 0 && (
                   <div className="bg-white rounded-lg border border-gray-200">
                     <div className="p-4 border-b">
-                      <h3 className="font-semibold text-[#1E2A4A]">Past Applications</h3>
+                      <h3 className="font-semibold text-[#1E2A4A]">Past / In Process ({ceoApplications.filter(a => a.status !== 'new').length})</h3>
                     </div>
                     <div className="divide-y">
-                      {mgmtApplications.filter(a => a.status !== 'new' && a.status !== 'pending').map(app => (
+                      {ceoApplications.filter(a => a.status !== 'new').map(app => (
                         <div key={app.id} className="p-4 flex justify-between items-center">
-                          <div className="flex gap-3 items-center">
-                            { false ? (
-                              <img src="" alt={app.name} className="w-10 h-10 rounded-full object-cover border border-gray-200 flex-shrink-0" />
-                            ) : (
-                              <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 text-sm">👤</div>
-                            )}
-                            <div>
-                              <p className="font-medium text-[#1E2A4A]">{app.name}</p>
-                              <p className="text-sm text-gray-500">{app.phone} · {app.email}</p>
-                            </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-[#1E2A4A]">{app.name} · <span className="text-sm text-gray-500 font-normal">{app.marketplace_background}</span></p>
+                            <p className="text-sm text-gray-500">{app.phone} · {app.email}</p>
                           </div>
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3 flex-shrink-0">
                             {app.video_url && (
                               <a href={app.video_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 text-xs hover:underline">🎥 Video</a>
                             )}
-                            {false && (
-                              <a href="#" target="_blank" rel="noopener noreferrer" className="text-green-600 text-xs hover:underline">📄 Resume</a>
+                            {app.resume_url && (
+                              <a href={app.resume_url} target="_blank" rel="noopener noreferrer" className="text-green-600 text-xs hover:underline">📄 Resume</a>
                             )}
-                            <span className={`px-2 py-1 rounded-full text-xs ${app.status === 'reviewed' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                              {app.status}
+                            <span className={`px-2 py-1 rounded-full text-xs capitalize ${
+                              app.status === 'rejected' || app.status === 'withdrawn' ? 'bg-red-100 text-red-700' :
+                              app.status === 'hired' ? 'bg-green-100 text-green-700' :
+                              'bg-blue-100 text-blue-700'
+                            }`}>
+                              {app.status.replace(/_/g, ' ')}
                             </span>
                           </div>
                         </div>

@@ -10,7 +10,8 @@ export async function GET(request: Request) {
   const tab = searchParams.get("tab") || "leads"
   const status = searchParams.get("status")
 
-  const table = tab === "applications" ? "applications" : "leads"
+  const allowedTabs = new Set(["leads", "applications", "ceo_applications"])
+  const table = allowedTabs.has(tab) ? tab : "leads"
   let query = supabaseAdmin
     .from(table)
     .select("*")
@@ -39,6 +40,11 @@ export async function PATCH(request: Request) {
 
   if (!id || !table || !status) {
     return NextResponse.json({ error: "Missing id, table, or status" }, { status: 400 })
+  }
+
+  const allowedTables = new Set(["leads", "applications", "ceo_applications"])
+  if (!allowedTables.has(table)) {
+    return NextResponse.json({ error: "Invalid table" }, { status: 400 })
   }
 
   const { error } = await supabaseAdmin
