@@ -554,7 +554,7 @@ export default function StylistsPage() {
             onClick={() => setActiveTab('ops-manager')}
             className={`pb-3 px-1 ${activeTab === 'ops-manager' ? 'border-b-2 border-[#1E2A4A] font-semibold' : 'text-gray-500'}`}
           >
-            Founding CEO {ceoApplications.filter(a => a.status === 'new').length > 0 && <span className="ml-1 px-2 py-0.5 bg-orange-100 text-orange-700 rounded-full text-xs">{ceoApplications.filter(a => a.status === 'new').length}</span>}
+            Founding CEO Position {ceoApplications.filter(a => a.status === 'new').length > 0 && <span className="ml-1 px-2 py-0.5 bg-orange-100 text-orange-700 rounded-full text-xs">{ceoApplications.filter(a => a.status === 'new').length}</span>}
           </button>
         </div>
 

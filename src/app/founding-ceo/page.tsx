@@ -304,7 +304,7 @@ export default function FoundingCEOPage() {
               href="/founding-ceo/application"
               className="inline-block rounded-full bg-white px-10 py-4 text-sm font-bold text-purple-600 shadow-lg transition hover:bg-purple-50"
             >
-              Apply — Sweat Equity + $49/hr
+              Apply — Founding Equity
             </Link>
             <a
               href="#traction"
